@@ -308,6 +308,12 @@ touch src/components/[컴포넌트명]/prompts/prompt.XXX.ui.txt
    - 커서룰 규칙을 참조하지 않음
    - 파일 경로를 명확히 하지 않음
 
+4. **❌ 구현 예시 코드 제공 금지**
+   - HTML/JSX 구조 예시 제공하지 않기
+   - TypeScript 코드 예시 제공하지 않기
+   - "무엇을"만 명시하고 "어떻게"는 AI에게 위임
+   - 자세한 내용: `PROMPT_WRITING_PRINCIPLES.md` 참고
+
 ---
 
 ## 체크리스트
@@ -328,9 +334,10 @@ touch src/components/[컴포넌트명]/prompts/prompt.XXX.ui.txt
 ## 도움말
 
 프롬프트 파일 생성 시 문제가 발생하면:
-1. `PROMPTS_STRUCTURE.md` 파일 참조
-2. 기존 프롬프트 파일들을 참고
-3. 규칙 파일들(`@01-common.mdc` 등) 확인
+1. **`PROMPT_WRITING_PRINCIPLES.md`** - 프롬프트 작성 원칙 (필독!)
+2. `PROMPTS_STRUCTURE.md` 파일 참조
+3. 기존 프롬프트 파일들을 참고
+4. 규칙 파일들(`@01-common.mdc` 등) 확인
 
 ---
 
