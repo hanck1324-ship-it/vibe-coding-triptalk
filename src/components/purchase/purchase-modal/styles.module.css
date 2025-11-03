@@ -1,12 +1,309 @@
+/* ============================================== */
 /* 구매 모달 스타일 */
+/* ============================================== */
+
+/* [A] 모달 기본 구조 */
+.modal {
+  width: 600px !important;
+}
 
 .modalContent {
-  padding: 20px 0;
+  padding: 24px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
 }
 
-.modalContent p {
+/* ============================================== */
+/* [B] 숙박권 요약 정보 */
+/* ============================================== */
+
+.accommodationSummary {
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  background-color: #fafafa;
+}
+
+.accommodationImage {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.accommodationInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.accommodationTitle {
   font-size: 18px;
   font-weight: 600;
-  margin-bottom: 20px;
+  color: #262626;
+  margin-bottom: 8px;
 }
 
+.priceInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pricePerNight {
+  font-size: 14px;
+  color: #8c8c8c;
+}
+
+.totalPrice {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1890ff;
+}
+
+/* ============================================== */
+/* [C] 구매자 정보 입력 폼 */
+/* ============================================== */
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sectionTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #262626;
+  margin-bottom: 8px;
+}
+
+.formField {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.formLabel {
+  font-size: 14px;
+  font-weight: 500;
+  color: #595959;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.required {
+  color: #ff4d4f;
+  font-size: 14px;
+}
+
+.formInput {
+  padding: 8px 12px;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: all 0.3s;
+}
+
+.formInput:hover {
+  border-color: #40a9ff;
+}
+
+.formInput:focus {
+  outline: none;
+  border-color: #1890ff;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
+.formInput.error {
+  border-color: #ff4d4f;
+}
+
+.formInput.error:focus {
+  box-shadow: 0 0 0 2px rgba(255, 77, 79, 0.2);
+}
+
+.dateInputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* ============================================== */
+/* [D] 결제 정보 입력 폼 */
+/* ============================================== */
+
+.paymentMethods {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.paymentMethod {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.paymentMethod:hover {
+  border-color: #40a9ff;
+  background-color: #f0f8ff;
+}
+
+.paymentMethod.selected {
+  border-color: #1890ff;
+  background-color: #e6f7ff;
+}
+
+.paymentMethodLabel {
+  margin-left: 8px;
+  font-size: 14px;
+  color: #262626;
+  cursor: pointer;
+}
+
+.agreement {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 12px;
+  background-color: #fafafa;
+  border-radius: 4px;
+}
+
+.agreementCheckbox {
+  margin-top: 2px;
+  cursor: pointer;
+}
+
+.agreementText {
+  font-size: 14px;
+  color: #595959;
+  line-height: 1.5;
+}
+
+.agreementLink {
+  color: #1890ff;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.agreementLink:hover {
+  color: #40a9ff;
+}
+
+/* ============================================== */
+/* [E] 버튼 영역 */
+/* ============================================== */
+
+.buttonArea {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  padding-top: 16px;
+  border-top: 1px solid #e8e8e8;
+}
+
+.cancelButton {
+  padding: 10px 24px;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  background-color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  color: #595959;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.cancelButton:hover {
+  border-color: #40a9ff;
+  color: #40a9ff;
+}
+
+.purchaseButton {
+  padding: 10px 24px;
+  border: none;
+  border-radius: 4px;
+  background-color: #1890ff;
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.purchaseButton:hover {
+  background-color: #40a9ff;
+  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.3);
+}
+
+.purchaseButton:active {
+  background-color: #096dd9;
+}
+
+.purchaseButton:disabled {
+  background-color: #d9d9d9;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* ============================================== */
+/* 에러 메시지 표시 영역 */
+/* ============================================== */
+
+.errorMessage {
+  font-size: 12px;
+  color: #ff4d4f;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.errorIcon {
+  font-size: 14px;
+}
+
+/* ============================================== */
+/* 반응형 (선택적) */
+/* ============================================== */
+
+@media (max-width: 768px) {
+  .modal {
+    width: 100% !important;
+    max-width: 480px;
+  }
+
+  .accommodationSummary {
+    flex-direction: column;
+  }
+
+  .accommodationImage {
+    width: 100%;
+    height: 200px;
+  }
+
+  .dateInputs {
+    grid-template-columns: 1fr;
+  }
+
+  .buttonArea {
+    flex-direction: column;
+  }
+
+  .cancelButton,
+  .purchaseButton {
+    width: 100%;
+  }
+}

@@ -10,11 +10,10 @@
 
 ==============================================
 
-조건-피그마) 활용할MCP: CursorTalkToFigmaMCP(채널명: bcacdggz)
-조건-피그마) 구현될 컴포넌트 노드ID(모달 전체): [노드ID를 입력하세요]
-조건-피그마) 구현될 컴포넌트 노드ID(숙박권 정보 영역): [노드ID를 입력하세요]
-조건-피그마) 구현될 컴포넌트 노드ID(결제 폼 영역): [노드ID를 입력하세요]
-조건-피그마) 구현될 컴포넌트 노드ID(버튼 영역): [노드ID를 입력하세요]
+조건-피그마) 활용할MCP: CursorTalkToFigmaMCP(채널명: tvuw5d4s)
+조건-피그마) 구현될 컴포넌트 노드ID(배경 페이지): [node ID: 285-31657]
+조건-피그마) 구현될 컴포넌트 노드ID(구매 페이지): [node ID: 285-31713]
+조건-피그마) 구현될 컴포넌트 노드ID(포인트 부족 페이지): [node ID: 285-31770]
 
 조건-파일경로) 구현될 TSX 파일경로: src/components/purchase/purchase-modal/index.tsx
 조건-파일경로) 구현될 CSS 파일경로: src/components/purchase/purchase-modal/styles.module.css
@@ -23,86 +22,129 @@
 
 조건-공통목록) 사용할 공통컴포넌트 목록
             - Ant Design Modal 컴포넌트
-조건-공통목록) 사용할 색상 목록(global.css에 명시된 변수 토큰 활용)
-            - 비슷한 토큰 선택하여 사용(하드코딩 금지)
-조건-공통목록) 사용할 타이포그래피 목록(global.css에 명시된 변수 토큰 활용)
-            - 비슷한 토큰 선택하여 사용(하드코딩 금지)
 
 ==============================================
 
-핵심요구사항) 숙박권 구매 모달 UI를 step-by-step 으로 구현하고, 적용 결과를 체크리스트로 반환할 것.
+핵심요구사항) 숙박권 구매 확인 모달 UI를 step-by-step 으로 구현하고, 적용 결과를 체크리스트로 반환할 것.
 
-        1) UI 구조 요구사항
-            
-            [A] 모달 기본 구조
-                - Ant Design Modal 컴포넌트 사용
-                - Props: isOpen, onClose, accommodationId, accommodationData
-                - accommodationData에는 제목, 가격, 이미지 포함
-            
-            [B] 숙박권 요약 정보
-                - 숙박권 이미지 (썸네일)
-                - 숙박권 제목
-                - 1박 가격 표시
-                - 총 결제 금액 강조
-            
-            [C] 구매자 정보 입력 폼
-                - 이름 입력 필드 (필수)
-                - 연락처 입력 필드 (필수)
-                - 이메일 입력 필드 (선택)
-                - 체크인/체크아웃 날짜 선택
-            
-            [D] 결제 정보 입력 폼
-                - 결제 방법 선택 (라디오 버튼)
-                  - 카드 결제
-                  - 계좌 이체
-                  - 간편 결제
-                - 약관 동의 체크박스
-            
-            [E] 버튼 영역
-                - 취소 버튼: onClick → onClose() 호출
-                - 구매하기 버튼: 
-                  - 필수 입력값 검증
-                  - 성공 시 → 구매 완료 페이지로 라우팅
-                  - 라우팅 경로: /purchase/complete/[orderId]
-                  - useRouter의 push 메서드 사용
+        1) 모달 기본 구조
 
-        2) 데이터 바인딩 요구사항
-            - accommodationData props로 받은 데이터 표시
-            - 구매자 정보는 상태로 관리 (부모에서 전달받거나 내부 관리)
-            - 유효성 검증: 필수 필드 공백 체크
+            - Ant Design Modal 컴포넌트 사용
 
-        3) 스타일링 요구사항
-            - CSS Modules 사용
-            - 모달 너비: 600px
-            - 내부 패딩 및 여백 일관성
-            - 필수 필드 표시 (빨간 별표)
-            - 에러 메시지 표시 영역
-            - 버튼 hover 효과
-            - global.css 토큰 활용
-
-        4) 인터랙션 요구사항
-            - 모달 외부 클릭 시 닫기
-            - ESC 키로 닫기
-            - 구매하기 버튼 클릭 시:
-              1. 필수 입력값 검증
-              2. 검증 성공 → API 호출 (TODO)
-              3. 성공 시 → /purchase/complete/[orderId] 이동
-              4. 실패 시 → 에러 메시지 표시
-
-        5) Props 인터페이스
-            - isOpen: boolean (모달 표시 여부)
-            - onClose: () => void (닫기 콜백)
-            - accommodationId: string (숙박권 ID)
-            - accommodationData: {
-                title: string
-                price: number
-                image: string
+            - Props 인터페이스:
+              interface IPurchaseModalProps {
+                isOpen: boolean;              // 모달 표시 여부
+                onClose: () => void;          // 닫기 콜백
+                onConfirm: () => void;        // 구매하기 콜백
+                accommodationData: {
+                  title: string;              // 숙박권 제목
+                  price: number;              // 숙박권 가격
+                  image: string;              // 숙박권 이미지 URL
+                };
               }
 
-        6) 테스트 체크리스트
-            - [ ] 모달이 정상적으로 열리고 닫히는가?
-            - [ ] 숙박권 정보가 올바르게 표시되는가?
-            - [ ] 필수 입력 필드 검증이 작동하는가?
-            - [ ] 구매하기 버튼 클릭 시 라우팅이 되는가?
-            - [ ] 취소 버튼으로 모달이 닫히는가?
+        2) 컴포넌트 구조
 
+            <Modal>
+              <div className={styles.modalContent}>
+
+                {/* 숙박권 이미지 */}
+                <img
+                  src={accommodationData.image}
+                  alt={accommodationData.title}
+                  className={styles.accommodationImage}
+                />
+
+                {/* 숙박권 제목 */}
+                <h2 className={styles.accommodationTitle}>
+                  {accommodationData.title}
+                </h2>
+
+                {/* 가격 정보 */}
+                <div className={styles.priceSection}>
+                  <span className={styles.priceLabel}>결제 금액</span>
+                  <span className={styles.priceValue}>
+                    {accommodationData.price.toLocaleString()}원
+                  </span>
+                </div>
+
+                {/* 버튼 영역 */}
+                <div className={styles.buttonArea}>
+                  <button
+                    className={styles.cancelButton}
+                    onClick={onClose}
+                  >
+                    취소
+                  </button>
+                  <button
+                    className={styles.confirmButton}
+                    onClick={onConfirm}
+                  >
+                    구매하기
+                  </button>
+                </div>
+
+              </div>
+            </Modal>
+
+        3) 스타일링 요구사항
+
+            - 피그마 디자인 참조
+              * 노드ID: 285-31713 (구매 페이지)
+              * 피그마에서 색상, 폰트 크기, 여백 등 모든 스타일 값을 가져올 것
+              * CSS Modules 사용 (styles.module.css)
+
+            - 모달 외부 클릭 시 닫기 활성화
+            - ESC 키로 닫기 활성화
+
+            - 반응형 디자인
+              * 768px 이하: 모달 너비 조정
+              * 모바일 최적화
+
+        4) 인터랙션 요구사항
+
+            - 취소 버튼:
+              * 클릭 시 onClose() 호출
+              * 모달만 닫힘 (페이지 이동 없음)
+
+            - 구매하기 버튼:
+              * 클릭 시 onConfirm() 호출
+              * 실제 로직은 부모 컴포넌트에서 처리
+
+            - 호버 효과:
+              * 피그마 디자인에 정의된 호버 상태 적용
+
+        5) 테스트 체크리스트
+
+            [기본 동작]
+            - [ ] 모달이 정상적으로 열리고 닫히는가?
+            - [ ] 피그마 디자인과 일치하는가?
+
+            [데이터 표시]
+            - [ ] 숙박권 이미지가 올바르게 표시되는가?
+            - [ ] 숙박권 제목이 올바르게 표시되는가?
+            - [ ] 가격이 천 단위 콤마와 함께 표시되는가?
+
+            [버튼 동작]
+            - [ ] 취소 버튼 클릭 시 모달이 닫히는가?
+            - [ ] 구매하기 버튼 클릭 시 onConfirm이 호출되는가?
+            - [ ] 버튼 호버 효과가 작동하는가?
+
+            [모달 인터랙션]
+            - [ ] 모달 외부 클릭 시 모달이 닫히는가?
+            - [ ] ESC 키로 모달이 닫히는가?
+
+            [반응형]
+            - [ ] 768px 이하에서 정상적으로 표시되는가?
+            - [ ] 모바일에서 사용하기 편리한가?
+
+==============================================
+
+참고사항)
+1. 이 모달은 단순히 구매를 확인하는 UI만 담당합니다.
+2. 실제 구매 로직은 별도 프롬프트에서 구현합니다:
+   - prompt.301.func.modal-connect.txt (모달 연동)
+   - prompt.302.func.point-check.txt (포인트 체크)
+   - prompt.303.func.purchase-api.txt (구매 API)
+3. 모든 스타일 값(색상, 크기, 여백 등)은 피그마에서 가져오세요.
+4. 하드코딩된 CSS 값 사용을 최소화하세요.

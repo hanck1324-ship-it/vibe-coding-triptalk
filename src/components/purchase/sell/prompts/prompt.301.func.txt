@@ -13,16 +13,117 @@
 
 ==============================================
 
+조건-피그마) 참고용 채널: wg9a5lvms (UI 디자인 참고용, 기능 구현에는 직접 사용 안 함)
+
+==============================================
+
 핵심요구사항) 숙박권 판매 등록 기능을 step-by-step 으로 구현할 것.
 
         1) 라이브러리조건
             - 상태 관리: React의 useState 훅
             - 라우팅: next/navigation의 useRouter 훅
-            
+            - 지도 API: 다음/카카오 지도 API
+            - UI 컴포넌트: Ant Design (필요시 사용)
+              * Modal: 주소 검색 (DaumPostcodeEmbed), 알림
+              * 기타: boards-write 참고하여 일관성 유지
+
         2) 기능 요구사항
             - 폼 입력 상태 관리
+              * 상품명, 한줄요약, 상품설명, 판매 가격
+              * 주소, 상세주소, 우편번호
+              * 위도(latitude), 경도(longitude) ⭐
+            
             - 이미지 업로드 처리
+              * File 객체 배열로 관리 (최대 5개)
+              * 파일 선택 시 타입/크기 유효성 검증 (JPG/JPEG/PNG/WebP, 5MB 이하)
+              * URL.createObjectURL()로 미리보기 생성
+              * 삭제 기능: 배열에서 제거 및 미리보기 URL 해제
+              * 등록 시 한 번에 서버로 전송
+            
+            - 우편번호 검색 및 좌표 자동 입력 ⭐핵심⭐
+              * 다음 주소 검색 API (DaumPostcodeEmbed) 연동
+              * 우편번호 검색 → 주소 선택 완료 시 (handleCompletePostcode):
+                1. 우편번호(zonecode) 즉시 자동 저장 ⭐
+                2. 주소(address) 즉시 자동 저장 ⭐
+                3. 카카오 Geocoding API를 사용하여 주소 → 좌표 변환 ⭐
+                4. 위도(LAT) 즉시 자동 입력 ⭐
+                5. 경도(LNG) 즉시 자동 입력 ⭐
+                6. 조건부 렌더링으로 지도 자동 표시 (zipcode && address 체크) ⭐
+              
+              * 우편번호 입력 전:
+                - 위도/경도 필드: disabled 상태 (배경 #f2f2f2, 텍스트 #999999)
+                - 지도: "주소를 먼저 입력해 주세요." 표시 (배경 #f2f2f2)
+              
+              * 우편번호 입력 후:
+                - 위도/경도 필드: 즉시 활성화 + 자동으로 좌표 값 입력됨 ⭐
+                - 지도: 즉시 카카오 지도 표시 ⭐
+                - 사용자가 위도/경도 수동 수정 가능
+              
+              * 카카오 API 설정:
+                - 환경변수: process.env.NEXT_PUBLIC_KAKAO_MAP_KEY
+                - .env.local 파일에 NEXT_PUBLIC_KAKAO_MAP_KEY 설정 필수
+                - API 키 없거나 로드 실패 시: 기본 좌표(서울시청 37.5665, 126.9780) 사용
+                - 콘솔 로그로 디버깅: "주소 검색 완료", "좌표 자동 입력" 등
+              
+              * DaumMap 컴포넌트에서:
+                - address prop을 받으면 카카오 지도 표시
+                - Geocoding API로 주소 → 좌표 변환
+                - 지도 생성 및 마커 표시
+                - onCoordinatesChange 콜백으로 좌표를 부모에 전달
+            
+            - 지도 클릭 이벤트 처리
+              * 지도 클릭 시 마커를 클릭한 위치로 이동
+              * 클릭한 위치의 위도/경도 추출
+              * onCoordinatesChange를 통해 부모 컴포넌트로 전달
+              * handleSetCoordinates에서 위도/경도 상태 업데이트 ⭐
+              * 왼쪽 입력 필드에 자동 반영
+            
+            - 위도/경도 수동 변경
+              * onChangeLatitude: 위도 입력 필드 직접 수정 가능
+              * onChangeLongitude: 경도 입력 필드 직접 수정 가능
+              * disabled 조건: !address (우편번호가 없으면 비활성화)
+              * 우편번호 입력되면 자동으로 활성화 + 좌표 자동 입력됨 ⭐
+            
             - 유효성 검증
+              * 상품설명 최소 20자 확인
+              * 이미지 타입/크기 검증
+              * 모든 필수 필드 입력 완료 확인
+            
+            - 가격 포맷팅
+              * 1000원 이상일 때 천 단위 구분 쉼표 적용 (예: 10000 → "10,000원")
+            
+            - 버튼 활성화/비활성화 로직
+              * 모든 필수 필드 입력 완료 시 등록 버튼 활성화
+            
             - 등록 API 호출
+              * FormData 생성
+              * 이미지 파일들 추가
+              * 폼 데이터 추가: 상품명, 한줄요약, 상품설명, 가격, 주소, 상세주소, 우편번호
+              * 위도(latitude), 경도(longitude) 포함 ⭐
+              * GraphQL mutation: [사용자 제공 예정]
+            
             - 성공 시 목록 페이지 이동
+              * router.push('/purchase')
+            
+            - 에러 처리
+              * 파일 업로드 실패: alert
+              * 네트워크 에러: alert
+              * 유효성 검증 실패: 각 필드 아래 에러 메시지 표시
+              * 카카오 API 로드 실패: 콘솔 경고 + 기본 좌표 사용
+
+        3) 이미지 URL 관리 방식 (상세)
+            - File 객체 배열 상태: useState<File[]>([])
+            - 미리보기 URL 배열 상태: useState<string[]>([])
+            - 이미지 추가 시:
+              * File 객체를 배열에 추가
+              * URL.createObjectURL(file)로 미리보기 URL 생성 및 배열에 추가
+            - 이미지 삭제 시:
+              * URL.revokeObjectURL(previewUrl)로 메모리 해제
+              * File 배열과 URL 배열에서 해당 인덱스 제거
+            - 컴포넌트 언마운트 시:
+              * useEffect cleanup 함수에서 모든 URL에 대해 revokeObjectURL 호출
+            - 등록 버튼 클릭 시:
+              * FormData 생성
+              * File 객체들을 FormData에 추가 (formData.append('images', file))
+              * 나머지 폼 데이터와 함께 서버로 전송
 

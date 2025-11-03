@@ -1,13 +1,354 @@
-/* 숙박권 판매 등록 스타일 */
-
+/* 전체 레이아웃 */
 .wrapper {
+  display: flex;
+  justify-content: center;
   width: 100%;
-  min-height: 100vh;
 }
 
 .container {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 40px 20px;
+  display: flex;
+  width: 1280px;
+  padding: 40px 320px;
+  justify-content: center;
+  flex-direction: column;
 }
 
+/* 페이지 제목 */
+.title_section {
+  display: flex;
+  width: 1280px;
+  padding: 40px 0px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 40px;
+  flex-shrink: 0;
+}
+
+.page_title {
+  color: #000;
+  font-family: Pretendard;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 28px;
+}
+
+/* 폼 컨테이너 */
+.form_container {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 40px;
+  align-self: stretch;
+  width: 100%;
+}
+
+.form_section {
+  align-self: stretch;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form_label {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  align-self: stretch;
+  color: #000;
+  font-family: Pretendard;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+}
+
+.required {
+  color: var(--red, #f66a6a);
+  font-family: "Pretendard Variable";
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* 구분선 */
+.divider {
+  width: 100%;
+  height: 1px;
+  background: var(--gray-100, #e4e4e4);
+  align-self: stretch;
+}
+
+/* 이미지 업로드 영역 */
+.image_upload_container {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.image_preview_wrapper {
+  position: relative;
+  width: 160px;
+  height: 160px;
+}
+
+.image_preview {
+  width: 160px;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--gray-200, #d4d3d3);
+}
+
+.image_remove_btn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  z-index: 1;
+}
+
+.image_add_label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 160px;
+  height: 160px;
+  cursor: pointer;
+  border-radius: 8px;
+  border: 1px solid var(--gray-200, #d4d3d3);
+  background: #f2f2f2;
+}
+
+.image_add_label:hover {
+  background: #e8e8e8;
+}
+
+.image_input {
+  display: none;
+}
+
+/* 입력 필드 */
+.input {
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid var(--Gray-Gray-200, #d4d3d3);
+  background: var(--Gray-W, #fff);
+  padding: 12px 16px;
+  box-sizing: border-box;
+  height: 48px;
+  font-family: Pretendard;
+  font-size: 16px;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #2974e5;
+}
+
+.input:disabled {
+  background: #f2f2f2;
+  color: #999999;
+  cursor: not-allowed;
+  border: none;
+}
+
+.textarea {
+  height: 336px;
+  resize: vertical;
+}
+
+/* 가격 입력 */
+.price_input_wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.price_unit {
+  color: #000;
+  font-family: Pretendard;
+  font-size: 16px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* 주소 + 지도 2-Column 레이아웃 */
+.address_map_container {
+  display: flex;
+  gap: 24px;
+  align-self: stretch;
+  width: 100%;
+}
+
+.address_inputs_column {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 396px;
+  max-width: 396px;
+  flex-shrink: 1;
+  min-width: 350px;
+}
+
+.map_column {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  max-width: 844px;
+  min-width: 400px;
+}
+
+.form_section_inline {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* 주소 입력 */
+.address_row {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  align-items: flex-start;
+  gap: 8px;
+  align-self: stretch;
+  height: 48px;
+}
+
+.zipcode_input {
+  padding: 12px 16px;
+  box-sizing: border-box;
+  border-radius: 8px;
+  border: 1px solid var(--Gray-Gray-200, #d4d3d3);
+  background: var(--Gray-W, #fff);
+  width: 82px;
+  height: 48px;
+  font-family: Pretendard;
+}
+
+.address_search_btn {
+  border-radius: 8px;
+  border: 1px solid var(--gray-B, #000);
+  background: var(--gray-w, #fff);
+  display: flex;
+  height: 48px;
+  padding: 12px 16px;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-family: Pretendard;
+  font-size: 14px;
+}
+
+.address_search_btn:hover {
+  background: var(--gray-50, #f9f9f9);
+}
+
+/* 지도 영역 */
+.map_container {
+  width: 280px;
+  height: 100%;
+  flex: 1;
+  border-radius: 16px;
+  border: 1px solid var(--gray-200, #d4d3d3);
+  overflow: hidden;
+  background: #f2f2f2;
+}
+
+.map_placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999999;
+  font-family: Pretendard;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  line-height: 20px;
+}
+
+/* 버튼 컨테이너 */
+.button_container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 16px;
+  align-self: stretch;
+  padding-top: 40px;
+}
+
+/* 등록 버튼 - 활성화 상태 */
+.submit_button_active {
+  border-radius: 8px;
+  background: #2974e5;
+  display: flex;
+  height: 48px;
+  padding: 12px 16px;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  color: #ffffff;
+  font-family: Pretendard;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.submit_button_active:hover {
+  background: #1e5bb8;
+}
+
+/* 등록 버튼 - 비활성화 상태 */
+.submit_button_disabled {
+  border-radius: 8px;
+  display: flex;
+  height: 48px;
+  padding: 12px 16px;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  background-color: #c7c7c7;
+  color: #e4e4e4;
+  font-family: Pretendard;
+  font-size: 16px;
+  cursor: not-allowed;
+}
+
+/* 취소 버튼 */
+.cancel_button {
+  display: flex;
+  height: 48px;
+  padding: 12px 16px;
+  align-items: center;
+  gap: 8px;
+  border-radius: 8px;
+  border: 1px solid var(--gray-B, #000);
+  background: var(--gray-w, #fff);
+  color: #000;
+  font-family: Pretendard;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.cancel_button:hover {
+  background: #f9f9f9;
+}
+
+/* 에러 메시지 */
+.error_msg {
+  color: var(--red, #f66a6a);
+  font-family: "Pretendard Variable";
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 24px;
+}
