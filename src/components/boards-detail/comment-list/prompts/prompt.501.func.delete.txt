@@ -1,0 +1,59 @@
+아래의 조건을 모두 적용하여, 아래의 요구사항을 모두 구현할 것.
+구현 결과를 체크리스트로 반환할 것.
+
+==============================================
+
+조건-커서룰) 아래의 커서룰을 적용하여 작업하고, 이 작업이 끝나면 해당 rules 적용 결과를 체크리스트로 반환할 것.
+            - @01-common.mdc
+            - @04-func.mdc
+
+==============================================
+
+조건-파일경로) 참고할 API 문서경로: https://main-practice.codebootcamp.co.kr/graphql
+조건-파일경로) 구현될 HOOK 파일경로: src/components/boards-detail/comment-list/hook.ts (삭제 기능 추가)
+조건-파일경로) 구현될 GQL 파일경로: src/components/boards-detail/comment-list/queries.ts (deleteBoardComment 뮤테이션)
+조건-파일경로) (참고) 공통 GQL 타입: src/commons/graphql/graphql.ts (codegen으로 생성된 타입 사용)
+
+==============================================
+
+핵심요구사항) 댓글 삭제 기능을 step-by-step 으로 구현하고, 적용 결과를 체크리스트로 반환할 것.
+
+        1) 라이브러리조건
+            - API: @apollo/client의 useMutation 훅을 사용할 것.
+            - 타입: @/commons/graphql/graphql에서 codegen으로 생성된 타입을 사용할 것.
+            - 상태 관리: React의 useState 훅을 사용할 것.
+            - 모달: Ant Design Modal 또는 커스텀 모달 컴포넌트 사용 (선택사항)
+
+        2) 기능 요구사항
+            - 1. (GQL) src/components/boards-detail/comment-list/queries.ts 파일에 deleteBoardComment 뮤테이션을 정의할 것.
+                - Mutation: deleteBoardComment
+                - Variables: commentId (ID!), password (String!)
+                - 응답데이터: _id (삭제된 댓글 ID)
+                - gql template literal 사용 (import { gql } from "@apollo/client")
+
+            - 2. 댓글 삭제 확인 UI
+                - 삭제 아이콘 클릭 시 확인 모달 표시
+                - 비밀번호 입력 필드
+                - 삭제 확인/취소 버튼
+
+            - 3. (HOOK) 댓글 삭제 기능 구현
+                - "use client" 지시어 추가
+                - 삭제 모달 상태 관리
+                - 선택된 댓글 ID 상태 관리
+                - 비밀번호 입력 상태 관리
+                - deleteBoardComment 뮤테이션 실행
+                - 패스워드 검증
+                - 성공 시 댓글 목록 refetch
+                - 모달 닫기 기능
+
+        3) 에러 처리 요구사항
+            - 패스워드 불일치 시 에러 처리
+            - 뮤테이션 실패 시 에러 메시지 표시
+            - 삭제 확인 다이얼로그 제공
+
+        4) 최적화 요구사항
+            - refetchQueries를 사용하여 댓글 목록 자동 갱신
+            - 불필요한 리렌더링 방지
+            - 낙관적 업데이트 고려 (선택사항)
+
+

@@ -1,0 +1,89 @@
+아래의 조건을 모두 적용하여, 아래의 요구사항을 모두 구현할 것.
+구현 결과를 체크리스트로 반환할 것.
+
+==============================================
+
+조건-커서룰) 아래의 커서룰을 적용하여 작업하고, 이 작업이 끝나면 해당 rules 적용 결과를 체크리스트로 반환할 것.
+            - @01-common.mdc
+            - @04-func.mdc
+
+==============================================
+
+조건-파일경로) 참고할 API 문서경로: https://main-practice.codebootcamp.co.kr/graphql
+조건-파일경로) 구현될 HOOK 파일경로: src/components/auth/login/hook.ts
+조건-파일경로) 구현될 GQL 파일경로: src/components/auth/login/queries.ts (또는 기존 queries 파일)
+조건-파일경로) (참고) 공통 GQL 타입: src/commons/graphql/graphql.ts (codegen으로 생성된 타입 사용)
+
+==============================================
+
+핵심요구사항) 로그인 기능을 step-by-step 으로 구현하고, 적용 결과를 체크리스트로 반환할 것.
+
+        1) 라이브러리조건
+            - API: @apollo/client의 useMutation 훅을 사용할 것.
+            - 타입: @/commons/graphql/graphql에서 codegen으로 생성된 타입을 사용할 것.
+            - 상태 관리: React의 useState 훅을 사용할 것.
+            - 라우팅: next/navigation의 useRouter 훅을 사용할 것.
+            - 폼: react-hook-form을 사용할 것 (선택사항)
+            - 검증: zod를 사용할 것 (선택사항)
+
+        2) 기능 요구사항
+            - 1. (GQL) loginUser 뮤테이션을 정의할 것.
+                - 파일 위치: src/components/auth/login/queries.ts 또는 적절한 위치
+                - Mutation: loginUser
+                - Variables: 
+                    - email (String!)
+                    - password (String!)
+                - 응답데이터: 
+                    - accessToken (JWT 토큰)
+                    - [추가 응답 필드가 있다면 여기에 명시]
+                - gql template literal 사용 (import { gql } from "@apollo/client")
+
+            - 2. 로그인 기능 구현 (hook.ts)
+                - "use client" 지시어 추가
+                - useState를 사용하여 email, password 상태 관리
+                - 로딩 상태 관리 (useState 또는 mutation의 loading)
+                - 에러 상태 관리 (useState)
+                - useMutation을 사용하여 loginUser 뮤테이션 실행
+                - codegen으로 생성된 LoginUserDocument 타입 사용 (또는 직접 정의)
+                - onChange 핸들러 함수들 생성
+                    - onChangeEmail
+                    - onChangePassword
+                - onSubmit 함수 생성
+                    - 입력값 검증 (이메일 형식, 비밀번호 필수)
+                    - 뮤테이션 실행
+                    - 성공 시 accessToken 저장
+                        - 저장 위치: localStorage 또는 sessionStorage
+                        - 키 이름: "accessToken" 또는 [원하는 키 이름]
+                    - 로그인 성공 후 페이지 이동
+                        - 이동 경로: "/" 또는 "/boards" 또는 [원하는 경로]
+                    - 실패 시 에러 메시지 표시
+                - 회원가입 페이지로 이동 함수 생성 (선택사항)
+                    - 이동 경로: "/auth/signup" 또는 [원하는 경로]
+                - 모든 상태와 핸들러 함수 반환
+
+        3) 에러 처리 요구사항
+            - 입력값 검증
+                - 이메일 형식 검증 (정규식 또는 zod 사용)
+                - 빈 값 체크
+            - 로그인 실패 시 에러 메시지 표시
+                - 에러 메시지 위치: UI 컴포넌트에 표시
+            - 네트워크 에러 처리
+            - 토큰 관련 에러 처리
+
+        4) 인증 관리 요구사항
+            - accessToken 저장 방식 결정
+                - 옵션: localStorage, sessionStorage, cookie
+                - 선택: [원하는 방식을 선택하세요]
+            - 토큰 만료 처리 (향후 구현)
+            - 로그아웃 기능 (prompt.401.func.logout.txt 참조)
+
+        5) 최적화 요구사항
+            - 불필요한 리렌더링 방지
+            - 로딩 상태 표시
+            - 성공 후 적절한 페이지 이동
+            - 에러 상태 초기화 (재시도 시)
+
+        6) 보안 요구사항 (선택사항)
+            - 비밀번호 입력 시 보안 고려
+            - XSS 방지
+            - CSRF 방지 (서버 측 구현 필요)

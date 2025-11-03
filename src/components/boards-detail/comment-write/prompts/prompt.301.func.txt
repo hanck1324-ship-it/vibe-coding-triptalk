@@ -1,0 +1,57 @@
+아래의 조건을 모두 적용하여, 아래의 요구사항을 모두 구현할 것.
+구현 결과를 체크리스트로 반환할 것.
+
+==============================================
+
+조건-커서룰) 아래의 커서룰을 적용하여 작업하고, 이 작업이 끝나면 해당 rules 적용 결과를 체크리스트로 반환할 것.
+            - @01-common.mdc
+            - @04-func.mdc
+
+==============================================
+
+조건-파일경로) 참고할 API 문서경로: https://main-practice.codebootcamp.co.kr/graphql
+조건-파일경로) 구현될 HOOK 파일경로: src/components/boards-detail/comment-write/hook.ts
+조건-파일경로) 구현될 GQL 파일경로: src/components/boards-detail/comment-write/queries.ts
+조건-파일경로) (참고) 공통 GQL 타입: src/commons/graphql/graphql.ts (codegen으로 생성된 타입 사용)
+
+==============================================
+
+핵심요구사항) 댓글 작성 기능을 step-by-step 으로 구현하고, 적용 결과를 체크리스트로 반환할 것.
+
+        1) 라이브러리조건
+            - API: @apollo/client의 useMutation 훅을 사용할 것.
+            - 타입: @/commons/graphql/graphql에서 codegen으로 생성된 타입을 사용할 것.
+            - 상태 관리: React의 useState 훅을 사용할 것.
+            - 라우팅: next/navigation의 useParams 훅을 사용할 것.
+
+        2) 기능 요구사항
+            - 1. (GQL) src/components/boards-detail/comment-write/queries.ts 파일에 createBoardComment 뮤테이션을 정의할 것.
+                - Mutation: createBoardComment
+                - Variables: boardId (ID!), createBoardCommentInput (writer, password, contents, rating)
+                - 응답데이터: _id, writer, contents, rating, createdAt
+                - gql template literal 사용 (import { gql } from "@apollo/client")
+
+            - 2. (HOOK) src/components/boards-detail/comment-write/hook.ts 파일에 커스텀 훅을 만들 것.
+                - "use client" 지시어 추가
+                - useState를 사용하여 writer, password, contents, rating 상태 관리
+                - useParams를 사용하여 boardId 가져오기
+                - useMutation을 사용하여 createBoardComment 뮤테이션 실행
+                - onChange 핸들러 함수들 생성 (onChangeWriter, onChangePassword, onChangeContents, onChangeRating)
+                - onClickSubmit 함수 생성
+                    - 입력값 검증 (작성자, 비밀번호, 내용 모두 필수)
+                    - 뮤테이션 실행
+                    - 성공 시 댓글 목록 refetch (FetchBoardCommentsDocument 사용)
+                    - 입력창 초기화
+                    - 성공/실패 메시지 표시
+                - 모든 상태와 핸들러 함수 반환
+
+        3) 에러 처리 요구사항
+            - 입력값 검증 (빈 값 체크)
+            - 뮤테이션 실패 시 에러 메시지 표시
+            - 성공 시 알림 표시
+
+        4) 최적화 요구사항
+            - refetchQueries를 사용하여 댓글 목록 자동 갱신
+            - 불필요한 리렌더링 방지
+
+

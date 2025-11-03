@@ -1,0 +1,604 @@
+/* body 영역 (285:31929) */
+.body {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #ffffff;
+  gap: 40px;
+}
+
+/* 메인페이지 추천 페이지 영역 (285:31930) - 1280x688px */
+.mainRecommendArea {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 1280px;
+}
+
+/* 제목 텍스트 영역 (285:31931) */
+.mainRecommendTitle {
+  font-family: 'Pretendard', 'Pretendard Variable', sans-serif;
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 36px;
+  color: #000000;
+  margin: 0;
+  width: 100%;
+}
+
+/* 메인 배너 카드 영역 (285:31932) */
+.mainBannerContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  position: relative;
+  width: 100%;
+  max-width: 1280px;
+  height: 628px;
+}
+
+/* 메인 배너 카드 (285:31933, 285:31934) - 628x628px */
+.mainBannerCard {
+  display: flex;
+  flex-direction: column;
+  width: 628px;
+  height: 628px;
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+}
+
+.mainBannerImage {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.mainBannerImageBg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.mainBannerGradient {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 29.14%, rgba(0, 0, 0, 0.9) 100%);
+  z-index: 1;
+}
+
+.mainBannerBookmarkBadge {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  background-color: rgba(0, 0, 0, 0.4);
+  border-radius: 8px;
+  padding: 4px 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 53px;
+  height: 32px;
+  z-index: 2;
+}
+
+.mainBannerBookmarkCount {
+  color: #ffffff;
+  font-family: 'Pretendard Variable', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.mainBannerContent {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 580px;
+  z-index: 2;
+}
+
+.mainBannerCardTitle {
+  color: #ffffff;
+  font-family: 'Pretendard', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 32px;
+}
+
+.mainBannerCardDescription {
+  color: #ffffff;
+  font-family: 'Pretendard Variable', sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 24px;
+}
+
+.mainBannerPrice {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: 4px;
+  width: 100%;
+}
+
+.mainBannerPriceAmount {
+  color: #ffffff;
+  font-family: 'Pretendard', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 32px;
+}
+
+.mainBannerPriceUnit {
+  color: #ffffff;
+  font-family: 'Pretendard', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 32px;
+}
+
+/* 우측 페이지 버튼 (285:31935) - 40x40px */
+.rightPageButton {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 100px;
+  background-color: #ffffff;
+  border: none;
+  cursor: pointer;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.rightPageButton:hover {
+  background-color: #f5f5f5;
+}
+
+/* 광고 배너 영역 (285:31937) - 1280x240px */
+.adBanner {
+  width: 100%;
+  max-width: 1280px;
+  height: 240px;
+  border-radius: 16px;
+  background: linear-gradient(to right, rgba(204, 203, 180, 0) 63.44%, rgba(204, 203, 180, 1) 100%);
+  background-color: #d9d9d9;
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 0 40px;
+  overflow: hidden;
+}
+
+/* 배너 컨텐츠 영역 (285:31941) */
+.adBannerContent {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-end;
+  margin-left: auto;
+  z-index: 1;
+  width: 618px;
+}
+
+/* 배지 컨테이너 (285:31942) */
+.adBannerBadges {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  width: 390px;
+}
+
+/* 배지 (285:31943, 285:31945) */
+.adBannerBadge {
+  background-color: #abaa8c;
+  border-radius: 8px;
+  padding: 8px 16px;
+  color: #ffffff;
+  font-family: 'Pretendard Variable', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 23.4px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.adBannerBadge:first-child {
+  width: 174px;
+}
+
+.adBannerBadge:last-child {
+  width: 200px;
+}
+
+/* 배너 제목 텍스트 (285:31947) */
+.adBannerTitle {
+  color: #000000;
+  font-family: 'Pretendard Variable', sans-serif;
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 44.2px;
+  text-align: right;
+  white-space: pre-line;
+  margin: 0;
+  width: 618px;
+}
+
+/* 숙소 배너 영역 (285:31948) - 1280x1196px */
+.accommodationBanner {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  max-width: 1280px;
+}
+
+/* 섹션 제목 (285:31949) */
+.sectionTitle {
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 36px;
+  color: #000000;
+  margin: 0;
+  width: 100%;
+}
+
+/* 탭 영역 (285:31950) - 262x40px */
+.tabContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  background-color: #ffffff;
+  padding: 4px;
+  border-radius: 8px;
+  width: 262px;
+  height: 40px;
+  box-sizing: border-box;
+}
+
+.tab {
+  padding: 0;
+  border-radius: 8px;
+  border: none;
+  background-color: transparent;
+  color: #525252;
+  font-family: 'Pretendard Variable', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 123px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tabActive {
+  background-color: #000000;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* 검색/필터 영역 (285:31953) - 1280x48px */
+.searchFilterContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: center;
+  width: 100%;
+  max-width: 1280px;
+}
+
+.datePickerContainer {
+  display: flex;
+  flex-direction: row;
+}
+
+/* 날짜 선택기 (285:31956) - 289x48px */
+.datePicker {
+  width: 289px;
+  height: 48px;
+  background-color: #f2f2f2;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 16px;
+  gap: 8px;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.datePlaceholder {
+  color: #777777;
+  font-family: 'Pretendard Variable', sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.searchBarContainer {
+  flex: 1;
+  min-width: 0;
+}
+
+/* 검색바 (285:31955) - 640x48px */
+.searchBar {
+  width: 100%;
+  height: 48px;
+  background-color: #f2f2f2;
+  border-radius: 8px;
+  border: none;
+  padding: 12px 16px;
+  font-family: 'Pretendard Variable', sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  color: #000000;
+  box-sizing: border-box;
+  max-width: 640px;
+}
+
+.searchBar::placeholder {
+  color: #919191;
+}
+
+/* 검색 버튼 (285:31957) - 64x48px */
+.searchButton {
+  width: 64px;
+  height: 48px;
+  background-color: #000000;
+  border-radius: 8px;
+  border: none;
+  color: #ffffff;
+  font-family: 'Pretendard Variable', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 24px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  flex-shrink: 0;
+}
+
+.searchButton:hover {
+  background-color: #333333;
+}
+
+/* 숙박권 판매하기 버튼 (285:31958) - 178x48px */
+.sellButton {
+  width: 178px;
+  height: 48px;
+  background-color: #2974e5;
+  border-radius: 8px;
+  border: none;
+  color: #ffffff;
+  font-family: 'Pretendard Variable', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 24px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  flex-shrink: 0;
+}
+
+.sellButton:hover {
+  background-color: #1e5bb8;
+}
+
+/* 카테고리 필터 영역 (285:31960) */
+.categoryFilterContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  flex-wrap: wrap;
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 16px;
+  width: 100%;
+  max-width: 1280px;
+}
+
+/* 카테고리 아이템 (285:31961, 285:31964, 285:31967, 285:31970, 285:31973, 285:31976, 285:31979, 285:31982, 285:31985) - 100x72px */
+.categoryItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100px;
+  height: 72px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.categoryItem:hover {
+  transform: scale(1.05);
+}
+
+.categoryIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  object-fit: contain;
+}
+
+.categoryLabel {
+  color: #333333;
+  font-family: 'Pretendard Variable', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  text-align: center;
+}
+
+/* 숙박권 카드 그리드 영역 (285:31959) */
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  width: 100%;
+  max-width: 1280px;
+}
+
+/* 개별 숙박권 카드 (285:31989~285:31996) - 296x416px */
+.accommodationCard {
+  display: flex;
+  flex-direction: column;
+  width: 296px;
+  height: 416px;
+  border-radius: 16px;
+  overflow: hidden;
+  background-color: #ffffff;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.accommodationCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.cardImage {
+  width: 100%;
+  height: 296px;
+  background-color: #f2f2f2;
+  position: relative;
+  border-radius: 16px 16px 0 0;
+  overflow: hidden;
+}
+
+.cardImageImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cardBookmarkBadge {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background-color: rgba(0, 0, 0, 0.4);
+  border-radius: 8px;
+  padding: 4px 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 53px;
+  height: 32px;
+}
+
+.cardBookmarkCount {
+  color: #ffffff;
+  font-family: 'Pretendard Variable', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.cardContent {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  height: 120px;
+  box-sizing: border-box;
+}
+
+.cardTitle {
+  color: #333333;
+  font-family: 'Pretendard Variable', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+}
+
+.cardDescription {
+  color: #5f5f5f;
+  font-family: 'Pretendard Variable', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+}
+
+.cardTags {
+  color: #2974e5;
+  font-family: 'Pretendard Variable', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+}
+
+.cardFooter {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+}
+
+.cardProfile {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.profileImage {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profileName {
+  color: #5f5f5f;
+  font-family: 'Pretendard Variable', sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 20px;
+}
+
+.cardPrice {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.cardPriceAmount {
+  color: #1c1c1c;
+  font-family: 'Pretendard Variable', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+}
+
+.cardPriceUnit {
+  color: #1c1c1c;
+  font-family: 'Pretendard Variable', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+}

@@ -1,0 +1,52 @@
+ 아래의 조건을 모두 적용하여, 아래의 요구사항을 모두 구현할 것.
+구현 결과를 체크리스트로 반환할 것.
+
+==============================================
+
+조건-커서룰) 아래의 커서룰을 적용하여 작업하고, 이 작업이 끝나면 해당 rules 적용 결과를 체크리스트로 반환할 것.
+            - @01-common.mdc
+            - @04-func.mdc
+
+==============================================
+
+조건-파일경로) 참고할 API 문서경로: https://main-practice.codebootcamp.co.kr/graphql
+조건-파일경로) 구현될 HOOK 파일경로: src/components/boards-detail/detail/hook.ts
+조건-파일경로) 구현될 GQL 파일경로: src/components/boards-detail/detail/queries.ts
+조건-파일경로) (참고) 공통 GQL 타입: src/commons/graphql/graphql.ts (codegen으로 생성된 타입 사용)
+
+==============================================
+
+핵심요구사항) 게시글 상세 조회 기능을 step-by-step 으로 구현하고, 적용 결과를 체크리스트로 반환할 것.
+
+        1) 라이브러리조건
+            - API: @apollo/client의 useQuery 훅을 사용할 것.
+            - 타입: @/commons/graphql/graphql에서 codegen으로 생성된 타입을 사용할 것.
+            - 라우팅: next/navigation의 useRouter, useParams 훅을 사용할 것.
+
+        2) 기능 요구사항
+            - 1. (GQL) src/components/boards-detail/detail/queries.ts 파일에 fetchBoard 쿼리를 정의할 것.
+                - Query: fetchBoard
+                - Variables: boardId (ID!)
+                - 응답데이터: _id, writer, title, contents, youtubeUrl, likeCount, dislikeCount, images, boardAddress, user, createdAt, updatedAt, deletedAt
+                - gql template literal 사용 (import { gql } from "@apollo/client")
+
+            - 2. (HOOK) src/components/boards-detail/detail/hook.ts 파일에 커스텀 훅을 만들 것.
+                - "use client" 지시어 추가
+                - useQuery를 사용하여 fetchBoard 쿼리 요청
+                - codegen으로 생성된 FetchBoardDocument 타입 사용
+                - useParams를 사용하여 boardId 가져오기
+                - boardId가 없을 경우 쿼리 실행을 skip하도록 처리
+                - loading 상태 반환
+                - board 데이터 반환
+                - 수정하기 페이지로 이동하는 함수 반환 (useRouter의 push 메서드 사용)
+
+        3) 에러 처리 요구사항
+            - 로딩 중 상태 표시
+            - 데이터가 없을 경우 처리
+            - 에러 발생 시 처리
+
+        4) 최적화 요구사항
+            - 동적 import 사용 (react-player는 ssr: false 옵션)
+            - 불필요한 리렌더링 방지
+
+

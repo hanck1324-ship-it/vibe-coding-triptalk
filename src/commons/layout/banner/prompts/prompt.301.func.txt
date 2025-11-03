@@ -1,0 +1,124 @@
+아래의 조건을 모두 적용하여, 아래의 요구사항을 모두 구현할 것.
+구현 결과를 체크리스트로 반환할 것.
+
+==============================================
+
+조건-커서룰) 아래의 커서룰을 적용하여 작업하고, 이 작업이 끝나면 해당 rules 적용 결과를 체크리스트로 반환할 것.
+            - @01-common.mdc
+            - @04-func.mdc
+
+==============================================
+
+조건-파일경로) 구현될 TSX 파일경로: src/commons/layout/banner/index.tsx
+조건-파일경로) 구현될 HOOK 파일경로: src/commons/layout/banner/hook.ts (커스텀 훅 생성)
+
+==============================================
+
+핵심요구사항) 배너의 표시/숨김 기능을 step-by-step 으로 구현하고, 적용 결과를 체크리스트로 반환할 것.
+
+        1) 라이브러리 조건
+            - React: useState 훅 사용하여 상태 관리
+            - 로컬스토리지: localStorage를 사용하여 배너 닫힘 상태 저장
+            - Next.js: "use client" 지시어 필수 (클라이언트 컴포넌트)
+
+        2) 기능 요구사항
+
+            - 1. (HOOK) hook.ts 파일 생성
+                - "use client" 지시어 추가
+                - useBanner 커스텀 훅 export
+                
+                - 상태 관리:
+                    - isVisible: 배너 표시 여부 (boolean)
+                    - 초기값: localStorage에서 "bannerClosed" 키 확인
+                    - localStorage에 값이 없으면 true (표시)
+                    - localStorage에 "true"가 있으면 false (숨김)
+                
+                - 함수 구현:
+                    - handleClose: 배너 닫기 함수
+                        - isVisible을 false로 설정
+                        - localStorage.setItem("bannerClosed", "true") 저장
+                        - 사용자가 배너를 닫으면 다음 방문 시에도 표시하지 않음
+                
+                - 반환값:
+                    - { isVisible, handleClose }
+
+            - 2. (TSX) index.tsx에서 hook 사용
+                - useBanner 훅을 import하여 사용
+                - isVisible이 false이면 null 반환 (배너 숨김)
+                - closeButton에 handleClose 함수 연결
+
+        3) localStorage 사용 주의사항
+            - useEffect 또는 조건부 체크로 SSR 오류 방지
+            - typeof window !== "undefined" 체크
+            - localStorage 접근 전 항상 브라우저 환경 확인
+
+        4) 추가 기능 (선택사항)
+            - 배너 재표시 기능:
+                - 일정 시간 후 배너 자동 재표시
+                - 또는 특정 이벤트 시 localStorage 초기화
+            
+            - 애니메이션 효과:
+                - 배너가 사라질 때 fadeOut 애니메이션
+                - CSS transition 또는 애니메이션 활용
+
+        5) 구현 예시 구조 (hook.ts)
+            ```
+            "use client";
+            
+            import { useState, useEffect } from "react";
+            
+            export const useBanner = () => {
+              const [isVisible, setIsVisible] = useState(true);
+              
+              useEffect(() => {
+                // localStorage 확인
+                const bannerClosed = localStorage.getItem("bannerClosed");
+                if (bannerClosed === "true") {
+                  setIsVisible(false);
+                }
+              }, []);
+              
+              const handleClose = () => {
+                setIsVisible(false);
+                localStorage.setItem("bannerClosed", "true");
+              };
+              
+              return { isVisible, handleClose };
+            };
+            ```
+
+        6) 구현 예시 구조 (index.tsx)
+            ```
+            "use client";
+            
+            import { useBanner } from "./hook";
+            import styles from "./styles.module.css";
+            
+            export default function Banner() {
+              const { isVisible, handleClose } = useBanner();
+              
+              if (!isVisible) return null;
+              
+              return (
+                <div className={styles.wrapper}>
+                  <div className={styles.content}>
+                    <p className={styles.message}>배너 메시지</p>
+                    <button 
+                      className={styles.closeButton}
+                      onClick={handleClose}
+                    >
+                      X
+                    </button>
+                  </div>
+                </div>
+              );
+            }
+            ```
+
+        7) 테스트 체크리스트
+            - [ ] 페이지 로드 시 배너가 표시되는가?
+            - [ ] 닫기 버튼 클릭 시 배너가 사라지는가?
+            - [ ] 페이지 새로고침 후에도 배너가 숨겨진 상태인가?
+            - [ ] localStorage에 "bannerClosed" 값이 저장되는가?
+            - [ ] 브라우저 개발자 도구에서 localStorage 확인 가능한가?
+
