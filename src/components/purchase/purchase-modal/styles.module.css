@@ -1,0 +1,12 @@
+/* 구매 모달 스타일 */
+
+.modalContent {
+  padding: 20px 0;
+}
+
+.modalContent p {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+

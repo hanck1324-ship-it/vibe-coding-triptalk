@@ -1,0 +1,13 @@
+/* 숙박권 판매 등록 스타일 */
+
+.wrapper {
+  width: 100%;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+

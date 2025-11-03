@@ -1,8 +1,5 @@
-"use client";
-
-import PurchaseComponent from "@/components/purchase";
+import PurchaseList from "@/components/purchase/list";
 
 export default function PurchasePage() {
-  return <PurchaseComponent />;
+  return <PurchaseList />;
 }
-
