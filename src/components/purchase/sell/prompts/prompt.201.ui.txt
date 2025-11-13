@@ -10,7 +10,7 @@
 
 ==============================================
 
-조건-파일경로) 구현될 TSX 파일경로: src/components/purchase/sell/index.tsx
+조건-파일경로) 구현될 TSX 파일경로: src/components/purchase/sell/index.tsxhttp://localhost:3000/boadrs
 조건-파일경로) 구현될 CSS 파일경로: src/components/purchase/sell/styles.module.css
 
 ==============================================

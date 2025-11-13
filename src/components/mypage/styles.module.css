@@ -1,4 +1,4 @@
-.wrapper {
+.mypageContainer {
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -167,9 +167,89 @@
   background-color: #096dd9;
 }
 
+/* 프로필 카드 */
+.profileCard {
+  display: flex;
+  gap: 32px;
+  padding: 32px;
+  background-color: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.profileImageWrapper {
+  flex-shrink: 0;
+}
+
+.profileImage {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #e8e8e8;
+}
+
+.profileInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+}
+
+.profileName {
+  font-size: 28px;
+  font-weight: 700;
+  color: #262626;
+  margin: 0;
+}
+
+.profileEmail {
+  font-size: 16px;
+  color: #8c8c8c;
+  margin: 0;
+}
+
+.profilePoint {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 8px;
+  color: white;
+}
+
+.pointLabel {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.pointValue {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.profileMeta {
+  font-size: 14px;
+  color: #8c8c8c;
+}
+
+.loading,
+.error {
+  padding: 48px;
+  text-align: center;
+  font-size: 18px;
+  color: #8c8c8c;
+}
+
+.error {
+  color: #ff4d4f;
+}
+
 /* 반응형 */
 @media (max-width: 768px) {
-  .wrapper {
+  .mypageContainer {
     padding: 16px;
   }
 
@@ -184,6 +264,17 @@
 
   .chargeButtons {
     grid-template-columns: 1fr;
+  }
+
+  .profileCard {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 24px;
+  }
+
+  .profileInfo {
+    align-items: center;
   }
 }
 

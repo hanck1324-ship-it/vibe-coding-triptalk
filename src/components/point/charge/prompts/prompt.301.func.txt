@@ -1,0 +1,148 @@
+아래의 조건을 모두 적용하여, 아래의 요구사항을 모두 구현할 것.
+구현 결과를 체크리스트로 반환할 것.
+
+==============================================
+
+조건-커서룰) 아래의 커서룰을 적용하여 작업하고, 이 작업이 끝나면 해당 rules 적용 결과를 체크리스트로 반환할 것.
+            - @01-common.mdc
+            - @04-func.mdc
+
+==============================================
+
+조건-파일경로) 구현될 HOOK 파일경로: src/components/point/charge/hook.ts
+
+==============================================
+
+조건-피그마) 참고용 채널: fcanj1fx (UI 디자인 참고용, 기능 구현에는 직접 사용 안 함)
+
+==============================================
+
+핵심요구사항) 포인트 충전 기능을 step-by-step 으로 구현할 것.
+
+        1) 라이브러리조건
+            - 상태 관리: React의 useState 훅
+            - 라우팅: next/navigation의 useRouter 훅
+            - API 호출: GraphQL (Apollo Client)
+            - UI 컴포넌트: Ant Design (필요시 사용)
+              * Select: 충전 금액 선택 드롭다운 ⭐핵심⭐
+              * Modal: 결제 확인, 알림
+              * Message: 성공/실패 토스트 메시지
+
+        2) 기능 요구사항
+
+            - 현재 포인트 조회
+              * GraphQL query로 사용자 포인트 조회
+              * 천 단위 구분 쉼표 포맷팅 (예: 10,000 P)
+              * 로딩 상태 관리
+
+            - 충전 금액 선택 (셀렉트 박스) ⭐핵심⭐
+              * Ant Design Select 컴포넌트 사용
+              * useState로 선택된 금액 관리
+              * 셀렉트 박스 onChange 이벤트로 상태 업데이트
+              * 옵션 값 (숫자 타입):
+                - 100, 500, 2000, 5000, 10000, 50000
+              * 초기값: null 또는 undefined (선택 전)
+
+            - 버튼 활성화/비활성화
+              * 금액 선택 안됨: 충전하기 버튼 비활성화
+              * 금액 선택됨: 충전하기 버튼 활성화
+
+            - 충전 기능 처리
+              * 충전하기 버튼 클릭 시:
+                1. 선택된 금액 확인
+                2. 결제 확인 Modal 표시
+                3. 사용자 확인 시 결제 API 호출
+                   - 실제 결제 연동 전: Mock 데이터로 처리
+                   - 향후: 아임포트(iamport) 또는 토스페이먼츠 연동
+                4. 성공 시:
+                   - 포인트 충전 GraphQL mutation 호출
+                   - 성공 메시지 표시
+                   - 현재 포인트 갱신
+                5. 실패 시:
+                   - 에러 메시지 표시
+                   - 에러 로깅
+
+            - 취소 기능
+              * 취소 버튼 클릭 시 이전 페이지로 이동
+              * router.back() 또는 router.push('/mypage')
+
+            - 유효성 검증
+              * 충전 금액이 선택되지 않은 경우: alert 또는 message
+              * 최소 충전 금액 검증 (예: 1,000원 이상)
+              * 최대 충전 금액 검증 (예: 1,000,000원 이하)
+
+            - 에러 처리
+              * 네트워크 에러: alert 또는 message
+              * API 에러: 에러 메시지 표시
+              * 결제 실패: 사용자에게 알림
+
+        3) GraphQL API 정의 (예시)
+
+            - 포인트 조회 Query:
+              ```graphql
+              query fetchUserPoint {
+                fetchUserLoggedIn {
+                  userPoint {
+                    amount
+                  }
+                }
+              }
+              ```
+
+            - 포인트 충전 Mutation (결제 연동 후):
+              ```graphql
+              mutation createPointTransactionOfLoading($impUid: ID!) {
+                createPointTransactionOfLoading(impUid: $impUid) {
+                  _id
+                  amount
+                  balance
+                  status
+                }
+              }
+              ```
+
+            - Mock 데이터 (결제 연동 전):
+              * 충전 API 호출 대신 임시로 alert 표시
+              * 콘솔 로그: "충전 금액: {amount}원"
+
+        4) 결제 연동 참고사항
+
+            - 아임포트(iamport) 연동 시:
+              * 스크립트 로드: https://cdn.iamport.kr/v1/iamport.js
+              * IMP 객체 초기화
+              * IMP.request_pay() 호출
+              * 콜백에서 imp_uid 받아서 백엔드로 전송
+
+            - 토스페이먼츠 연동 시:
+              * SDK 설치 및 초기화
+              * 결제 요청 API 호출
+              * 승인 결과 처리
+
+        5) 상태 관리 (상세)
+
+            - useState 상태 목록:
+              * selectedAmount: number | null - 선택된 충전 금액
+              * currentPoint: number - 현재 보유 포인트
+              * loading: boolean - 로딩 상태
+              * isProcessing: boolean - 충전 처리 중 상태
+
+            - useEffect:
+              * 컴포넌트 마운트 시 현재 포인트 조회
+
+            - 이벤트 핸들러:
+              * handleSelectAmount: 셀렉트 박스 onChange 핸들러 (금액 선택)
+              * handleCharge: 충전하기 버튼 클릭
+              * handleCancel: 취소 버튼 클릭
+
+        6) Ant Design Select 구현 방법
+
+            - Select 컴포넌트 기본 사용:
+              * 옵션 데이터는 배열로 관리 (예: [100, 500, 2000, 5000, 10000, 50000])
+              * map() 함수로 옵션 렌더링
+              * value는 숫자 타입으로 관리
+              * 표시 텍스트는 천 단위 쉼표 포맷팅 후 "원" 추가
+
+            - 이벤트 핸들러:
+              * onChange에서 선택된 값(숫자)을 상태에 저장
+              * 스타일은 prompt.201 참조하여 CSS Modules 또는 className으로 적용
+

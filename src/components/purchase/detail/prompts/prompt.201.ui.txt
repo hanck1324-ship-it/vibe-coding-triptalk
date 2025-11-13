@@ -15,18 +15,75 @@
 
 ==============================================
 
+조건-피그마) 최대한 피그마 디자인을 구현할 것
+           필요한 이미지는 src/assets 폴더에 있는 이미지를 활용할 것
+
+==============================================
+
 핵심요구사항) 숙박권 상세 페이지 UI를 step-by-step 으로 구현하고, 적용 결과를 체크리스트로 반환할 것.
 
         1) UI 구조 요구사항
-            - 이미지 갤러리 (메인 이미지 + 썸네일)
-            - 숙박권 제목, 설명
-            - 가격 정보
-            - 호스트 정보
-            - 편의시설 목록
-            - 후기 섹션
-            - 구매하기 버튼
-            
-        2) 스타일링 요구사항
-            - CSS Modules 사용
-            - global.css의 색상/타이포그래피 토큰 활용
 
+            A) 로딩 상태
+               - 중앙 정렬된 로딩 메시지
+               - 텍스트: "숙박권 정보를 불러오는 중입니다..."
+               - className: loading
+
+            B) 메인 컨테이너
+               - 최대 너비 제한 (데스크톱 기준)
+               - 중앙 정렬 레이아웃
+               - className: wrapper, container
+
+            C) 페이지 제목
+               - h1 태그 사용
+               - 텍스트: "숙박권 상세"
+
+            D) 숙박권 정보 카드
+               - 수직 정렬 (flexbox column)
+               - 카드 형태 (border, border-radius)
+               - className: accommodationDetail
+
+               구성 요소:
+               1) 숙박권 이미지
+                  - 반응형 이미지 (최대 너비 제한)
+                  - 둥근 모서리
+                  - object-fit: cover
+                  - className: accommodationImage
+
+               2) 숙박권 제목
+                  - h2 태그
+                  - 중앙 정렬
+                  - className: accommodationTitle
+
+               3) 가격 표시
+                  - 강조색 (파란색 계열)
+                  - 천단위 구분 쉼표 표시
+                  - "원" 단위 표시
+                  - className: accommodationPrice
+
+            E) 에러 메시지 (조건부)
+               - 경고 스타일 (빨간색 계열)
+               - 왼쪽 강조 선 (border-left)
+               - className: errorMessage
+
+            F) 구매하기 버튼
+               - 전체 너비 또는 중앙 정렬
+               - 파란색 배경 (#2974e5)
+               - 흰색 텍스트
+               - hover/active 상태 스타일
+               - className: purchaseButton
+
+        2) 스타일링 요구사항
+            - CSS Modules 사용 (styles.module.css)
+            - global.css의 색상/타이포그래피 토큰 활용
+            - 반응형 디자인 적용 (모바일/태블릿/데스크톱)
+
+        3) 조건부 렌더링
+            - loading이 true일 때: loading 메시지만 표시
+            - accommodation이 있을 때만: accommodationDetail 영역 표시
+            - errorMessage가 있을 때만: 에러 메시지 표시
+
+        4) 데이터 바인딩
+            - accommodation.image → 이미지 src
+            - accommodation.title → 이미지 alt, 제목
+            - accommodation.price → 가격 (toLocaleString() 사용)

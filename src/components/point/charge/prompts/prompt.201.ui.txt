@@ -1,0 +1,177 @@
+아래의 조건을 모두 적용하여, 아래의 요구사항을 모두 구현할 것.
+구현 결과를 체크리스트로 반환할 것.
+
+==============================================
+
+조건-커서룰) 아래의 커서룰을 적용하여 작업하고, 이 작업이 끝나면 해당 rules 적용 결과를 체크리스트로 반환할 것.
+            - @01-common.mdc
+            - @02-wireframe.mdc
+            - @03-ui.mdc
+
+==============================================
+
+조건-파일경로) 구현될 TSX 파일경로: src/components/point/charge/index.tsx
+조건-파일경로) 구현될 CSS 파일경로: src/components/point/charge/styles.m?odule.css
+
+==============================================
+
+핵심요구사항) 포인트 충전 페이지의 UI 스타일을 step-by-step 으로 구현할 것
+            (wireframe에서 정의한 구조를 유지하며, 시각적 스타일만 적용)
+
+        1) 색상 (Colors)
+
+            - 배경색
+              * 페이지 기본 배경: #ffffff
+              * 현재 포인트 표시 영역 배경: #f9f9f9
+              * 금액 버튼 기본 배경: #ffffff
+              * 금액 버튼 선택 시 배경: #e8f2ff
+              * 금액 버튼 hover 배경: #f5f9ff
+              * 취소 버튼 배경: #ffffff
+              * 취소 버튼 hover 배경: #f9f9f9
+              * 충전하기 버튼 활성화 배경: #2974e5
+              * 충전하기 버튼 hover 배경: #1e5bb8
+              * 충전하기 버튼 비활성화 배경: #c7c7c7
+
+            - 텍스트 색상
+              * 제목: #000000
+              * 라벨 (현재 포인트): #666666
+              * 포인트 값: #2974e5
+              * 금액 버튼 기본: #000000
+              * 금액 버튼 선택 시: #2974e5
+              * 취소 버튼: #000000
+              * 충전하기 버튼 활성화: #ffffff
+              * 충전하기 버튼 비활성화: #e4e4e4
+
+            - 테두리 색상
+              * 금액 버튼 기본: #d4d3d3
+              * 금액 버튼 선택 시: #2974e5
+              * 금액 버튼 hover: #2974e5
+              * 취소 버튼: #000000
+              * 구분선: #e4e4e4
+
+        2) 크기 (Sizes)
+
+            - 컨테이너
+              * 최대 너비: 800px
+              * 중앙 정렬 (margin: 0 auto)
+
+            - 폰트 크기
+              * 페이지 제목: 28px
+              * 충전 금액 선택 라벨: 18px
+              * 현재 포인트 라벨: 14px
+              * 포인트 값: 32px
+              * 금액 버튼: 18px
+              * 취소/충전하기 버튼: 16px
+
+            - 요소 높이
+              * 금액 버튼: 60px
+
+        3) 간격 (Spacing)
+
+            - padding
+              * 전체 컨테이너: 40px
+              * 현재 포인트 표시 영역: 24px
+              * 취소 버튼: 12px 32px
+              * 충전하기 버튼: 12px 32px
+
+            - margin
+              * 페이지 제목 하단: 24px
+              * 충전 금액 선택 라벨 하단: 16px
+              * 구분선 상하: 24px 0
+              * 버튼 영역 상단: 32px
+
+            - gap
+              * 금액 버튼 그리드: 12px
+              * 취소/충전하기 버튼 간격: 12px
+
+        4) 테두리 (Borders)
+
+            - border 두께
+              * 금액 버튼 기본: 1px solid
+              * 금액 버튼 선택 시: 2px solid
+              * 취소 버튼: 1px solid
+              * 구분선 높이: 1px
+
+            - border-radius
+              * 현재 포인트 표시 영역: 12px
+              * 금액 버튼: 8px
+              * 취소 버튼: 8px
+              * 충전하기 버튼: 8px
+
+        5) 타이포그래피 (Typography)
+
+            - font-weight
+              * 페이지 제목: 700
+              * 충전 금액 선택 라벨: 600
+              * 현재 포인트 라벨: 400
+              * 포인트 값: 700
+              * 금액 버튼: 600
+              * 취소/충전하기 버튼: 600
+
+        6) 상태별 스타일 (State Styles)
+
+            - 금액 버튼
+              * 기본: border #d4d3d3, background #ffffff
+              * 선택: border #2974e5 2px, background #e8f2ff, color #2974e5
+              * hover: border #2974e5, background #f5f9ff
+              * cursor: pointer
+
+            - 취소 버튼
+              * 기본: background #ffffff, border #000000
+              * hover: background #f9f9f9
+              * cursor: pointer
+
+            - 충전하기 버튼 (비활성화)
+              * background: #c7c7c7
+              * color: #e4e4e4
+              * cursor: not-allowed
+              * 테두리 없음
+
+            - 충전하기 버튼 (활성화)
+              * 기본: background #2974e5, color #ffffff
+              * hover: background #1e5bb8
+              * cursor: pointer
+              * 테두리 없음
+
+        7) 구분선 스타일
+
+            - width: 100%
+            - height: 1px
+            - background: #e4e4e4
+            - margin: 24px 0
+
+        8) 기타 시각적 요소
+
+            - cursor 종류
+              * 금액 버튼: pointer
+              * 취소 버튼: pointer
+              * 충전하기 버튼 활성화: pointer
+              * 충전하기 버튼 비활성화: not-allowed
+
+        9) 스타일링 요구사항 (상세)
+            - CSS Modules 사용 (styles.module.css)
+            - wireframe에서 정의한 레이아웃 구조 유지
+            - 구조 변경 금지 (flex, grid, column 수 등)
+
+        10) 라이브러리 사용 (필요시)
+            - Ant Design 컴포넌트 사용 가능
+              * Modal: 결제 확인, 알림 등
+              * Message: 성공/실패 메시지
+
+        11) 주의사항
+            ⚠️ UI 단계에서 변경하지 말 것:
+            - HTML 구조
+            - 레이아웃 방식 (flex, grid)
+            - 요소 배치 방향 (row, column)
+            - 정렬 방식 (justify-content, align-items)
+            - 반응형 구조 변경 (열 수 변경)
+            - 컴포넌트 타입 (버튼 ↔ 드롭다운)
+
+            ✅ UI 단계에서 반드시 포함할 것:
+            - 모든 색상 값 (배경, 텍스트, 테두리)
+            - 모든 크기 값 (width, height, font-size)
+            - 모든 간격 값 (padding, margin, gap 수치)
+            - 테두리 스타일 (border, border-radius)
+            - 타이포그래피 (font-size, font-weight)
+            - 상태별 스타일 (hover, focus, disabled, active)
+

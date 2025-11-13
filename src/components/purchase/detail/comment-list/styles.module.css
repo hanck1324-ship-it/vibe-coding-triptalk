@@ -1,0 +1,324 @@
+/* 컨테이너 */
+.container {
+  width: 100%;
+  margin-top: 40px;
+}
+
+/* 로딩 & 빈 상태 */
+.loading,
+.emptyState {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.loading {
+  color: #999999;
+  font-size: 16px;
+}
+
+.emptyMessage {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 8px;
+}
+
+.emptySubMessage {
+  font-size: 14px;
+  color: #999999;
+}
+
+/* 리뷰 통계 영역 */
+.statsSection {
+  background: #f9f9f9;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.averageRating {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.ratingNumber {
+  font-size: 48px;
+  font-weight: 700;
+  color: #2974e5;
+}
+
+.ratingStars {
+  font-size: 24px;
+}
+
+.totalCount {
+  font-size: 16px;
+  font-weight: 600;
+  color: #666666;
+}
+
+/* 정렬 옵션 영역 */
+.sortSection {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.sortButton {
+  padding: 8px 16px;
+  border: 1px solid #e4e4e4;
+  border-radius: 20px;
+  background: #ffffff;
+  color: #666666;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.sortButton:hover {
+  border-color: #2974e5;
+  color: #2974e5;
+}
+
+.sortButtonActive {
+  background: #2974e5;
+  border-color: #2974e5;
+  color: #ffffff;
+}
+
+.sortButtonActive:hover {
+  background: #1e5bb8;
+  border-color: #1e5bb8;
+}
+
+/* 리뷰 목록 */
+.reviewList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* 리뷰 아이템 */
+.reviewItem {
+  background: #ffffff;
+  border: 1px solid #e4e4e4;
+  border-radius: 12px;
+  padding: 20px;
+  transition: box-shadow 0.2s;
+}
+
+.reviewItem:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* 작성자 정보 */
+.authorInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.authorProfile {
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.authorDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.authorName {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333333;
+}
+
+.reviewDate {
+  font-size: 14px;
+  color: #999999;
+}
+
+/* 평점 */
+.ratingSection {
+  margin-bottom: 12px;
+}
+
+.reviewRating {
+  font-size: 18px;
+}
+
+/* 리뷰 내용 */
+.contentSection {
+  margin-bottom: 16px;
+}
+
+.reviewContent {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #333333;
+  white-space: pre-line;
+  margin-bottom: 8px;
+}
+
+.moreButton {
+  color: #2974e5;
+  font-size: 14px;
+  font-weight: 600;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s;
+}
+
+.moreButton:hover {
+  color: #1e5bb8;
+  text-decoration: underline;
+}
+
+/* 이미지 갤러리 */
+.imageGallery {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.imageWrapper {
+  width: 100px;
+  height: 100px;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.imageWrapper:hover {
+  transform: scale(1.05);
+}
+
+.reviewImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 액션 버튼 */
+.actionSection {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #f2f2f2;
+}
+
+.likeButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: 1px solid #e4e4e4;
+  border-radius: 20px;
+  background: #ffffff;
+  color: #666666;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.likeButton:hover {
+  border-color: #2974e5;
+  color: #2974e5;
+}
+
+.likeButtonActive {
+  background: #e8f2ff;
+  border-color: #2974e5;
+  color: #2974e5;
+}
+
+.likeIcon {
+  font-size: 16px;
+}
+
+.likeCount {
+  font-weight: 600;
+}
+
+/* 페이지네이션 */
+.paginationSection {
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+}
+
+.pagination {
+  display: flex;
+  gap: 8px;
+}
+
+/* 반응형: 태블릿 */
+@media (max-width: 1024px) {
+  .statsSection {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .imageWrapper {
+    width: 80px;
+    height: 80px;
+  }
+}
+
+/* 반응형: 모바일 */
+@media (max-width: 768px) {
+  .container {
+    margin-top: 24px;
+  }
+
+  .statsSection {
+    padding: 20px;
+  }
+
+  .ratingNumber {
+    font-size: 36px;
+  }
+
+  .ratingStars {
+    font-size: 20px;
+  }
+
+  .reviewItem {
+    padding: 16px;
+  }
+
+  .sortSection {
+    flex-wrap: wrap;
+  }
+
+  .sortButton {
+    flex: 1;
+    min-width: 100px;
+  }
+
+  .imageWrapper {
+    width: 70px;
+    height: 70px;
+  }
+
+  .actionSection {
+    flex-wrap: wrap;
+  }
+}
+
+

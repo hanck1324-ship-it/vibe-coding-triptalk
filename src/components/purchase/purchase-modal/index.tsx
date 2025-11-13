@@ -12,13 +12,19 @@ interface IAccommodationData {
   image: string;
 }
 
+export interface IBuyerInfo {
+  name: string;
+  phone: string;
+  email?: string;
+}
+
 interface IPurchaseModalProps {
   isOpen: boolean;
   onClose: () => void;
   accommodationId: string;
   accommodationData: IAccommodationData;
   currentUserPoint?: number;
-  onConfirm?: () => void;
+  onConfirm?: (buyerInfo: IBuyerInfo) => void;
 }
 
 export default function PurchaseModal(props: IPurchaseModalProps) {
@@ -86,9 +92,13 @@ export default function PurchaseModal(props: IPurchaseModalProps) {
       return; // 프로세스 중단 (API 호출 안함, 페이지 이동 안함)
     }
 
-    // 3단계: 포인트 충분하면 - 부모 컴포넌트의 onConfirm 콜백 실행
+    // 3단계: 포인트 충분하면 - 부모 컴포넌트의 onConfirm 콜백 실행 (구매자 정보 전달)
     if (onConfirm) {
-      onConfirm();
+      onConfirm({
+        name: buyerName,
+        phone: buyerPhone,
+        email: buyerEmail || undefined,
+      });
     }
   };
 

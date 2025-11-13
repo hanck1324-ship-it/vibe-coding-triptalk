@@ -1,0 +1,143 @@
+아래의 조건을 모두 적용하여, 아래의 요구사항을 모두 구현할 것.
+
+==============================================
+
+조건-파일경로)
+  - Hook: src/components/purchase/list/hook.ts
+  - UI (참고): src/components/purchase/list/index.tsx (이미 구현됨)
+
+조건-기술스택)
+  - 상태관리: React useState, useEffect
+  - 라우팅: next/navigation (useRouter)
+  - 저장소: localStorage (북마크용)
+  - 타입: TypeScript
+
+==============================================
+
+핵심요구사항) 숙박권 구매 페이지 인터랙티브 기능 구현
+
+  목표: 사용자가 숙박권을 검색하고, 필터링하고, 선택할 수 있는 기능 구현
+
+==============================================
+
+구현 기능 목록)
+
+1. 탭 전환
+   - 상태: activeTab ('available' | 'closed')
+   - 초기값: 'available'
+   - 동작: 클릭 시 탭 전환
+
+2. 검색
+   - 상태: searchKeyword (string)
+   - 동작:
+     * 입력 시 실시간 상태 업데이트
+     * Enter 또는 버튼 클릭으로 검색 실행
+     * console.log로 검색 조건 출력
+
+3. 날짜 필터
+   - 상태: selectedDate (Date | null)
+   - 동작: DatePicker 값 변경 시 상태 업데이트
+
+4. 카테고리 필터
+   - 상태: selectedCategories (string[])
+   - 카테고리 목록:
+     ["1인 전용", "아파트", "호텔", "캠핑", "룸 서비스 가능",
+      "불멍", "반신욕&스파", "바다 위 숙소", "플랜테리어"]
+   - 동작:
+     * 클릭 시 선택/해제 토글
+     * 중복 선택 가능
+     * 배열에 추가/제거
+
+5. 북마크 (선택사항)
+   - 상태: bookmarkedIds (number[])
+   - 동작:
+     * 클릭 시 ID 추가/제거
+     * localStorage에 저장
+     * 페이지 로드 시 localStorage에서 복원
+
+6. 페이지 이동
+   - 카드 클릭 시 → /purchase/[id] 페이지로 이동
+   - 판매하기 버튼 → /purchase/sell 페이지로 이동
+
+==============================================
+
+함수 네이밍 가이드)
+
+  현재 스타일 유지:
+  - setActiveTab (setter)
+  - setSearchKeyword (setter)
+  - setSelectedDate (setter)
+  - handleCategoryToggle (handler)
+  - handleSearch (handler)
+  - handleReset (선택사항 - 모든 필터 초기화)
+
+  일관성 원칙:
+  - 단순 상태 변경: set{StateName}
+  - 로직 포함: handle{Action}
+
+==============================================
+
+반환값 구조)
+
+  usePurchase 훅이 반환할 값:
+
+  {
+    // 상태
+    activeTab,
+    searchKeyword,
+    selectedDate,
+    selectedCategories,
+    bookmarkedIds?, // 선택사항
+
+    // 액션
+    setActiveTab,
+    setSearchKeyword,
+    setSelectedDate,
+    handleCategoryToggle,
+    handleSearch,
+    handleReset?, // 선택사항
+    handleBookmarkToggle?, // 선택사항
+  }
+
+==============================================
+
+검증 체크리스트)
+
+## ✅ 기능 동작 검증
+
+### 1. 상태 관리
+- [ ] 모든 상태가 정의되었는가?
+- [ ] 초기값이 적절한가?
+- [ ] TypeScript 타입이 명시되었는가?
+
+### 2. 탭 전환
+- [ ] 탭 클릭 시 activeTab이 변경되는가?
+- [ ] UI에서 active 상태가 반영되는가?
+
+### 3. 검색 기능
+- [ ] 검색어 입력 시 상태가 업데이트되는가?
+- [ ] Enter 키로 검색이 실행되는가?
+- [ ] 검색 버튼 클릭으로 검색이 실행되는가?
+- [ ] 검색 조건이 console에 출력되는가?
+
+### 4. 날짜 필터
+- [ ] DatePicker 값 변경 시 상태가 업데이트되는가?
+
+### 5. 카테고리 필터
+- [ ] 카테고리 클릭 시 선택/해제가 토글되는가?
+- [ ] 여러 카테고리 동시 선택이 가능한가?
+- [ ] UI에서 선택 상태가 표시되는가?
+
+### 6. 북마크 (구현 시)
+- [ ] 북마크 클릭 시 ID가 추가/제거되는가?
+- [ ] localStorage에 저장되는가?
+- [ ] 페이지 새로고침 후에도 유지되는가?
+
+### 7. 페이지 이동
+- [ ] 카드 클릭 시 상세 페이지로 이동하는가?
+- [ ] 올바른 경로(/purchase/[id])로 이동하는가?
+
+### 8. 코드 품질
+- [ ] "use client" 지시어가 있는가?
+- [ ] 함수명이 일관성 있는가?
+- [ ] 불필요한 리렌더링이 없는가?

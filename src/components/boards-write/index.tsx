@@ -5,11 +5,12 @@ import styles from "./styles.module.css";
 import Image from "next/image";
 import { useBoardWrite } from "./hook";
 import { IBoardWriteProps } from "./types";
-import addImage from "@/assets/add_image.png";
+// import addImage from "@/assets/add_image.png"; // 삭제된 파일
 import { Modal } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
 import DaumPostcodeEmbed from "react-daum-postcode";
 
-const IMAGE_SRC = { addImage: { src: addImage, alt: "사진추가이미지" } };
+// const IMAGE_SRC = { addImage: { src: addImage, alt: "사진추가이미지" } };
 
 export default function BoardWritePage(props: IBoardWriteProps) {
   const { isEdit } = props;
@@ -22,7 +23,7 @@ export default function BoardWritePage(props: IBoardWriteProps) {
     contents, contentsError, onChangeContents,
     onClickSubmit, onClickUpdate,
     isActive, data,
-    zipcode, address, addressDetail, youtubeUrl,
+    zipcode, address, addressDetail, youtubeUrl, youtubeUrlError,
     onChangeAddressDetail, onChangeYoutubeUrl,
 
     isPostcodeModalOpen,      
@@ -55,33 +56,35 @@ export default function BoardWritePage(props: IBoardWriteProps) {
           </div>
         </div>
         <div className={styles.enroll_row_container}>
-          <div className={styles.flex_half}>
-            <div className={styles.enroll_form_title}>
-              <div>작성자</div>
-              <div className={styles.enroll_required_indicator}> *</div>
+          <div className={styles.enroll_row_flex}>
+            <div className={styles.flex_half}>
+              <div className={styles.enroll_form_title}>
+                <div>작성자</div>
+                <div className={styles.enroll_required_indicator}> *</div>
+              </div>
+              <input
+                readOnly={isEdit}
+                defaultValue={isEdit ? data?.fetchBoard?.writer : writer}
+                type="text"
+                placeholder="작성자 명을 입력해 주세요."
+                className={isEdit ? styles.disabled_input : styles.enroll_input}
+                onChange={onChangeWriter}
+              />
+              <div className={styles.error_msg}>{writerError}</div>
             </div>
-            <input
-              readOnly={isEdit}
-              defaultValue={isEdit ? data?.fetchBoard?.writer : writer}
-              type="text"
-              placeholder="작성자 명을 입력해 주세요."
-              className={isEdit ? styles.disabled_input : styles.enroll_input}
-              onChange={onChangeWriter}
-            />
-            <div className={styles.error_msg}>{writerError}</div>
-          </div>
-          <div className={styles.flex_half}>
-            <div className={styles.enroll_form_title}>
-              <div>비밀번호</div>
-              <div className={styles.enroll_required_indicator}> *</div>
+            <div className={styles.flex_half}>
+              <div className={styles.enroll_form_title}>
+                <div>비밀번호</div>
+                <div className={styles.enroll_required_indicator}> *</div>
+              </div>
+              <input
+                type="password"
+                placeholder="비밀번호를 입력해 주세요."
+                className={styles.enroll_input}
+                onChange={onChangePassword}
+              />
+              <div className={styles.error_msg}>{passwordError}</div>
             </div>
-            <input
-              type="password"
-              placeholder="비밀번호를 입력해 주세요."
-              className={styles.enroll_input}
-              onChange={onChangePassword}
-            />
-            <div className={styles.error_msg}>{passwordError}</div>
           </div>
 
           <div className={styles.enroll_border}></div>
@@ -151,21 +154,41 @@ export default function BoardWritePage(props: IBoardWriteProps) {
               <div>유튜브 링크</div>
             </div>
             <input
+              type="text"
               className={styles.enroll_input}
-              placeholder="링크를 입력해 주세요."
+              placeholder="https://www.youtube.com/watch?v=xxxxx 형식으로 입력해 주세요."
               value={youtubeUrl}
               onChange={onChangeYoutubeUrl}
             />
+            {youtubeUrlError && (
+              <div className={styles.error_msg}>{youtubeUrlError}</div>
+            )}
+            {youtubeUrl && !youtubeUrlError && (
+              <div style={{ marginTop: '8px', fontSize: '12px', color: '#4CAF50' }}>
+                ✓ 유튜브 URL이 입력되었습니다.
+              </div>
+            )}
           </div>
 
           <div className={styles.enroll_border}></div>
 
           <div className={styles.enroll_row_section}>
-            <div>사진 첨부</div>
+            <div className={styles.enroll_form_title}>
+              <div>사진 첨부</div>
+            </div>
             <div className={styles.picture_enroll_row}>
-              <Image src={IMAGE_SRC.addImage.src} alt="이미지추가" width={100} height={100} />
-              <Image src={IMAGE_SRC.addImage.src} alt="이미지추가" width={100} height={100} />
-              <Image src={IMAGE_SRC.addImage.src} alt="이미지추가" width={100} height={100} />
+              <div className={styles.image_upload_box}>
+                <PlusOutlined style={{ fontSize: '40px', color: '#999' }} />
+                <div className={styles.image_upload_text}>클릭해서 사진 업로드</div>
+              </div>
+              <div className={styles.image_upload_box}>
+                <PlusOutlined style={{ fontSize: '40px', color: '#999' }} />
+                <div className={styles.image_upload_text}>클릭해서 사진 업로드</div>
+              </div>
+              <div className={styles.image_upload_box}>
+                <PlusOutlined style={{ fontSize: '40px', color: '#999' }} />
+                <div className={styles.image_upload_text}>클릭해서 사진 업로드</div>
+              </div>
             </div>
           </div>
         </div>

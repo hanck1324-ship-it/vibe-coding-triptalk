@@ -1,9 +1,14 @@
 "use client";
 
-import Login from "@/components/auth/login-index";
+import { Suspense } from "react";
+import Auth from "@/components/auth";
 
 export default function LoginPage() {
-  return <Login />;
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Auth />
+    </Suspense>
+  );
 }
 
 

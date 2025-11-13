@@ -1,0 +1,141 @@
+아래의 조건을 모두 적용하여, 아래의 요구사항을 모두 구현할 것.
+구현 결과를 체크리스트로 반환할 것.
+
+==============================================
+
+조건-커서룰) 아래의 커서룰을 적용하여 작업하고, 이 작업이 끝나면 해당 rules 적용 결과를 체크리스트로 반환할 것.
+            - @01-common.mdc
+            - @03-ui.mdc
+
+==============================================
+
+조건-파일경로) 구현될 TSX 파일경로: src/components/purchase/detail/comment-write/index.tsx
+조건-파일경로) 구현될 CSS 파일경로: src/components/purchase/detail/comment-write/styles.module.css
+조건-파일경로) 구현될 HOOK 파일경로: src/components/purchase/detail/comment-write/hook.ts
+
+==============================================
+
+조건-컴포넌트구조)
+  1. Layout: flexbox 기반
+  2. 입력: antd <Input.TextArea> 사용
+  3. 버튼: antd <Button> 사용
+  4. 평점: antd <Rate> 컴포넌트 사용
+  5. 상태: hook.ts의 useCommentWrite 훅 사용
+
+조건-공통목록) 사용할 공통컴포넌트 목록
+            - <Input.TextArea /> from 'antd'
+            - <Button /> from 'antd'
+            - <Rate /> from 'antd'
+
+==============================================
+
+핵심요구사항) 숙박권 리뷰 작성 컴포넌트 UI를 step-by-step 으로 구현하고, 적용 결과를 체크리스트로 반환할 것.
+
+        1) 핵심 UI 구조
+
+            A. 작성자 정보 영역
+               - 프로필 이미지 (작은 원형)
+               - 사용자 이름
+
+            B. 평점 입력 영역
+               - 별점 (antd Rate 컴포넌트)
+               - 5점 만점
+               - 기본값: 5점
+
+            C. 리뷰 내용 입력 영역
+               - Textarea (antd Input.TextArea)
+               - placeholder: "숙소에 대한 솔직한 후기를 남겨주세요"
+               - 최소 높이: 120px
+               - 자동 리사이즈
+               - 글자 수 표시 (0/500자)
+
+            D. 버튼 영역
+               - 등록 버튼 (primary)
+               - 취소 버튼 (default)
+
+        2) 스타일링 요구사항
+            - CSS Modules 사용 (styles.module.css)
+            - 카드 스타일 적용 (배경: #fff, border, padding)
+            - 프로필 이미지: 32x32px, border-radius: 50%
+            - 버튼 간격: 8px
+            - 전체 padding: 20px
+            - 반응형: 모바일에서 버튼 세로 배치
+
+        3) Hook 연동 (hook.ts)
+            - useCommentWrite hook 구현
+            - Props:
+              * accommodationId: number (숙박권 ID)
+              * onSuccess?: () => void (등록 성공 콜백)
+            - 상태 관리:
+              * rating: number (1-5)
+              * content: string
+              * isSubmitting: boolean
+            - 함수:
+              * handleSubmit: 리뷰 등록 실행
+              * handleCancel: 입력 내용 초기화
+              * setRating: 평점 변경
+              * setContent: 내용 변경
+
+        4) Validation
+            - 평점: 1점 이상 필수
+            - 내용: 10자 이상 필수
+            - 내용: 500자 이하
+            - Validation 실패 시 에러 메시지 표시
+
+        5) 에러 처리
+            - API 호출 실패 시 에러 메시지
+            - 네트워크 에러 처리
+            - 권한 에러 처리 (로그인 필요)
+
+==============================================
+
+요구사항-체크리스트) 구현 완료 후 반드시 다음 형식으로 체크리스트 반환:
+
+## ✅ 리뷰 작성 컴포넌트 구현 결과
+
+### 1. 작성자 정보 영역
+- [ ] 프로필 이미지 표시
+- [ ] 사용자 이름 표시
+- [ ] 레이아웃 정렬
+
+### 2. 평점 입력
+- [ ] antd Rate 컴포넌트 적용
+- [ ] 기본값 5점 설정
+- [ ] 평점 변경 시 상태 업데이트
+- [ ] 평점 필수 validation
+
+### 3. 리뷰 내용 입력
+- [ ] TextArea 컴포넌트 적용
+- [ ] placeholder 표시
+- [ ] 자동 리사이즈 적용
+- [ ] 글자 수 카운터 (0/500)
+- [ ] 최소 글자 수 validation (10자)
+- [ ] 최대 글자 수 제한 (500자)
+
+### 4. 버튼 영역
+- [ ] 등록 버튼 (primary)
+- [ ] 취소 버튼 (default)
+- [ ] 버튼 간격 적용
+- [ ] 버튼 클릭 이벤트 연결
+
+### 5. Hook 연동
+- [ ] useCommentWrite hook 구현
+- [ ] accommodationId props 전달
+- [ ] 상태 관리 정상 작동
+- [ ] handleSubmit 구현
+- [ ] handleCancel 구현
+
+### 6. Validation
+- [ ] 평점 필수 체크
+- [ ] 내용 최소/최대 길이 체크
+- [ ] validation 에러 메시지 표시
+
+### 7. 반응형
+- [ ] Desktop: 버튼 가로 배치
+- [ ] Mobile: 버튼 세로 배치
+- [ ] TextArea 너비 100%
+
+### 8. 에러 처리
+- [ ] API 에러 핸들링
+- [ ] 로그인 필요 에러 처리
+- [ ] 사용자 친화적 에러 메시지

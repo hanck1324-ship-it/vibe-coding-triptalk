@@ -11,7 +11,7 @@ export const useCommentList = () => {
 
   const { data, loading } = useQuery(FetchBoardCommentsDocument, {
     variables: {
-      boardId: id,
+      boardId: id || "",
     },
     skip: !id,
   });

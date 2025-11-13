@@ -3,9 +3,10 @@
 import styles from "./styles.module.css";
 import { usePurchaseSell } from "./hook";
 import Image from "next/image";
-import addImageIcon from "@/assets/add_image.png";
-import closeBtnIcon from "@/assets/close btn.png";
+// import addImageIcon from "@/assets/add_image.png"; // 삭제된 파일
+import closeBtnIcon from "@/assets/icons/close btn.png";
 import { Modal } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
 import DaumPostcodeEmbed from "react-daum-postcode";
 import DaumMap from "./DaumMap";
 
@@ -65,7 +66,7 @@ export default function PurchaseSell() {
         </Modal>
       )}
 
-      <div className={styles.wrapper}>
+      <div className={styles.purchaseSellContainer}>
         <div className={styles.container}>
           <div className={styles.title_section}>
             <h1 className={styles.page_title}>숙박권 판매 등록</h1>
@@ -165,7 +166,7 @@ export default function PurchaseSell() {
                   <input
                     type="text"
                     value={zipcode}
-                    placeholder="01234"
+                     placeholder="01234"
                     readOnly
                     className={styles.zipcode_input}
                   />
@@ -283,12 +284,18 @@ export default function PurchaseSell() {
                     onChange={onImageAdd}
                     className={styles.image_input}
                   />
-                  <Image
-                    src={addImageIcon}
-                    alt="이미지 추가"
-                    width={160}
-                    height={160}
-                  />
+                  <div style={{ 
+                    width: '160px', 
+                    height: '160px', 
+                    border: '1px dashed #d9d9d9',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    backgroundColor: '#fafafa'
+                  }}>
+                    <PlusOutlined style={{ fontSize: '32px', color: '#999' }} />
+                  </div>
                 </label>
               )}
             </div>

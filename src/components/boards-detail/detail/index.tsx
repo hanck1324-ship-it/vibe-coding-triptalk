@@ -5,13 +5,13 @@ import Image from "next/image";
 import styles from "./styles.module.css";
 import { useBoardDetail } from "./hook";
 import dynamic from 'next/dynamic';
-const ReactPlayer = dynamic(() => import('react-player'), { ssr: false });
+const ReactPlayer = dynamic(() => import('react-player'), { ssr: false }) as any;
 import { LikeOutlined, DislikeOutlined } from '@ant-design/icons';
 import { Tooltip } from 'antd'; 
 
-import locationImage from "@/assets/location.png";
-import clipImage from "@/assets/clip.png";
-import profileImage from "@/assets/profile_image.png";
+import locationImage from "@/assets/icons/location.png";
+import clipImage from "@/assets/icons/clip.png";
+import profileImage from "@/assets/icons/profile_image.png";
 
 export default function BoardsDetail() {
   const router = useRouter();
@@ -55,7 +55,8 @@ export default function BoardsDetail() {
                   url={board.youtubeUrl}
                   width="486px"
                   height="240px"
-                  controls={true}
+                  controls
+                  onError={(e: any) => console.error('유튜브 영상을 불러올 수 없습니다:', e)}
                 />
               </div>
             )}

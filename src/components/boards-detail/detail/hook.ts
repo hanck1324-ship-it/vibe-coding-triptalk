@@ -8,7 +8,7 @@ import { FetchBoardDocument } from "@/commons/graphql/graphql";
 export const useBoardDetail = (boardId: string) => {
   const router = useRouter();
   const params = useParams();
-  const id = params.boardId.toString();
+  const id = params.boardId?.toString() || "";
   // 보여줄 board 정보 받아오기
   const { data , loading} = useQuery(FetchBoardDocument, {
     variables: { boardId: boardId },

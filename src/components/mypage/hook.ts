@@ -1,10 +1,22 @@
 "use client";
 
+import { useQuery } from "@apollo/client";
+import { FETCH_USER_LOGGED_IN } from "./queries";
+
 export const useMyPage = () => {
-  // TODO: 마이 페이지 기능 구현
-  
+  const { data, loading, error, refetch } = useQuery(FETCH_USER_LOGGED_IN, {
+    fetchPolicy: "cache-and-network",
+  });
+
+  const user = data?.fetchUserLoggedIn;
+  const userPoint = user?.userPoint?.amount || 0;
+
   return {
-    // TODO: 상태 및 함수 반환
+    user,
+    userPoint,
+    loading,
+    error,
+    refetch,
   };
 };
 

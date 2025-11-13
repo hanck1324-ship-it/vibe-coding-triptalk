@@ -1,0 +1,294 @@
+/* 전체 래퍼 */
+.wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: url('/assets/images/Rectangle-3109-1.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 20px;
+  z-index: 1000;
+}
+
+.wrapper::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.15);
+  z-index: 1;
+}
+
+/* 컨테이너 */
+.container {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 420px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  padding: 48px 40px;
+  gap: 32px;
+}
+
+/* 로고 섹션 */
+.logoSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.logoContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.logoIcon {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.logo {
+  font-size: 28px;
+  font-weight: 600;
+  color: #000000;
+  margin: 0;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: #8c8c8c;
+  margin: 0;
+}
+
+/* 탭 전환 버튼 */
+.tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.tab {
+  flex: 1;
+  padding: 12px 24px;
+  border: none;
+  background: none;
+  font-size: 15px;
+  font-weight: 500;
+  color: #8c8c8c;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.tab:hover:not(:disabled) {
+  color: #000000;
+}
+
+.tab.active {
+  color: #000000;
+  font-weight: 600;
+}
+
+.tab.active::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #000000;
+}
+
+.tab:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* 폼 */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* 입력 섹션 */
+.inputSection {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #262626;
+}
+
+.required {
+  color: #ff4d4f;
+}
+
+.input {
+  padding: 12px 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 15px;
+  color: #262626;
+  transition: all 0.2s;
+  outline: none;
+  background-color: #ffffff;
+}
+
+.input:focus {
+  border-color: #000000;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05);
+}
+
+.input:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
+.input::placeholder {
+  color: #bfbfbf;
+}
+
+/* 에러 메시지 */
+.error {
+  font-size: 14px;
+  color: #ff4d4f;
+  margin: 0;
+  padding: 8px 12px;
+  background-color: #fff1f0;
+  border-radius: 6px;
+  border-left: 3px solid #ff4d4f;
+}
+
+/* 약관 동의 섹션 */
+.agreementSection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background-color: #fafafa;
+  border-radius: 8px;
+  border: 1px solid #e8e8e8;
+}
+
+.agreementList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-left: 8px;
+}
+
+.agreementItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.checkbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #000000;
+}
+
+.checkbox:disabled {
+  cursor: not-allowed;
+}
+
+.checkboxLabel {
+  font-size: 14px;
+  color: #262626;
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkboxLabel:has(+ .checkbox:disabled) {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* 버튼 섹션 */
+.buttonSection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.primaryButton {
+  padding: 14px;
+  border: none;
+  border-radius: 6px;
+  background-color: #000000;
+  font-size: 15px;
+  font-weight: 500;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+}
+
+.primaryButton:hover:not(:disabled) {
+  background-color: #333333;
+}
+
+.primaryButton:active:not(:disabled) {
+  background-color: #000000;
+}
+
+.primaryButton:disabled {
+  background-color: #e0e0e0;
+  color: #999999;
+  cursor: not-allowed;
+}
+
+/* 반응형 */
+@media (max-width: 480px) {
+  .container {
+    padding: 32px 24px;
+  }
+
+  .logo {
+    font-size: 28px;
+  }
+
+  .input {
+    font-size: 14px;
+  }
+
+  .primaryButton {
+    font-size: 14px;
+  }
+
+  .tab {
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+}
+

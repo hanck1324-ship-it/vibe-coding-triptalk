@@ -9,16 +9,10 @@ interface DaumMapProps {
   onCoordinatesChange?: (lat: string, lng: string) => void;
 }
 
-declare global {
-  interface Window {
-    daum: any;
-    kakao: any;
-  }
-}
-
 export default function DaumMap({ address, onCoordinatesChange }: DaumMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const [isMapLoaded, setIsMapLoaded] = useState(false);
+  const win = window as any;
 
   useEffect(() => {
     if (!address || !mapRef.current) return;
@@ -44,16 +38,16 @@ export default function DaumMap({ address, onCoordinatesChange }: DaumMapProps) 
     const existingScript = document.getElementById(scriptId);
 
     const loadMap = () => {
-      if (window.kakao && window.kakao.maps) {
-        window.kakao.maps.load(() => {
-          const geocoder = new window.kakao.maps.services.Geocoder();
+      if (win.kakao && win.kakao.maps) {
+        win.kakao.maps.load(() => {
+          const geocoder = new win.kakao.maps.services.Geocoder();
 
           // 주소로 좌표 검색
           geocoder.addressSearch(address, (result: any, status: any) => {
             console.log("Geocoding 결과:", status, result);
             
-            if (status === window.kakao.maps.services.Status.OK && result[0]) {
-              const coords = new window.kakao.maps.LatLng(result[0].y, result[0].x);
+            if (status === win.kakao.maps.services.Status.OK && result[0]) {
+              const coords = new win.kakao.maps.LatLng(result[0].y, result[0].x);
 
               console.log("좌표 찾음:", result[0].y, result[0].x);
 
@@ -64,25 +58,25 @@ export default function DaumMap({ address, onCoordinatesChange }: DaumMapProps) 
               }
 
               // 지도 생성
-              const map = new window.kakao.maps.Map(mapRef.current, {
+              const map = new win.kakao.maps.Map(mapRef.current, {
                 center: coords,
                 level: 3,
               });
 
               // 마커 생성
-              let marker = new window.kakao.maps.Marker({
+              let marker = new win.kakao.maps.Marker({
                 map: map,
                 position: coords,
               });
 
               // 인포윈도우 생성
-              const infowindow = new window.kakao.maps.InfoWindow({
+              const infowindow = new win.kakao.maps.InfoWindow({
                 content: `<div style="padding:5px;font-size:12px;">${address}</div>`,
               });
               infowindow.open(map, marker);
 
               // 지도 클릭 이벤트
-              window.kakao.maps.event.addListener(map, "click", function (mouseEvent: any) {
+              win.kakao.maps.event.addListener(map, "click", function (mouseEvent: any) {
                 const latlng = mouseEvent.latLng;
                 marker.setPosition(latlng);
                 

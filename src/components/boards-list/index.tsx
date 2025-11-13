@@ -70,7 +70,7 @@ export default function BoardsList() {
   };
 
   return (
-    <div className={styles.wrapper}>
+    <div className={styles.boardsListContainer}>
       {/* 1. 배너 이미지 캐러셀 */}
       <section className={styles.bannerSection}>
         <div className={styles.bannerContainer}>

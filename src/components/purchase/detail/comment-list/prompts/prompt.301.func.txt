@@ -1,0 +1,266 @@
+아래의 조건을 모두 적용하여, 아래의 요구사항을 모두 구현할 것.
+구현 결과를 체크리스트로 반환할 것.
+
+==============================================
+
+조건-커서룰) 아래의 커서룰을 적용하여 작업하고, 이 작업이 끝나면 해당 rules 적용 결과를 체크리스트로 반환할 것.
+            - @01-common.mdc
+            - @04-func.mdc
+
+==============================================
+
+조건-파일경로) 구현될 HOOK 파일경로: src/components/purchase/detail/comment-list/hook.ts
+조건-파일경로) (참고) UI 파일: src/components/purchase/detail/comment-list/index.tsx
+조건-파일경로) (참고) Mock 데이터: src/components/purchase/detail/mockData.ts
+
+==============================================
+
+조건-기술스택)
+  - 상태관리: React useState, useEffect
+  - API: GraphQL query (리뷰 목록 조회)
+  - 페이지네이션: 페이지 번호 기반
+  - 타입: TypeScript
+  - 알림: antd message
+
+==============================================
+
+핵심요구사항) 리뷰 목록 조회 및 관리 기능을 step-by-step 으로 구현하고, 적용 결과를 체크리스트로 반환할 것.
+
+  목표: 숙박권의 리뷰 목록을 조회하고, 정렬/페이지네이션/좋아요 기능 구현
+
+==============================================
+
+구현 기능 목록)
+
+1. Props 인터페이스
+   ```typescript
+   interface UseCommentListProps {
+     accommodationId: number;
+   }
+   ```
+
+2. 타입 정의
+   ```typescript
+   type SortType = 'latest' | 'highRating' | 'lowRating';
+
+   interface Review {
+     id: number;
+     userId: number;
+     userName: string;
+     userProfileImage: string;
+     rating: number;
+     content: string;
+     images?: string[];
+     createdAt: string;
+     helpful: number;
+     isLikedByMe: boolean;
+   }
+   ```
+
+3. 상태 관리
+   - reviews: Review[] (리뷰 목록)
+   - totalCount: number (전체 리뷰 수)
+   - averageRating: number (평균 평점)
+   - currentPage: number (현재 페이지, 기본값: 1)
+   - pageSize: number (페이지당 개수, 기본값: 10)
+   - sortBy: SortType (정렬 기준, 기본값: 'latest')
+   - isLoading: boolean (로딩 상태)
+   - errorMessage: string | null
+
+4. 리뷰 목록 조회
+   - fetchReviews(): Promise<void>
+     * accommodationId로 리뷰 목록 조회
+     * currentPage, pageSize, sortBy 파라미터 전달
+     * 성공 시:
+       - reviews 상태 업데이트
+       - totalCount, averageRating 업데이트
+     * 실패 시:
+       - errorMessage 설정
+       - message.error() 표시
+
+   - API 호출 예시:
+     ```graphql
+     query FetchAccommodationReviews(
+       $accommodationId: Int!
+       $page: Int!
+       $size: Int!
+       $sortBy: String!
+     ) {
+       fetchAccommodationReviews(
+         accommodationId: $accommodationId
+         page: $page
+         size: $size
+         sortBy: $sortBy
+       ) {
+         reviews {
+           id
+           userId
+           userName
+           userProfileImage
+           rating
+           content
+           images
+           createdAt
+           helpful
+           isLikedByMe
+         }
+         totalCount
+         averageRating
+       }
+     }
+     ```
+
+5. 페이지네이션
+   - handlePageChange(page: number): void
+     * currentPage 상태 업데이트
+     * fetchReviews() 재호출
+     * 페이지 상단으로 스크롤 (window.scrollTo)
+
+6. 정렬 변경
+   - handleSortChange(sort: SortType): void
+     * sortBy 상태 업데이트
+     * currentPage를 1로 리셋
+     * fetchReviews() 재호출
+
+7. 좋아요 기능
+   - handleLike(reviewId: number): Promise<void>
+     * GraphQL mutation 호출
+     * 성공 시:
+       - reviews 배열에서 해당 리뷰 찾기
+       - isLikedByMe 토글
+       - helpful 카운트 증가/감소
+     * 실패 시:
+       - message.error() 표시
+
+   - API 호출 예시:
+     ```graphql
+     mutation ToggleReviewLike($reviewId: Int!) {
+       toggleReviewLike(reviewId: $reviewId) {
+         id
+         helpful
+         isLikedByMe
+       }
+     }
+     ```
+
+8. 초기 로드
+   - useEffect(() => { fetchReviews() }, [accommodationId, currentPage, sortBy])
+     * accommodationId, currentPage, sortBy 변경 시 재조회
+
+9. 에러 처리
+   - setErrorMessage(message: string): void
+   - clearErrorMessage(): void
+   - 네트워크 에러 처리
+   - 권한 에러 처리 (로그인 필요)
+
+==============================================
+
+함수 네이밍 가이드)
+
+  일관성 원칙:
+  - 단순 상태 변경: set{StateName}
+  - 로직 포함: handle{Action}
+  - API 호출: fetch{Resource}
+
+  예시:
+  - setCurrentPage, setSortBy (setter)
+  - handlePageChange, handleLike (handler)
+  - fetchReviews (fetch)
+
+==============================================
+
+반환값 구조)
+
+  useCommentList 훅이 반환할 값:
+
+  {
+    // 데이터 상태
+    reviews,
+    totalCount,
+    averageRating,
+
+    // 페이지네이션 상태
+    currentPage,
+    pageSize,
+
+    // 정렬 상태
+    sortBy,
+
+    // UI 상태
+    isLoading,
+    errorMessage,
+
+    // 액션 함수
+    fetchReviews,
+    handlePageChange,
+    handleSortChange,
+    handleLike,
+
+    // 계산된 값
+    totalPages: number, // Math.ceil(totalCount / pageSize)
+    hasReviews: boolean, // reviews.length > 0
+  }
+
+==============================================
+
+검증 체크리스트)
+
+## ✅ 기능 동작 검증
+
+### 1. 상태 관리
+- [ ] reviews 배열 상태
+- [ ] totalCount, averageRating 상태
+- [ ] currentPage, pageSize 상태
+- [ ] sortBy 상태
+- [ ] isLoading, errorMessage 상태
+- [ ] TypeScript 타입 명시
+
+### 2. 리뷰 목록 조회
+- [ ] accommodationId로 조회
+- [ ] page, size, sortBy 파라미터 전달
+- [ ] 성공 시 상태 업데이트
+- [ ] 실패 시 에러 처리
+- [ ] GraphQL query 정상 작동
+
+### 3. 페이지네이션
+- [ ] handlePageChange 구현
+- [ ] 페이지 변경 시 fetchReviews 재호출
+- [ ] 페이지 변경 시 스크롤 상단 이동
+- [ ] totalPages 계산 정확
+
+### 4. 정렬 변경
+- [ ] handleSortChange 구현
+- [ ] 정렬 변경 시 currentPage 리셋
+- [ ] 정렬 변경 시 fetchReviews 재호출
+- [ ] 최신순/평점 높은순/낮은순 작동
+
+### 5. 좋아요 기능
+- [ ] handleLike 구현
+- [ ] GraphQL mutation 호출
+- [ ] isLikedByMe 토글
+- [ ] helpful 카운트 증가/감소
+- [ ] reviews 배열 업데이트
+
+### 6. 초기 로드
+- [ ] useEffect로 자동 조회
+- [ ] accommodationId 변경 시 재조회
+- [ ] currentPage, sortBy 변경 시 재조회
+- [ ] 의존성 배열 정확
+
+### 7. 에러 처리
+- [ ] API 실패 시 에러 메시지
+- [ ] message.error() 표시
+- [ ] 네트워크 에러 처리
+- [ ] 권한 에러 처리
+
+### 8. Mock 데이터
+- [ ] mockData.ts 연동 (개발 시)
+- [ ] Review 인터페이스 일치
+- [ ] 초기 데이터 표시
+
+### 9. 코드 품질
+- [ ] "use client" 지시어
+- [ ] 함수명 일관성
+- [ ] Props 인터페이스 정의
+- [ ] TypeScript 타입 안전성
+- [ ] 적절한 에러 핸들링

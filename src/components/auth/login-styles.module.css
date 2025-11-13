@@ -1,0 +1,180 @@
+/* 전체 래퍼 */
+.loginContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
+}
+
+/* 컨테이너 */
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 420px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  padding: 48px 40px;
+  gap: 32px;
+}
+
+/* 로고 섹션 */
+.logoSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.logo {
+  font-size: 32px;
+  font-weight: 700;
+  color: #667eea;
+  margin: 0;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: #8c8c8c;
+  margin: 0;
+}
+
+/* 폼 */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* 입력 섹션 */
+.inputSection {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #262626;
+}
+
+.input {
+  padding: 12px 16px;
+  border: 2px solid #d9d9d9;
+  border-radius: 8px;
+  font-size: 16px;
+  color: #262626;
+  transition: all 0.3s;
+  outline: none;
+}
+
+.input:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.input:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
+.input::placeholder {
+  color: #bfbfbf;
+}
+
+/* 에러 메시지 */
+.error {
+  font-size: 14px;
+  color: #ff4d4f;
+  margin: 0;
+  padding: 8px 12px;
+  background-color: #fff1f0;
+  border-radius: 6px;
+  border-left: 3px solid #ff4d4f;
+}
+
+/* 버튼 섹션 */
+.buttonSection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.loginButton {
+  padding: 14px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.loginButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.loginButton:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.loginButton:disabled {
+  background: linear-gradient(135deg, #bfbfbf 0%, #8c8c8c 100%);
+  cursor: not-allowed;
+}
+
+.signupButton {
+  padding: 14px;
+  border: 2px solid #667eea;
+  border-radius: 8px;
+  background-color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  color: #667eea;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.signupButton:hover:not(:disabled) {
+  background-color: #f0f5ff;
+}
+
+.signupButton:disabled {
+  border-color: #d9d9d9;
+  color: #bfbfbf;
+  cursor: not-allowed;
+}
+
+/* 반응형 */
+@media (max-width: 480px) {
+  .container {
+    padding: 32px 24px;
+  }
+
+  .logo {
+    font-size: 28px;
+  }
+
+  .input {
+    font-size: 14px;
+  }
+
+  .loginButton,
+  .signupButton {
+    font-size: 14px;
+  }
+}

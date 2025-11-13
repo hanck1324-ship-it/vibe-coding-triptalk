@@ -5,7 +5,7 @@ import styles from "./styles.module.css";
 import Image from "next/image";
 import { useCommentWrite } from "./hook";
 import { Rate } from "antd";
-import commentIcon from "@/assets/chat.png";
+import commentIcon from "@/assets/icons/chat.png";
 
 export default function CommentWrite() {
   const {

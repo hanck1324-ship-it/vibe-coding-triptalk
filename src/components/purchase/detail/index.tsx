@@ -25,7 +25,7 @@ export default function PurchaseDetail() {
   }
 
   return (
-    <div className={styles.wrapper}>
+    <div className={styles.purchaseDetailContainer}>
       <div className={styles.container}>
         <h1>숙박권 상세</h1>
         

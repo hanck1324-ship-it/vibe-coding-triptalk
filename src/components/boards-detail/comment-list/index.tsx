@@ -4,9 +4,9 @@ import { useCommentList } from "./hook";
 import styles from "./styles.module.css";
 import Image from "next/image";
 import { Rate } from "antd";
-import profileImage from "@/assets/profile_image.png";
-import editImage from "@/assets/pencil.png";
-import closeImage from "@/assets/trashbin.png";
+import profileImage from "@/assets/icons/profile_image.png";
+import editImage from "@/assets/icons/pencil.png";
+import closeImage from "@/assets/icons/trashbin.png";
 
 export default function CommentList() {
   const { data } = useCommentList();

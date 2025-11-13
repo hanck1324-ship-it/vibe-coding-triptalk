@@ -1,0 +1,208 @@
+아래의 조건을 모두 적용하여, 아래의 요구사항을 모두 구현할 것.
+구현 결과를 체크리스트로 반환할 것.
+
+==============================================
+
+조건-커서룰) 아래의 커서룰을 적용하여 작업하고, 이 작업이 끝나면 해당 rules 적용 결과를 체크리스트로 반환할 것.
+            - @01-common.mdc
+            - @04-func.mdc
+
+==============================================
+
+조건-파일경로) 구현될 HOOK 파일경로: src/components/purchase/detail/comment-write/hook.ts
+조건-파일경로) (참고) UI 파일: src/components/purchase/detail/comment-write/index.tsx
+
+==============================================
+
+조건-기술스택)
+  - 상태관리: React useState
+  - API: GraphQL mutation (리뷰 작성 API)
+  - Validation: 글자 수, 평점 검증
+  - 타입: TypeScript
+  - 알림: antd message
+
+==============================================
+
+핵심요구사항) 리뷰 작성 기능을 step-by-step 으로 구현하고, 적용 결과를 체크리스트로 반환할 것.
+
+  목표: 사용자가 숙박권에 대한 리뷰(평점 + 내용)를 작성하고 제출할 수 있는 기능 구현
+
+==============================================
+
+구현 기능 목록)
+
+1. Props 인터페이스
+   ```typescript
+   interface UseCommentWriteProps {
+     accommodationId: number;
+     onSuccess?: () => void;
+     onCancel?: () => void;
+   }
+   ```
+
+2. 상태 관리
+   - rating: number (1-5, 기본값: 5)
+   - content: string (리뷰 내용)
+   - isSubmitting: boolean (제출 중 상태)
+   - errorMessage: string | null
+
+3. Validation 함수
+   - validateRating(): boolean
+     * 1점 이상 5점 이하 확인
+     * 평점이 없으면 에러
+
+   - validateContent(): boolean
+     * 최소 10자 이상
+     * 최대 500자 이하
+     * 공백 제거 후 길이 체크
+
+   - validateAll(): boolean
+     * 모든 validation 통과 확인
+
+4. 리뷰 작성 처리
+   - handleSubmit(): Promise<void>
+     * validation 검증
+     * GraphQL mutation 호출
+     * 성공 시:
+       - message.success() 표시
+       - onSuccess 콜백 실행
+       - 입력 내용 초기화
+     * 실패 시:
+       - message.error() 표시
+       - errorMessage 상태 업데이트
+
+   - API 호출 예시:
+     ```graphql
+     mutation CreateReview($input: CreateReviewInput!) {
+       createAccommodationReview(createReviewInput: $input) {
+         id
+         rating
+         content
+         createdAt
+       }
+     }
+     ```
+
+5. 입력 처리
+   - handleRatingChange(value: number): void
+     * rating 상태 업데이트
+     * 1-5 사이 값만 허용
+
+   - handleContentChange(value: string): void
+     * content 상태 업데이트
+     * 500자 초과 시 자동 truncate
+
+6. 초기화 처리
+   - handleCancel(): void
+     * 입력 내용 초기화
+     * rating = 5
+     * content = ""
+     * errorMessage = null
+     * onCancel 콜백 실행 (있으면)
+
+7. 에러 처리
+   - setErrorMessage(message: string): void
+   - clearErrorMessage(): void
+   - 권한 에러 처리 (로그인 필요)
+   - 네트워크 에러 처리
+   - 중복 리뷰 에러 처리
+
+==============================================
+
+함수 네이밍 가이드)
+
+  일관성 원칙:
+  - 단순 상태 변경: set{StateName}
+  - 로직 포함: handle{Action}
+  - Validation: validate{Target}
+
+  예시:
+  - setRating, setContent (setter)
+  - handleSubmit, handleCancel (handler)
+  - validateRating, validateContent (validator)
+
+==============================================
+
+반환값 구조)
+
+  useCommentWrite 훅이 반환할 값:
+
+  {
+    // 상태
+    rating,
+    content,
+    isSubmitting,
+    errorMessage,
+
+    // 상태 변경 함수
+    setRating,
+    setContent,
+
+    // 액션 함수
+    handleSubmit,
+    handleCancel,
+    handleRatingChange,
+    handleContentChange,
+
+    // Validation 함수
+    validateRating,
+    validateContent,
+    validateAll,
+
+    // 계산된 값
+    contentLength: number, // content.length
+    isValid: boolean,      // validateAll() 결과
+  }
+
+==============================================
+
+검증 체크리스트)
+
+## ✅ 기능 동작 검증
+
+### 1. 상태 관리
+- [ ] rating 상태 (1-5, 기본값 5)
+- [ ] content 상태 (string)
+- [ ] isSubmitting 상태 (boolean)
+- [ ] errorMessage 상태 (string | null)
+- [ ] TypeScript 타입 명시
+
+### 2. Validation
+- [ ] 평점 1-5 범위 검증
+- [ ] 내용 최소 10자 검증
+- [ ] 내용 최대 500자 검증
+- [ ] 공백 제거 후 길이 체크
+- [ ] validateAll() 종합 검증
+
+### 3. 입력 처리
+- [ ] 평점 변경 시 상태 업데이트
+- [ ] 내용 입력 시 상태 업데이트
+- [ ] 500자 초과 시 자동 truncate
+- [ ] 실시간 글자 수 계산
+
+### 4. 리뷰 작성
+- [ ] Validation 통과 시에만 API 호출
+- [ ] isSubmitting 상태 관리
+- [ ] GraphQL mutation 호출
+- [ ] 성공 시 message.success() 표시
+- [ ] 성공 시 onSuccess 콜백 실행
+- [ ] 성공 시 입력 내용 초기화
+
+### 5. 에러 처리
+- [ ] Validation 실패 시 에러 메시지
+- [ ] API 실패 시 message.error()
+- [ ] 권한 에러 처리
+- [ ] 네트워크 에러 처리
+- [ ] 중복 리뷰 에러 처리
+
+### 6. 취소 처리
+- [ ] handleCancel 실행 시 초기화
+- [ ] onCancel 콜백 실행 (있으면)
+- [ ] 모든 상태 초기값으로 리셋
+
+### 7. 코드 품질
+- [ ] "use client" 지시어
+- [ ] 함수명 일관성
+- [ ] Props 인터페이스 정의
+- [ ] 적절한 에러 핸들링
+- [ ] TypeScript 타입 안전성

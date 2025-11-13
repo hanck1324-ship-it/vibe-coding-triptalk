@@ -1,0 +1,123 @@
+.pointChargeContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.container h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #262626;
+  margin-bottom: 16px;
+}
+
+/* 포인트 충전 섹션 */
+.pointSection {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  max-width: 600px;
+}
+
+.currentPoint {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  color: white;
+}
+
+.currentPoint .label {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.currentPoint .value {
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.chargeOptions {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.chargeOptions h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #262626;
+}
+
+.chargeButtons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.chargeButton {
+  padding: 16px;
+  border: 2px solid #d9d9d9;
+  border-radius: 8px;
+  background-color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  color: #262626;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.chargeButton:hover {
+  border-color: #1890ff;
+  color: #1890ff;
+  background-color: #f0f8ff;
+}
+
+.chargeButton.selected {
+  border-color: #1890ff;
+  background-color: #e6f7ff;
+  color: #1890ff;
+}
+
+.confirmButton {
+  padding: 16px;
+  border: none;
+  border-radius: 8px;
+  background-color: #1890ff;
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.confirmButton:hover {
+  background-color: #40a9ff;
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3);
+}
+
+.confirmButton:active {
+  background-color: #096dd9;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .pointChargeContainer {
+    padding: 16px;
+  }
+
+  .chargeButtons {
+    grid-template-columns: 1fr;
+  }
+}

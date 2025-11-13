@@ -1,0 +1,173 @@
+아래의 조건을 모두 적용하여, 아래의 요구사항을 모두 구현할 것.
+구현 결과를 체크리스트로 반환할 것.
+
+==============================================
+
+조건-커서룰) 아래의 커서룰을 적용하여 작업하고, 이 작업이 끝나면 해당 rules 적용 결과를 체크리스트로 반환할 것.
+            - @01-common.mdc
+            - @03-ui.mdc
+
+==============================================
+
+조건-파일경로) 구현될 TSX 파일경로: src/components/purchase/detail/comment-list/index.tsx
+조건-파일경로) 구현될 CSS 파일경로: src/components/purchase/detail/comment-list/styles.module.css
+조건-파일경로) 구현될 HOOK 파일경로: src/components/purchase/detail/comment-list/hook.ts
+조건-파일경로) (참고) Mock 데이터: src/components/purchase/detail/mockData.ts
+
+==============================================
+
+조건-컴포넌트구조)
+  1. Layout: flexbox 기반, 리스트 형태
+  2. 평점: antd <Rate> 컴포넌트 사용
+  3. 버튼: antd <Button> 사용
+  4. 페이지네이션: antd <Pagination> 사용
+  5. 이미지: Next.js <Image> 컴포넌트 사용
+  6. 상태: hook.ts의 useCommentList 훅 사용
+
+조건-공통목록) 사용할 공통컴포넌트 목록
+            - <Rate /> from 'antd'
+            - <Button /> from 'antd'
+            - <Pagination /> from 'antd'
+            - <Image /> from 'next/image'
+
+==============================================
+
+핵심요구사항) 숙박권 리뷰 목록 컴포넌트 UI를 step-by-step 으로 구현하고, 적용 결과를 체크리스트로 반환할 것.
+
+        1) 핵심 UI 구조
+
+            A. 리뷰 통계 영역
+               - 평균 평점 (큰 글씨로 강조)
+               - 전체 리뷰 수
+               - 별점별 분포 막대 그래프 (선택사항)
+
+            B. 정렬 옵션 영역
+               - 최신순 / 평점 높은순 / 평점 낮은순
+               - 드롭다운 또는 버튼 그룹
+
+            C. 리뷰 아이템 (반복)
+               - 작성자 정보:
+                 * 프로필 이미지 (40x40px, 원형)
+                 * 작성자 이름
+                 * 작성일 (YYYY.MM.DD 형식)
+
+               - 평점:
+                 * 별점 표시 (antd Rate, disabled)
+
+               - 리뷰 내용:
+                 * 본문 텍스트
+                 * 최대 3줄 표시, 더보기 버튼
+
+               - 리뷰 이미지 (있으면):
+                 * 썸네일 갤러리 (3-4개)
+                 * 클릭 시 확대 보기
+
+               - 액션 버튼:
+                 * 도움이 됐어요 버튼 (좋아요 카운트 포함)
+                 * 신고하기 버튼 (작은 텍스트 링크)
+
+            D. 페이지네이션
+               - antd Pagination 컴포넌트
+               - 페이지당 10개 표시
+
+            E. 빈 상태 (리뷰 없음)
+               - "아직 작성된 리뷰가 없습니다" 메시지
+               - 첫 리뷰 작성 유도 버튼
+
+        2) 스타일링 요구사항
+            - CSS Modules 사용 (styles.module.css)
+            - 리뷰 아이템: 카드 스타일 (border, padding: 20px)
+            - 아이템 간 간격: 16px
+            - 프로필 이미지: 40x40px, border-radius: 50%
+            - 평점: 읽기 전용, 노란색 별
+            - 도움됐어요 버튼: hover 시 색상 변경
+            - 반응형: 모바일에서 padding, 이미지 크기 조정
+
+        3) Hook 연동 (hook.ts)
+            - useCommentList hook 구현
+            - Props:
+              * accommodationId: number
+            - 상태 관리:
+              * reviews: Review[]
+              * totalCount: number
+              * averageRating: number
+              * currentPage: number
+              * sortBy: 'latest' | 'highRating' | 'lowRating'
+              * isLoading: boolean
+            - 함수:
+              * fetchReviews: 리뷰 목록 조회
+              * handlePageChange: 페이지 변경
+              * handleSortChange: 정렬 변경
+              * handleLike: 도움됐어요 클릭
+
+        4) Mock 데이터 활용
+            - mockData.ts의 Review 인터페이스 사용
+            - 초기 개발 시 mock 데이터로 UI 테스트
+
+        5) 인터랙션
+            - 더보기 버튼 클릭 시 전체 내용 펼치기
+            - 이미지 클릭 시 확대 모달 (선택사항)
+            - 도움됐어요 버튼 클릭 시 카운트 증가/감소
+
+==============================================
+
+요구사항-체크리스트) 구현 완료 후 반드시 다음 형식으로 체크리스트 반환:
+
+## ✅ 리뷰 목록 컴포넌트 구현 결과
+
+### 1. 리뷰 통계 영역
+- [ ] 평균 평점 표시 (큰 글씨)
+- [ ] 전체 리뷰 수 표시
+- [ ] 레이아웃 스타일 적용
+
+### 2. 정렬 옵션
+- [ ] 최신순 옵션
+- [ ] 평점 높은순 옵션
+- [ ] 평점 낮은순 옵션
+- [ ] 현재 선택된 정렬 표시
+- [ ] 클릭 시 정렬 변경
+
+### 3. 리뷰 아이템
+- [ ] 작성자 프로필 이미지 (40x40px, 원형)
+- [ ] 작성자 이름
+- [ ] 작성일 (YYYY.MM.DD)
+- [ ] 평점 (Rate 컴포넌트, disabled)
+- [ ] 리뷰 본문 텍스트
+- [ ] 더보기 버튼 (긴 텍스트일 때)
+
+### 4. 리뷰 이미지
+- [ ] 썸네일 갤러리 표시
+- [ ] Next.js Image 컴포넌트 사용
+- [ ] 이미지가 없을 때 처리
+
+### 5. 액션 버튼
+- [ ] 도움됐어요 버튼
+- [ ] 좋아요 카운트 표시
+- [ ] hover 효과
+- [ ] 클릭 이벤트 연결
+
+### 6. 페이지네이션
+- [ ] antd Pagination 컴포넌트
+- [ ] 페이지당 10개 표시
+- [ ] 페이지 변경 시 스크롤 상단 이동
+- [ ] 현재 페이지 표시
+
+### 7. 빈 상태
+- [ ] 리뷰 없을 때 메시지 표시
+- [ ] 첫 리뷰 작성 유도 버튼 (선택)
+
+### 8. Hook 연동
+- [ ] useCommentList hook 구현
+- [ ] accommodationId props 전달
+- [ ] 모든 상태 관리 정상 작동
+- [ ] 정렬, 페이지네이션 작동
+
+### 9. Mock 데이터
+- [ ] mockData.ts 연동
+- [ ] Review 인터페이스 사용
+- [ ] 초기 데이터 표시 확인
+
+### 10. 반응형
+- [ ] Desktop: 기본 레이아웃
+- [ ] Tablet: 이미지 크기 조정
+- [ ] Mobile: padding, 폰트 크기 조정

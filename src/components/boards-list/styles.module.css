@@ -1,5 +1,5 @@
 /* 전체 래퍼 */
-.wrapper {
+.boardsListContainer {
   display: flex;
   flex-direction: column;
   width: 100%;

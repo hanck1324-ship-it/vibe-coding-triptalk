@@ -1,0 +1,201 @@
+아래의 조건을 모두 적용하여, 아래의 요구사항을 모두 구현할 것.
+구현 결과를 체크리스트로 반환할 것.
+
+==============================================
+
+조건-커서룰) 아래의 커서룰을 적용하여 작업하고, 이 작업이 끝나면 해당 rules 적용 결과를 체크리스트로 반환할 것.
+            - @01-common.mdc
+            - @04-func.mdc
+
+==============================================
+
+조건-파일경로) 구현될 HOOK 파일경로: src/components/auth/signup/hook.ts
+조건-파일경로) (참고) 기존 UI 파일: src/components/auth/signup/index.tsx
+
+==============================================
+
+조건-기술스택)
+  - 상태관리: React useState
+  - 라우팅: next/navigation (useRouter)
+  - API: GraphQL mutation (회원가입 API)
+  - Validation: 정규식, antd Form validation
+  - 타입: TypeScript
+
+==============================================
+
+핵심요구사항) 회원가입 페이지의 인터랙티브 기능을 step-by-step 으로 구현하고, 적용 결과를 체크리스트로 반환할 것.
+
+  목표: 사용자가 회원가입 폼을 작성하고 제출할 수 있는 기능 구현
+
+==============================================
+
+구현 기능 목록)
+
+1. 상태 관리
+   - 폼 데이터:
+     * email: string
+     * password: string
+     * passwordConfirm: string
+     * name: string
+     * phone: string (optional)
+
+   - 약관 동의 상태:
+     * agreedToTerms: boolean (이용약관)
+     * agreedToPrivacy: boolean (개인정보 처리방침)
+     * agreedToMarketing: boolean (마케팅 수신)
+
+   - UI 상태:
+     * isLoading: boolean
+     * errorMessage: string | null
+
+2. Validation 함수
+   - validateEmail(email: string): boolean
+     * 이메일 형식 검증 (정규식)
+     * 예: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+   - validatePassword(password: string): boolean
+     * 최소 8자 이상
+     * 영문 + 숫자 조합
+     * 예: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/
+
+   - validatePasswordMatch(): boolean
+     * password === passwordConfirm 확인
+
+   - validateRequiredFields(): boolean
+     * email, password, passwordConfirm, name 모두 입력 확인
+     * agreedToTerms, agreedToPrivacy 체크 확인
+
+3. 약관 동의 처리
+   - handleAllAgree(): void
+     * 전체 동의 체크박스 토글
+     * 모든 약관 동의 상태 일괄 변경
+
+   - handleSingleAgree(type: string): void
+     * 개별 약관 동의 토글
+     * type: 'terms' | 'privacy' | 'marketing'
+
+4. 회원가입 처리
+   - handleSignup(): Promise<void>
+     * validation 검증
+     * GraphQL mutation 호출
+     * 성공 시: 로그인 페이지로 이동
+     * 실패 시: 에러 메시지 표시
+
+   - API 호출 예시:
+     ```graphql
+     mutation CreateUser($input: CreateUserInput!) {
+       createUser(createUserInput: $input) {
+         id
+         email
+         name
+       }
+     }
+     ```
+
+5. 에러 처리
+   - setErrorMessage(message: string): void
+   - clearErrorMessage(): void
+   - 중복 이메일 처리
+   - 네트워크 에러 처리
+
+6. 페이지 이동
+   - handleNavigateToLogin(): void
+     * 로그인 페이지로 이동
+
+==============================================
+
+함수 네이밍 가이드)
+
+  일관성 원칙:
+  - 단순 상태 변경: set{StateName}
+  - 로직 포함: handle{Action}
+  - Validation: validate{Target}
+
+  예시:
+  - setEmail, setPassword (setter)
+  - handleSignup, handleAllAgree (handler)
+  - validateEmail, validatePassword (validator)
+
+==============================================
+
+반환값 구조)
+
+  useSignup 훅이 반환할 값:
+
+  {
+    // 폼 상태
+    email,
+    password,
+    passwordConfirm,
+    name,
+    phone,
+
+    // 약관 동의 상태
+    agreedToTerms,
+    agreedToPrivacy,
+    agreedToMarketing,
+
+    // UI 상태
+    isLoading,
+    errorMessage,
+
+    // 상태 변경 함수
+    setEmail,
+    setPassword,
+    setPasswordConfirm,
+    setName,
+    setPhone,
+
+    // 액션 함수
+    handleSignup,
+    handleAllAgree,
+    handleSingleAgree,
+    handleNavigateToLogin,
+
+    // Validation 함수
+    validateEmail,
+    validatePassword,
+    validatePasswordMatch,
+    validateRequiredFields,
+  }
+
+==============================================
+
+검증 체크리스트)
+
+## ✅ 기능 동작 검증
+
+### 1. 상태 관리
+- [ ] 모든 폼 상태가 정의되었는가?
+- [ ] 약관 동의 상태가 관리되는가?
+- [ ] UI 상태(loading, error)가 있는가?
+- [ ] TypeScript 타입이 명시되었는가?
+
+### 2. Validation
+- [ ] 이메일 형식 검증이 작동하는가?
+- [ ] 비밀번호 조건 검증이 작동하는가?
+- [ ] 비밀번호 일치 확인이 작동하는가?
+- [ ] 필수 필드 검증이 작동하는가?
+- [ ] 약관 동의 필수 체크가 작동하는가?
+
+### 3. 약관 동의
+- [ ] 전체 동의 체크 시 모든 약관이 체크되는가?
+- [ ] 개별 약관 체크/해제가 작동하는가?
+- [ ] 전체 동의 상태가 정확히 반영되는가?
+
+### 4. 회원가입
+- [ ] Validation 통과 시에만 API 호출되는가?
+- [ ] Loading 상태가 표시되는가?
+- [ ] 성공 시 로그인 페이지로 이동하는가?
+- [ ] 실패 시 에러 메시지가 표시되는가?
+- [ ] 중복 이메일 에러가 처리되는가?
+
+### 5. 페이지 이동
+- [ ] 로그인 페이지 이동이 작동하는가?
+- [ ] useRouter가 정상 작동하는가?
+
+### 6. 코드 품질
+- [ ] "use client" 지시어가 있는가?
+- [ ] 함수명이 일관성 있는가?
+- [ ] 에러 핸들링이 적절한가?
+- [ ] console.log 대신 적절한 에러 처리가 있는가?

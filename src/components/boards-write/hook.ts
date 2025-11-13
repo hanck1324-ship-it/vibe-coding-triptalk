@@ -32,6 +32,7 @@ export const useBoardWrite = (isEdit: boolean = false) => {
   const [address, setAddress] = useState("");
   const [addressDetail, setAddressDetail] = useState("");
   const [youtubeUrl, setYoutubeUrl] = useState("");
+  const [youtubeUrlError, setYoutubeUrlError] = useState("");
 
   // UI 상태
   const [isActive, setIsActive] = useState(false);
@@ -106,8 +107,23 @@ export const useBoardWrite = (isEdit: boolean = false) => {
     setAddressDetail(e.target.value);
   };
 
+  // 유튜브 URL 유효성 검증 함수
+  const isValidYoutubeUrl = (url: string): boolean => {
+    if (!url.trim()) return true; // 빈 값은 허용 (선택 필드)
+    const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com\/(watch\?v=|embed\/|v\/)|youtu\.be\/)[\w-]+/;
+    return youtubeRegex.test(url);
+  };
+
   const onChangeYoutubeUrl = (e: ChangeEvent<HTMLInputElement>) => {
-    setYoutubeUrl(e.target.value);
+    const url = e.target.value;
+    setYoutubeUrl(url);
+    
+    // 유튜브 URL 유효성 검증 (값이 있을 때만)
+    if (url.trim() && !isValidYoutubeUrl(url)) {
+      setYoutubeUrlError('올바른 유튜브 URL 형식이 아닙니다. (예: https://www.youtube.com/watch?v=xxxxx)');
+    } else {
+      setYoutubeUrlError('');
+    }
   };
 
   // 우편번호 검색 모달
@@ -275,6 +291,7 @@ export const useBoardWrite = (isEdit: boolean = false) => {
     passwordError,
     titleError,
     contentsError,
+    youtubeUrlError,
     
     // 입력 핸들러
     onChangeWriter,
