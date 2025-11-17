@@ -94,10 +94,11 @@ export default function Auth() {
                 </label>
                 <input
                   id="email"
+                  name="email"
                   type="email"
                   placeholder="이메일을 입력하세요"
-                  value={loginHook.email}
-                  onChange={loginHook.onChangeEmail}
+                  value={loginHook.inputs.email}
+                  onChange={loginHook.onChange}
                   className={styles.input}
                   disabled={loginHook.isLoading}
                 />
@@ -109,10 +110,11 @@ export default function Auth() {
                 </label>
                 <input
                   id="password"
+                  name="password"
                   type="password"
                   placeholder="비밀번호를 입력하세요"
-                  value={loginHook.password}
-                  onChange={loginHook.onChangePassword}
+                  value={loginHook.inputs.password}
+                  onChange={loginHook.onChange}
                   className={styles.input}
                   disabled={loginHook.isLoading}
                 />

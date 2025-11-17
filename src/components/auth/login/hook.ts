@@ -5,120 +5,113 @@ import { useRouter } from "next/navigation";
 import { useMutation } from "@apollo/client";
 import { LOGIN_USER } from "./queries";
 
+// 1. 상수는 외부로 분리하여 관리 (재사용성 및 가독성 UP)
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export function useLogin() {
   const router = useRouter();
   const [loginUser] = useMutation(LOGIN_USER);
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  // 2. 관련된 상태들을 객체 하나로 묶어서 관리
+  const [inputs, setInputs] = useState({
+    email: "",
+    password: "",
+  });
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const onChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
-    setError("");
+  // 입력값 변경 핸들러 (하나의 함수로 두 입력 모두 처리)
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setInputs((prev) => ({ ...prev, [name]: value }));
+    setError(""); // 입력 시 에러 메시지 초기화
   };
 
-  const onChangePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(e.target.value);
-    setError("");
+  // 3. 검증 로직 분리
+  const validateInputs = () => {
+    if (!inputs.email.trim()) return "이메일을 입력해주세요.";
+    if (!inputs.password.trim()) return "비밀번호를 입력해주세요.";
+    if (!EMAIL_REGEX.test(inputs.email)) return "올바른 이메일 형식이 아닙니다.";
+    return null; // 에러 없음
+  };
+
+  // 4. 에러 메시지 처리 로직 분리
+  const handleLoginError = (err: any) => {
+    // GraphQL 에러 우선순위로 메시지 추출
+    const msg = 
+      err?.graphQLErrors?.[0]?.message ||
+      err?.message || 
+      err?.networkError?.message ||
+      "";
+
+    if (msg.includes("인증에 실패") || msg.includes("틀림") || msg.includes("일치하지")) {
+      return "이메일 또는 비밀번호가 올바르지 않습니다.";
+    }
+    if (msg.includes("존재하지 않는") || msg.includes("이메일") || msg.includes("email")) {
+      return "가입되지 않은 이메일입니다.";
+    }
+    if (msg.includes("비밀번호") || msg.includes("password")) {
+      return "비밀번호가 올바르지 않습니다.";
+    }
+    if (msg.includes("네트워크") || msg.includes("network") || msg.includes("Failed to fetch")) {
+      return "네트워크 연결을 확인해주세요.";
+    }
+    return msg || "로그인 중 문제가 발생했습니다.";
   };
 
   const onSubmit = async () => {
-    // 입력값 검증
-    if (!email.trim()) {
-      setError("이메일을 입력해주세요.");
-      return;
-    }
-
-    if (!password.trim()) {
-      setError("비밀번호를 입력해주세요.");
-      return;
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      setError("올바른 이메일 형식이 아닙니다.");
+    // 검증 실행
+    const validationError = validateInputs();
+    if (validationError) {
+      setError(validationError);
       return;
     }
 
     setIsLoading(true);
     setError("");
 
+    // 디버깅: 전송 전 입력값 확인
+    console.log("=== 로그인 시도 (Hook) ===");
+    console.log("이메일:", inputs.email);
+    console.log("비밀번호 길이:", inputs.password.length);
+    console.log("비밀번호 (처음 2자만):", inputs.password.substring(0, 2) + "***");
+    console.log("전송할 variables:", {
+      email: inputs.email.trim(),
+      password: `[${inputs.password.length}자리 비밀번호]`,
+    });
+
     try {
       const result = await loginUser({
         variables: {
-          email,
-          password,
+          email: inputs.email.trim(),
+          password: inputs.password,
         },
       });
 
-      console.log("=== 로그인 응답 전체 ===", result);
-      console.log("=== 응답 데이터 ===", result.data);
-      console.log("=== loginUser 객체 ===", result.data?.loginUser);
+      const accessToken = result.data?.loginUser?.accessToken;
 
-      if (result.data?.loginUser?.accessToken) {
-        const accessToken = result.data.loginUser.accessToken;
-        console.log("=== 받은 토큰 ===", accessToken);
-        console.log("=== 토큰 길이 ===", accessToken.length);
-        
+      if (accessToken) {
         localStorage.setItem("accessToken", accessToken);
-        
-        // 커스텀 이벤트 발생 (네비게이션에서 로그인 상태 변경 감지)
+        // 네비게이션 상태 업데이트를 위한 이벤트 발생
         window.dispatchEvent(new Event("localStorageChange"));
-        
-        // 저장 확인
-        const savedToken = localStorage.getItem("accessToken");
-        console.log("=== localStorage에 저장된 토큰 ===", savedToken);
-        console.log("=== 토큰 저장 확인 ===", savedToken === accessToken ? "✅ 성공" : "❌ 실패");
-        
         router.push("/");
       } else {
-        console.error("❌ 토큰이 응답에 없습니다.");
-        console.error("응답 구조:", JSON.stringify(result.data, null, 2));
-        setError("로그인 응답에 토큰이 없습니다.");
+        throw new Error("토큰을 받아오지 못했습니다.");
       }
-    } catch (err: any) {
-      console.error("로그인 에러:", err);
-      console.error("에러 상세:", {
-        message: err.message,
-        graphQLErrors: err.graphQLErrors,
-        networkError: err.networkError,
-      });
-      
-      // GraphQL 에러 메시지 처리
-      // ApolloError의 경우 err.message에 서버 에러 메시지가 포함됨
-      const errorMessage = 
-        err.graphQLErrors?.[0]?.message ||
-        err.message || 
-        err.networkError?.message ||
-        "로그인에 실패했습니다.";
-      
-      // 서버에서 반환한 에러 메시지를 그대로 표시
-      if (errorMessage?.includes("회원정보 인증에 실패") || errorMessage?.includes("인증에 실패")) {
-        setError("이메일 또는 비밀번호가 올바르지 않습니다.");
-      } else if (errorMessage?.includes("이메일") || errorMessage?.includes("email") || errorMessage?.includes("존재") || errorMessage?.includes("없")) {
-        setError("존재하지 않는 이메일입니다.");
-      } else if (errorMessage?.includes("비밀번호") || errorMessage?.includes("password") || errorMessage?.includes("틀림") || errorMessage?.includes("일치")) {
-        setError("비밀번호가 올바르지 않습니다.");
-      } else if (errorMessage?.includes("네트워크") || errorMessage?.includes("network") || errorMessage?.includes("Failed to fetch")) {
-        setError("네트워크 오류가 발생했습니다. 인터넷 연결을 확인해주세요.");
-      } else {
-        // 서버에서 반환한 메시지를 그대로 표시
-        setError(errorMessage);
-      }
+    } catch (err) {
+      console.error("로그인 실패:", err);
+      const userFriendlyMessage = handleLoginError(err);
+      setError(userFriendlyMessage);
     } finally {
       setIsLoading(false);
     }
   };
 
   return {
-    email,
-    password,
+    inputs,       // 개별 값 대신 객체 반환
     error,
     isLoading,
-    onChangeEmail,
-    onChangePassword,
+    onChange,     // 통합된 핸들러
     onSubmit,
   };
 }
