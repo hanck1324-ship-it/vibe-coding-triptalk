@@ -24,6 +24,18 @@ export default function PurchaseDetail() {
     return <div className={styles.loading}>숙박권 정보를 불러오는 중입니다...</div>;
   }
 
+  if (!accommodation && !loading) {
+    return (
+      <div className={styles.purchaseDetailContainer}>
+        <div className={styles.container}>
+          <div className={styles.errorMessage}>
+            숙박권 정보를 찾을 수 없습니다.
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.purchaseDetailContainer}>
       <div className={styles.container}>
