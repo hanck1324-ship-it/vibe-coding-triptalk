@@ -27,7 +27,7 @@ const transformTravelproduct = (product: Travelproduct | undefined): IAccommodat
 
 export const useAccommodationDetail = (id: string) => {
   // 여행 상품 상세 조회
-  const { data: travelproductData, loading: travelproductLoading } = useQuery(FETCH_TRAVELPRODUCT, {
+  const { data: travelproductData, loading: travelproductLoading } = useQuery(FEsTCH_TRAVELPRODUCT, {
     variables: {
       travelproductId: id,
     },

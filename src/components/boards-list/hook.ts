@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useQuery } from "@apollo/client";
 import { useRouter } from "next/navigation";
 import { FetchBoardsDocument } from "@/commons/graphql/graphql";
@@ -13,23 +13,26 @@ export const useBoardsList = () => {
     variables: { page },
   });
 
-  const onClickBoard = (boardId: string) => {
-    router.push(`/boards/${boardId}`);
-  };
+  const onClickBoard = useCallback(
+    (boardId: string) => {
+      router.push(`/boards/${boardId}`);
+    },
+    [router]
+  );
 
-  const onClickPrevPage = () => {
+  const onClickPrevPage = useCallback(() => {
     if (page > 1) {
       const newPage = page - 1;
       setPage(newPage);
       refetch({ page: newPage });
     }
-  };
+  }, [page, refetch]);
 
-  const onClickNextPage = () => {
+  const onClickNextPage = useCallback(() => {
     const newPage = page + 1;
     setPage(newPage);
     refetch({ page: newPage });
-  };
+  }, [page, refetch]);
 
   return {
     boards: data?.fetchBoards || [],

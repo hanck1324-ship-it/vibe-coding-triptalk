@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Image from "next/image";
 import styles from "./styles.module.css";
 import { mockBoardPosts, mockBoardCategories, getHotPosts, getPinnedPosts, getBoardPostsByCategory, type BoardPost } from "./mockData";
@@ -14,6 +14,14 @@ import rectangleImg from "@/assets/images/Rectangle 3011.png";
 import profileImg from "@/assets/icons/profile_image.png";
 import trashIcon from "@/assets/icons/trashbin.png";
 
+// 배너 이미지 (상수는 컴포넌트 외부로)
+const BANNER_IMAGES = [
+  beachImg,
+  cozyImg,
+  magnificantImg,
+  opentheseaImg
+];
+
 export default function BoardsList() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -22,36 +30,41 @@ export default function BoardsList() {
   const itemsPerPage = 10;
 
   // 핫한 트립토크 게시글
-  const hotPosts = getHotPosts().slice(0, 4);
+  const hotPosts = useMemo(() => getHotPosts().slice(0, 4), []);
+
+  // 고정된 게시글
+  const pinnedPosts = useMemo(() => getPinnedPosts(), []);
 
   // 카테고리별 게시글 필터링
-  const filteredPosts = getBoardPostsByCategory(selectedCategory);
+  const filteredPosts = useMemo(
+    () => getBoardPostsByCategory(selectedCategory),
+    [selectedCategory]
+  );
 
   // 검색 필터링
-  const searchedPosts = searchKeyword
-    ? filteredPosts.filter((post) => post.title.toLowerCase().includes(searchKeyword.toLowerCase()))
-    : filteredPosts;
+  const searchedPosts = useMemo(() => {
+    return searchKeyword
+      ? filteredPosts.filter((post) => post.title.toLowerCase().includes(searchKeyword.toLowerCase()))
+      : filteredPosts;
+  }, [searchKeyword, filteredPosts]);
 
   // 페이지네이션
-  const totalPages = Math.ceil(searchedPosts.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentPosts = searchedPosts.slice(startIndex, startIndex + itemsPerPage);
-  const pinnedPosts = getPinnedPosts();
+  const totalPages = useMemo(
+    () => Math.ceil(searchedPosts.length / itemsPerPage),
+    [searchedPosts.length, itemsPerPage]
+  );
 
-  // 배너 이미지 (mockData의 썸네일 활용)
-  const bannerImages = [
-    beachImg,
-    cozyImg,
-    magnificantImg,
-    opentheseaImg
-  ];
+  const currentPosts = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return searchedPosts.slice(startIndex, startIndex + itemsPerPage);
+  }, [searchedPosts, currentPage, itemsPerPage]);
 
   const handlePrevBanner = () => {
-    setCurrentBannerIndex((prev) => (prev === 0 ? bannerImages.length - 1 : prev - 1));
+    setCurrentBannerIndex((prev) => (prev === 0 ? BANNER_IMAGES.length - 1 : prev - 1));
   };
 
   const handleNextBanner = () => {
-    setCurrentBannerIndex((prev) => (prev === bannerImages.length - 1 ? 0 : prev + 1));
+    setCurrentBannerIndex((prev) => (prev === BANNER_IMAGES.length - 1 ? 0 : prev + 1));
   };
 
   const handleSearch = () => {
@@ -75,7 +88,7 @@ export default function BoardsList() {
       <section className={styles.bannerSection}>
         <div className={styles.bannerContainer}>
           <Image
-            src={bannerImages[currentBannerIndex]}
+            src={BANNER_IMAGES[currentBannerIndex]}
             alt={`배너 이미지 ${currentBannerIndex + 1}`}
             className={styles.bannerImage}
             fill
@@ -97,7 +110,7 @@ export default function BoardsList() {
             ›
           </button>
           <div className={styles.bannerIndicators}>
-            {bannerImages.map((_, index) => (
+            {BANNER_IMAGES.map((_, index) => (
               <span
                 key={index}
                 className={`${styles.indicator} ${index === currentBannerIndex ? styles.indicatorActive : ""}`}
