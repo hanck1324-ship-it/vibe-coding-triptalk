@@ -3,7 +3,7 @@
 import { useParams, useRouter } from "next/navigation";
 import { useAccommodationDetail } from "./hooks/useAccommodationDetail";
 import { useModal } from "./hooks/useModal";
-import { usePayment } from "./hooks/usePayment";
+import { usePointPurchase } from "./hooks/usePointPurchase";
 import { IBuyerInfo } from "../purchase-modal";
 
 export const usePurchaseDetail = () => {
@@ -24,7 +24,7 @@ export const usePurchaseDetail = () => {
     closePointAlertModal,
   } = useModal();
 
-  const { requestPayment, error, setError } = usePayment();
+  const { purchaseWithPoint, error, setError } = usePointPurchase();
 
   // 구매 확인 핸들러 (포인트 체크 + 결제 요청 + 라우팅)
   const handlePurchaseConfirm = async (buyerInfo: IBuyerInfo) => {
@@ -36,23 +36,24 @@ export const usePurchaseDetail = () => {
       return; // 프로세스 중단
     }
 
-    // 2단계: 포트원 결제 요청 (구매자 정보 포함)
-    const paymentResult = await requestPayment({
-      orderName: accommodation?.title || "숙박권 구매",
-      totalAmount: accommodation?.price || 0,
-      customerName: buyerInfo.name,
-      customerPhone: buyerInfo.phone,
-      customerEmail: buyerInfo.email,
+    // 2단계: 포인트로 숙박권 구매 (백엔드 API 호출)
+    const purchaseResult = await purchaseWithPoint({
+      accommodationId: id,
+      accommodationTitle: accommodation?.title || "숙박권",
+      price: accommodation?.price || 0,
+      buyerName: buyerInfo.name,
+      buyerPhone: buyerInfo.phone,
+      buyerEmail: buyerInfo.email,
     });
 
-    // 3단계: 결제 결과 처리
-    if (!paymentResult.success) {
-      // 결제 실패
+    // 3단계: 구매 결과 처리
+    if (!purchaseResult.success) {
+      // 구매 실패
       closePurchaseModal();
       return;
     }
 
-    // 결제 성공
+    // 구매 성공
     closePurchaseModal();
 
     // 4단계: 판매 등록 화면으로 이동

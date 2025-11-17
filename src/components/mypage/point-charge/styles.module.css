@@ -1,0 +1,70 @@
+/* TODO: 피그마 디자인 기반으로 스타일 작성 */
+
+.pointChargeContainer {
+  padding: 20px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+/* 충전 금액 선택 버튼 영역 */
+.amountButtonArea {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.amountButton {
+  padding: 15px 30px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.2s;
+}
+
+.amountButton:hover {
+  border-color: #1890ff;
+}
+
+.amountButton.selected {
+  border-color: #1890ff;
+  background: #e6f7ff;
+  color: #1890ff;
+  font-weight: bold;
+}
+
+/* 충전하기 버튼 */
+.chargeButton {
+  width: 100%;
+  padding: 15px;
+  background: #1890ff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.chargeButton:hover {
+  background: #096dd9;
+}
+
+.chargeButton:disabled {
+  background: #d9d9d9;
+  cursor: not-allowed;
+}
+
+/* 에러 메시지 */
+.errorMessage {
+  color: #ff4d4f;
+  margin-top: 10px;
+  font-size: 14px;
+}

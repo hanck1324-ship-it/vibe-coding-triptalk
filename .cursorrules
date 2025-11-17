@@ -21,6 +21,65 @@
 - `docs/guides/PROMPT_CHEATSHEET.md` - 빠른 참조 치트시트
 - `docs/guides/VIBE_CODING_WORKFLOW.md` - AI 코딩 워크플로우
 
+---
+
+## 프롬프트 필수 구성 요소
+
+모든 프롬프트 파일은 다음 구조를 따라야 합니다:
+
+### 1. 헤더 (Header)
+```
+아래의 조건을 모두 적용하여, 아래의 요구사항을 모두 구현할 것.
+구현 결과를 체크리스트로 반환할 것.
+```
+
+### 2. 조건-커서룰 (Cursor Rules)
+```
+==============================================
+
+조건-커서룰) 아래의 커서룰을 적용하여 작업하고, 이 작업이 끝나면 해당 rules 적용 결과를 체크리스트로 반환할 것.
+            - @01-common.mdc
+            - @02-wireframe.mdc (와이어프레임)
+            - @03-ui.mdc (UI)
+            - @04-func.mdc (기능)
+```
+
+### 3. 조건-파일경로 (File Paths)
+```
+==============================================
+
+조건-파일경로) 구현될 TSX 파일경로: src/components/[컴포넌트]/index.tsx
+조건-파일경로) 구현될 CSS 파일경로: src/components/[컴포넌트]/styles.module.css
+조건-파일경로) 구현될 HOOK 파일경로: src/components/[컴포넌트]/hook.ts (기능 프롬프트만)
+조건-파일경로) 구현될 GQL 파일경로: src/components/[컴포넌트]/queries.ts (기능 프롬프트만)
+조건-파일경로) (참고) 공통 GQL 타입: src/commons/graphql/graphql.ts
+```
+
+### 4. 조건-피그마 (Figma - 선택사항)
+```
+==============================================
+
+조건-피그마) MCP 채널: [채널명]
+조건-피그마) 참고할 노드 ID (핵심 영역만):
+            - [node-id] (영역 설명)
+            - [node-id] (영역 설명)
+```
+
+### 5. 핵심요구사항 (Core Requirements)
+```
+==============================================
+
+핵심요구사항) [기능/화면]을 step-by-step 으로 구현하고, 적용 결과를 체크리스트로 반환할 것.
+
+        1) [카테고리 1]
+            - 세부 요구사항
+            
+        2) [카테고리 2]
+            - 세부 요구사항
+```
+
+---
+
 ## Wireframe 프롬프트 작성 시 (prompt.01.wireframe.txt)
 
 ### ✅ 반드시 포함할 것
@@ -30,6 +89,7 @@
 - 정렬 방식 (justify-content, align-items)
 - 반응형 구조 변경 (열 수 변경, breakpoint)
 - 컴포넌트 타입 결정 (button, select, input 등)
+- gap 적용 여부 (구체적 수치 제외)
 
 ### ❌ 절대 포함하지 말 것
 - 색상 값 (#hex, rgb 등)
@@ -38,16 +98,21 @@
 - font-size, font-weight
 - border-radius 값
 - 상태별 스타일 (hover, focus, disabled)
+- transition, animation
 
 ### 예시
 ```
 좋은 예:
 - 금액 버튼: display: grid, 4열, gap 적용
 - 버튼 영역: display: flex, 오른쪽 정렬
+- 반응형: 데스크톱 4열, 모바일 2열
 
 나쁜 예:
 - 금액 버튼: gap: 12px, border-radius: 8px, background: #2974e5
+- 버튼 높이: 60px, font-size: 18px
 ```
+
+---
 
 ## UI 프롬프트 작성 시 (prompt.201.ui.txt)
 
@@ -74,11 +139,15 @@
 좋은 예:
 - 금액 버튼: gap 12px, border-radius 8px, background #2974e5
 - hover: background #1e5bb8
+- 선택된 버튼: border 2px solid #2974e5, background #e8f2ff
 
 나쁜 예:
 - 금액 버튼을 grid 2열로 변경
 - 드롭다운을 버튼으로 변경
+- display: flex 추가
 ```
+
+---
 
 ## Gap은 어디에?
 
@@ -86,41 +155,205 @@
 - **Wireframe**: "gap 적용" (개념만)
 - **UI**: "gap: 12px" (구체적 수치)
 
+---
+
 ## 컴포넌트 구현 워크플로우
 
 1. **Wireframe 단계** (prompt.01.wireframe.txt 참조)
    - HTML 구조 설계
    - 레이아웃 방식 결정
    - 반응형 구조 설계
+   - 컴포넌트 타입 결정
 
 2. **UI 단계** (prompt.201.ui.txt 참조)
    - Wireframe 구조 유지
    - 시각적 스타일만 추가
    - 상태별 스타일 정의
+   - 피그마 디자인 구현
 
 3. **기능 단계** (prompt.301.func.txt)
    - 이벤트 핸들러
-   - API 연동
-   - 상태 관리
+   - API 연동 (GQL 쿼리/뮤테이션)
+   - 상태 관리 (useState, useQuery, useMutation)
+   - 에러 처리
+
+---
 
 ## 프롬프트 검증 체크리스트
 
 작성 후 반드시 확인:
+
+### Wireframe 검증
 - [ ] Wireframe에 색상/크기 값이 없는가?
+- [ ] 레이아웃 구조만 정의되어 있는가?
+- [ ] 반응형 구조 변경이 명시되어 있는가?
+- [ ] 컴포넌트 타입이 결정되어 있는가?
+
+### UI 검증
 - [ ] UI에 레이아웃 구조 변경이 없는가?
+- [ ] 모든 색상 값이 명시되어 있는가?
+- [ ] 모든 크기/간격 값이 명시되어 있는가?
+- [ ] 상태별 스타일이 정의되어 있는가?
+
+### 구조 일관성 검증
 - [ ] Wireframe과 UI 간 구조 일관성이 있는가?
+- [ ] 컴포넌트 타입이 일치하는가?
 - [ ] 반응형 구조 변경은 Wireframe에만 있는가?
+
+### 필수 구성 요소 검증
+- [ ] 헤더가 올바른가?
+- [ ] 조건-커서룰이 명시되어 있는가?
+- [ ] 조건-파일경로가 정확한가?
+- [ ] 핵심요구사항이 step-by-step으로 작성되었는가?
+
+---
+
+## 금지 사항
+
+### ❌ 코드 예시 제공 금지
+```
+❌ 나쁜 예:
+구현 예시:
+    const [state, setState] = useState("");
+
+✅ 좋은 예:
+- useState를 사용하여 상태 관리
+```
+
+### ❌ HTML/JSX 구조 예시 금지
+```
+❌ 나쁜 예:
+<div className={styles.wrapper}>
+  <input />
+</div>
+
+✅ 좋은 예:
+- wrapper > input 계층 구조
+```
+
+### ❌ 변수명/함수명 강제 금지
+```
+❌ 나쁜 예:
+- const onChangeWriter = (e) => { ... }
+
+✅ 좋은 예:
+- 작성자 입력 핸들러 함수 구현
+```
+
+### ❌ 구체적인 구현 로직 지시 금지
+```
+❌ 나쁜 예:
+- if (writer && password) { setIsActive(true); }
+
+✅ 좋은 예:
+- 필수 입력값이 모두 입력되면 버튼 활성화
+```
+
+---
 
 ## AI에게 프롬프트 작성 요청 시
 
-명령어 예시:
+### 명령어 예시 1: 신규 Wireframe 작성
 ```
-"docs/rules/PROMPT_WIREFRAME_UI_SEPARATION.md를 참조해서 포인트 사용 내역 페이지의 wireframe 프롬프트를 작성해줘"
+docs/rules/PROMPT_WIREFRAME_UI_SEPARATION.md를 참조해서
+[컴포넌트명]의 wireframe 프롬프트를 작성해줘.
 
-"prompt.01.wireframe.txt와 prompt.201.ui.txt가 역할 구분 가이드를 따르는지 검증해줘"
+파일 경로: src/components/[경로]/prompts/prompt.01.wireframe.txt
+
+요구사항:
+- [요소 1]
+- [요소 2]
+- [요소 3]
 ```
 
-## 참고
-- 상세한 가이드: `docs/rules/PROMPT_WIREFRAME_UI_SEPARATION.md`
-- 빠른 시작: `docs/guides/QUICK_START_VIBE_CODING.md`
-- 치트시트: `docs/guides/PROMPT_CHEATSHEET.md`
+### 명령어 예시 2: 신규 UI 작성
+```
+docs/rules/PROMPT_WIREFRAME_UI_SEPARATION.md를 참조해서
+[컴포넌트명]의 UI 프롬프트를 작성해줘.
+
+파일 경로: src/components/[경로]/prompts/prompt.201.ui.txt
+
+wireframe에서 정의한 구조를 유지하면서,
+브랜드 컬러(#2974e5)를 활용한 시각적 스타일링을 적용해줘.
+```
+
+### 명령어 예시 3: 프롬프트 검증
+```
+src/components/[경로]/prompts/ 폴더의
+prompt.01.wireframe.txt와 prompt.201.ui.txt를 분석해줘.
+
+docs/rules/PROMPT_WIREFRAME_UI_SEPARATION.md 가이드에 따라:
+1. wireframe에 UI 요소(색상, 크기)가 있는지 확인
+2. UI에 구조 변경 요소가 있는지 확인
+3. wireframe과 UI 간 구조 일관성 확인
+4. 문제점과 개선 방안 제시
+```
+
+### 명령어 예시 4: 프롬프트 수정
+```
+src/components/[경로]/prompts/ 폴더의 프롬프트를
+docs/rules/PROMPT_WIREFRAME_UI_SEPARATION.md 가이드에 맞게 수정해줘.
+
+1. wireframe에서 스타일 요소(색상, 크기, padding 등) 제거
+2. UI에서 레이아웃 구조(display, flex, grid) 제거
+3. 역할 구분 명확히 하기
+```
+
+---
+
+## 프롬프트 파일 명명 규칙
+
+### 기본 패턴
+```
+prompt.[번호].[타입].txt
+prompt.[번호].[타입].[기능명].txt
+```
+
+### 번호 규칙
+- `01, 101`: wireframe (구조)
+- `02, 201`: ui (디자인)
+- `301`: func (기본 기능)
+- `401`: func (추가 기능 1)
+- `501`: func (추가 기능 2)
+- `601`: func (추가 기능 3)
+
+### 타입
+- `wireframe`: 와이어프레임 (구조만)
+- `ui`: UI 구현 (디자인)
+- `func`: 기능 구현
+- `integration`: 컴포넌트 통합
+- `e2e`: e2e 테스트
+- `story`: Storybook
+
+---
+
+## 프롬프트 길이 가이드
+
+| 타입 | 적정 길이 | 너무 긴 경우 |
+|------|-----------|-------------|
+| wireframe | 40-60줄 | 코드 예시 제거 |
+| ui | 60-100줄 | 세부 내용 간소화 |
+| func | 80-120줄 | 예시 코드 제거, 요구사항만 |
+
+---
+
+## 참고 문서
+
+- **상세 가이드**: `docs/rules/PROMPT_WIREFRAME_UI_SEPARATION.md`
+- **기본 규칙**: `docs/rules/PROMPT_BASE_RULES.md`
+- **재검토 규칙**: `docs/rules/PROMPT_RECHECK_RULES.md`
+- **폴더 구조**: `docs/rules/PROMPTS_FOLDER_GUIDE.md`
+- **빠른 시작**: `docs/guides/QUICK_START_VIBE_CODING.md`
+- **치트시트**: `docs/guides/PROMPT_CHEATSHEET.md`
+- **워크플로우**: `docs/guides/VIBE_CODING_WORKFLOW.md`
+
+---
+
+## 핵심 원칙 요약
+
+1. **Wireframe = 구조 (Structure)**: "무엇을", "어디에" 배치할 것인가
+2. **UI = 스타일 (Style)**: "어떻게" 보이게 할 것인가
+3. **기능 = 로직 (Logic)**: "어떻게" 동작하게 할 것인가
+4. **역할 구분 명확히**: 각 프롬프트는 자신의 역할만 수행
+5. **구조 일관성 유지**: Wireframe과 UI 간 구조 일치 필수
+6. **검증 습관화**: 프롬프트 작성 후 반드시 검증

@@ -6,16 +6,23 @@ import Image from "next/image";
 import styles from "./styles.module.css";
 import { useMyPage } from "./hook";
 import profileImage from "@/assets/icons/profile_image.png";
+import MyPageNavigation, { MyPageTab } from "./navigation";
+import PointCharge from "./point-charge";
 
 export default function MyPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const initialTab = searchParams.get("tab") || "profile";
-  const [activeTab, setActiveTab] = useState(initialTab);
+  const initialTab = (searchParams.get("tab") as MyPageTab) || "profile";
+  const [activeTab, setActiveTab] = useState<MyPageTab>(initialTab);
   const { user, userPoint, loading, error } = useMyPage();
 
+  const handleTabChange = (tab: MyPageTab) => {
+    setActiveTab(tab);
+    router.push(`/myPage?tab=${tab}`);
+  };
+
   useEffect(() => {
-    const tab = searchParams.get("tab");
+    const tab = searchParams.get("tab") as MyPageTab;
     if (tab) {
       setActiveTab(tab);
     }
@@ -58,21 +65,8 @@ export default function MyPage() {
       <div className={styles.container}>
         <h1>마이 페이지</h1>
 
-        {/* 탭 메뉴 */}
-        <div className={styles.tabs}>
-          <button
-            className={`${styles.tab} ${activeTab === "profile" ? styles.active : ""}`}
-            onClick={() => setActiveTab("profile")}
-          >
-            프로필
-          </button>
-          <button
-            className={`${styles.tab} ${activeTab === "history" ? styles.active : ""}`}
-            onClick={() => setActiveTab("history")}
-          >
-            구매 내역
-          </button>
-        </div>
+        {/* 네비게이션 */}
+        <MyPageNavigation activeTab={activeTab} onTabChange={handleTabChange} />
 
         {/* 탭 컨텐츠 */}
         <div className={styles.tabContent}>
@@ -102,6 +96,12 @@ export default function MyPage() {
                   </div>
                 </div>
               </div>
+            </div>
+          )}
+
+          {activeTab === "point" && (
+            <div className={styles.section}>
+              <PointCharge />
             </div>
           )}
 
