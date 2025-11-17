@@ -6,6 +6,7 @@ import Image from "next/image";
 import styles from "./styles.module.css";
 import { useSignup } from "./signup/hook";
 import { useLogin } from "./login/hook";
+import FindPassword from "./find-password";
 import travelIcon from "@/assets/icons/travel.png";
 
 type AuthMode = "login" | "signup";
@@ -15,6 +16,7 @@ export default function Auth() {
   const searchParams = useSearchParams();
   const initialMode = (searchParams.get("mode") as AuthMode) || "login";
   const [mode, setMode] = useState<AuthMode>(initialMode);
+  const [isFindPasswordOpen, setIsFindPasswordOpen] = useState(false);
 
   // 로그인 훅
   const loginHook = useLogin();
@@ -117,6 +119,17 @@ export default function Auth() {
               </div>
 
               {loginHook.error && <p className={styles.error}>{loginHook.error}</p>}
+            </div>
+
+            <div className={styles.findPasswordSection}>
+              <button
+                type="button"
+                className={styles.findPasswordLink}
+                onClick={() => setIsFindPasswordOpen(true)}
+                disabled={loginHook.isLoading}
+              >
+                비밀번호 찾기
+              </button>
             </div>
 
             <div className={styles.buttonSection}>
@@ -292,6 +305,12 @@ export default function Auth() {
             </div>
           </form>
         )}
+
+        {/* 비밀번호 찾기 모달 */}
+        <FindPassword
+          isOpen={isFindPasswordOpen}
+          onClose={() => setIsFindPasswordOpen(false)}
+        />
       </div>
     </div>
   );

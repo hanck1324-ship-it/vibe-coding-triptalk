@@ -234,6 +234,33 @@
   opacity: 0.6;
 }
 
+/* 비밀번호 찾기 섹션 */
+.findPasswordSection {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -8px;
+}
+
+.findPasswordLink {
+  background: none;
+  border: none;
+  font-size: 14px;
+  color: #8c8c8c;
+  cursor: pointer;
+  padding: 4px 0;
+  text-decoration: underline;
+  transition: color 0.2s;
+}
+
+.findPasswordLink:hover:not(:disabled) {
+  color: #000000;
+}
+
+.findPasswordLink:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 /* 버튼 섹션 */
 .buttonSection {
   display: flex;

@@ -1,0 +1,264 @@
+/* 모달 오버레이 */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  padding: 20px;
+}
+
+/* 모달 */
+.modal {
+  background: #ffffff;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 420px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* 헤더 */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 24px 20px;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #000000;
+  margin: 0;
+}
+
+.closeButton {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: none;
+  font-size: 24px;
+  color: #8c8c8c;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.closeButton:hover {
+  background-color: #f5f5f5;
+  color: #000000;
+}
+
+/* 폼 */
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 컨텐츠 */
+.content {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.description {
+  font-size: 14px;
+  color: #595959;
+  line-height: 1.6;
+  margin: 0;
+  text-align: center;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #262626;
+}
+
+.input {
+  padding: 12px 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 15px;
+  color: #262626;
+  transition: all 0.2s;
+  outline: none;
+  background-color: #ffffff;
+}
+
+.input:focus {
+  border-color: #000000;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05);
+}
+
+.input:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
+.input::placeholder {
+  color: #bfbfbf;
+}
+
+/* 에러 메시지 */
+.error {
+  font-size: 14px;
+  color: #ff4d4f;
+  margin: 0;
+  padding: 8px 12px;
+  background-color: #fff1f0;
+  border-radius: 6px;
+  border-left: 3px solid #ff4d4f;
+}
+
+/* 성공 컨텐츠 */
+.successContent {
+  padding: 40px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+}
+
+.successIcon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background-color: #52c41a;
+  color: #ffffff;
+  font-size: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.successMessage {
+  font-size: 16px;
+  color: #262626;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.successMessage strong {
+  color: #000000;
+  font-weight: 600;
+}
+
+.successSubMessage {
+  font-size: 14px;
+  color: #8c8c8c;
+  margin: 0;
+}
+
+.confirmButton {
+  margin-top: 8px;
+  padding: 12px 32px;
+  border: none;
+  border-radius: 6px;
+  background-color: #000000;
+  font-size: 15px;
+  font-weight: 500;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.confirmButton:hover {
+  background-color: #333333;
+}
+
+/* 버튼 섹션 */
+.buttonSection {
+  padding: 20px 24px 24px;
+  display: flex;
+  gap: 12px;
+  border-top: 1px solid #e8e8e8;
+}
+
+.cancelButton {
+  flex: 1;
+  padding: 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  background-color: #ffffff;
+  font-size: 15px;
+  font-weight: 500;
+  color: #262626;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cancelButton:hover:not(:disabled) {
+  background-color: #fafafa;
+  border-color: #d9d9d9;
+}
+
+.cancelButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.submitButton {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  background-color: #000000;
+  font-size: 15px;
+  font-weight: 500;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.submitButton:hover:not(:disabled) {
+  background-color: #333333;
+}
+
+.submitButton:disabled {
+  background-color: #e0e0e0;
+  color: #999999;
+  cursor: not-allowed;
+}
+
+/* 반응형 */
+@media (max-width: 480px) {
+  .modal {
+    max-width: 100%;
+    margin: 0;
+  }
+
+  .header {
+    padding: 20px 20px 16px;
+  }
+
+  .content {
+    padding: 20px;
+  }
+
+  .buttonSection {
+    padding: 16px 20px 20px;
+  }
+}
+
