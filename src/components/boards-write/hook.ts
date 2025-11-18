@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, ChangeEvent } from "react";
+import { useState, useEffect, useCallback, ChangeEvent } from "react";
 import { useMutation, useQuery } from "@apollo/client";
 import { useRouter, useParams } from "next/navigation";
 import { CREATE_BOARD, UPDATE_BOARD, FETCH_BOARD } from "./queries";
@@ -75,37 +75,37 @@ export const useBoardWrite = (isEdit: boolean = false) => {
   }, [writer, password, title, contents]);
 
   // 입력 핸들러
-  const onChangeWriter = (e: ChangeEvent<HTMLInputElement>) => {
+  const onChangeWriter = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setWriter(e.target.value);
     if (e.target.value.trim()) {
       setWriterError("");
     }
-  };
+  }, []);
 
-  const onChangePassword = (e: ChangeEvent<HTMLInputElement>) => {
+  const onChangePassword = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
     if (e.target.value.trim()) {
       setPasswordError("");
     }
-  };
+  }, []);
 
-  const onChangeTitle = (e: ChangeEvent<HTMLInputElement>) => {
+  const onChangeTitle = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
     if (e.target.value.trim()) {
       setTitleError("");
     }
-  };
+  }, []);
 
-  const onChangeContents = (e: ChangeEvent<HTMLTextAreaElement>) => {
+  const onChangeContents = useCallback((e: ChangeEvent<HTMLTextAreaElement>) => {
     setContents(e.target.value);
     if (e.target.value.trim()) {
       setContentsError("");
     }
-  };
+  }, []);
 
-  const onChangeAddressDetail = (e: ChangeEvent<HTMLInputElement>) => {
+  const onChangeAddressDetail = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setAddressDetail(e.target.value);
-  };
+  }, []);
 
   // 유튜브 URL 유효성 검증 함수
   const isValidYoutubeUrl = (url: string): boolean => {
@@ -114,28 +114,28 @@ export const useBoardWrite = (isEdit: boolean = false) => {
     return youtubeRegex.test(url);
   };
 
-  const onChangeYoutubeUrl = (e: ChangeEvent<HTMLInputElement>) => {
+  const onChangeYoutubeUrl = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     const url = e.target.value;
     setYoutubeUrl(url);
-    
+
     // 유튜브 URL 유효성 검증 (값이 있을 때만)
     if (url.trim() && !isValidYoutubeUrl(url)) {
       setYoutubeUrlError('올바른 유튜브 URL 형식이 아닙니다. (예: https://www.youtube.com/watch?v=xxxxx)');
     } else {
       setYoutubeUrlError('');
     }
-  };
+  }, []);
 
   // 우편번호 검색 모달
-  const handleTogglePostcodeModal = () => {
+  const handleTogglePostcodeModal = useCallback(() => {
     setIsPostcodeModalOpen((prev) => !prev);
-  };
+  }, []);
 
-  const handleCompletePostcode = (data: IAddress) => {
+  const handleCompletePostcode = useCallback((data: IAddress) => {
     setZipcode(data.zonecode);
     setAddress(data.address);
     setIsPostcodeModalOpen(false);
-  };
+  }, []);
 
   // 알림 모달
   const handleOk = () => {

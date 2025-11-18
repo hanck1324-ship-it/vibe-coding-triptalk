@@ -82,7 +82,7 @@
             - loading이 true일 때: loading 메시지만 표시
             - accommodation이 있을 때만: accommodationDetail 영역 표시
             - errorMessage가 있을 때만: 에러 메시지 표시
-
+            
         4) 데이터 바인딩
             - accommodation.image → 이미지 src
             - accommodation.title → 이미지 alt, 제목

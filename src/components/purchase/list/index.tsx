@@ -3,11 +3,13 @@
 import Image from "next/image";
 import { Input, DatePicker, Button } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
+import { useRouter } from "next/navigation";
 import styles from "./styles.module.css";
 import { usePurchase } from "./hook";
-import { mockAccommodations, mockRecommendBanners } from "./mockData";
+import { mockRecommendBanners } from "./mockData";
 
 export default function PurchaseList() {
+  const router = useRouter();
   const {
     activeTab,
     searchKeyword,
@@ -18,12 +20,10 @@ export default function PurchaseList() {
     setSelectedDate,
     handleCategoryToggle,
     handleSearch,
+    travelproducts,
+    loading,
+    error,
   } = usePurchase();
-
-  // 탭에 따라 필터링된 숙박권
-  const filteredAccommodations = mockAccommodations.filter(
-    (item) => item.status === activeTab
-  );
 
   const categories = [
     "1인 전용",
@@ -159,43 +159,52 @@ export default function PurchaseList() {
 
         {/* 숙박권 카드 그리드 (285:31959) */}
         <div className={styles.cardGrid}>
-          {filteredAccommodations.map((item) => (
+          {loading && (
+            <div className={styles.loading}>상품을 불러오는 중입니다...</div>
+          )}
+          {error && (
+            <div className={styles.error}>상품을 불러오는 중 오류가 발생했습니다.</div>
+          )}
+          {!loading && !error && travelproducts.length === 0 && (
+            <div className={styles.empty}>표시할 상품이 없습니다.</div>
+          )}
+          {!loading && !error && travelproducts.map((item) => (
             <div
-              key={item.id}
+              key={item._id}
               className={styles.card}
-              data-testid={`accommodation-card-${item.id}`}
-              onClick={() => window.location.href = `/purchase/${item.id}`}
+              data-testid={`accommodation-card-${item._id}`}
+              onClick={() => router.push(`/purchase/${item._id}`)}
               style={{ cursor: 'pointer' }}
             >
               <div className={styles.cardImageWrapper}>
                 <Image
-                  src={item.imagePath}
-                  alt={item.title}
+                  src={item.images?.[0] || "/assets/images/openthesea.png"}
+                  alt={item.name}
                   fill
                   style={{ objectFit: "cover" }}
                 />
               </div>
               <div className={styles.cardContent}>
-                <div className={styles.cardTitle}>{item.title}</div>
-                <div className={styles.cardDescription}>{item.description}</div>
+                <div className={styles.cardTitle}>{item.name}</div>
+                <div className={styles.cardDescription}>{item.remarks}</div>
                 <div className={styles.cardTags}>
-                  {item.tags.map((tag, idx) => (
+                  {item.tags?.map((tag, idx) => (
                     <span key={idx}>{tag} </span>
                   ))}
                 </div>
                 <div className={styles.cardFooter}>
                   <div className={styles.cardProfile}>
                     <Image
-                      src={item.seller.profileImage}
-                      alt={item.seller.name}
+                      src={item.seller?.picture || "/assets/icons/profile_image.png"}
+                      alt={item.seller?.name || "판매자"}
                       width={24}
                       height={24}
                       style={{ borderRadius: '50%' }}
                     />
-                    <span>{item.seller.name}</span>
+                    <span>{item.seller?.name || "판매자"}</span>
                   </div>
                   <div className={styles.cardPrice}>
-                    {item.price.toLocaleString()}원
+                    {item.price?.toLocaleString() || 0}원
                   </div>
                 </div>
               </div>

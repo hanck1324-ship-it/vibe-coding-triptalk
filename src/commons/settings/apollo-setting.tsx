@@ -1,17 +1,18 @@
 "use client"
 
-import { ApolloClient, ApolloProvider, InMemoryCache, createHttpLink, from } from "@apollo/client";
+import { ApolloClient, ApolloProvider, InMemoryCache, from } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { onError } from "@apollo/client/link/error";
 import { ApolloLink } from "@apollo/client";
+import createUploadLink from "apollo-upload-client/createUploadLink.mjs";
 
 interface IApolloSetting {
     children: React.ReactNode
 }
 
 export default function ApolloSetting(props: IApolloSetting) {
-    const httpLink = createHttpLink({
-        // ❗️ 바로 이 주소가 올바른 서버 주소입니다.
+    // 파일 업로드를 지원하는 uploadLink 사용
+    const uploadLink = createUploadLink({
         uri: "http://main-practice.codebootcamp.co.kr/graphql",
     });
 
@@ -145,7 +146,7 @@ export default function ApolloSetting(props: IApolloSetting) {
     });
 
     const client = new ApolloClient({
-        link: from([loggingLink, errorLink, authLink, httpLink]),
+        link: from([loggingLink, errorLink, authLink, uploadLink]),
         cache: new InMemoryCache()
     });
 
