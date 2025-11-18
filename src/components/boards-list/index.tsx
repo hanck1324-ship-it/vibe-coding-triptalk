@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import styles from "./styles.module.css";
 import { mockBoardPosts, mockBoardCategories, getHotPosts, getPinnedPosts, getBoardPostsByCategory, type BoardPost } from "./mockData";
@@ -23,6 +24,7 @@ const BANNER_IMAGES = [
 ];
 
 export default function BoardsList() {
+  const router = useRouter();
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [searchKeyword, setSearchKeyword] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -82,6 +84,10 @@ export default function BoardsList() {
     setCurrentPage(page);
     // 페이지 변경 시 상단으로 스크롤
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleRegisterClick = () => {
+    router.push("/boards/new");
   };
 
   return (
@@ -182,7 +188,7 @@ export default function BoardsList() {
           <button className={styles.searchButton} onClick={handleSearch}>
             검색
           </button>
-          <button className={styles.registerButton}>
+          <button className={styles.registerButton} onClick={handleRegisterClick}>
             트립토크 등록
           </button>
         </div>
