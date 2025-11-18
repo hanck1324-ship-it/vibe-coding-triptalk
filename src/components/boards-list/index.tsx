@@ -54,10 +54,12 @@ export default function BoardsList() {
     [searchedPosts.length, itemsPerPage]
   );
 
+  // startIndex를 별도로 계산 (currentPosts와 테이블 렌더링에서 사용)
+  const startIndex = (currentPage - 1) * itemsPerPage;
+
   const currentPosts = useMemo(() => {
-    const startIndex = (currentPage - 1) * itemsPerPage;
     return searchedPosts.slice(startIndex, startIndex + itemsPerPage);
-  }, [searchedPosts, currentPage, itemsPerPage]);
+  }, [searchedPosts, startIndex, itemsPerPage]);
 
   const handlePrevBanner = () => {
     setCurrentBannerIndex((prev) => (prev === 0 ? BANNER_IMAGES.length - 1 : prev - 1));
