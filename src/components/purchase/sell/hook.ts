@@ -1,10 +1,25 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
+import { useMutation, useQuery } from "@apollo/client";
+import { CREATE_TRAVELPRODUCT, UPDATE_TRAVELPRODUCT, UPLOAD_FILE, FETCH_TRAVELPRODUCT_FOR_EDIT } from "./queries";
 
-export const usePurchaseSell = () => {
+export const usePurchaseSell = (isEdit: boolean = false) => {
   const router = useRouter();
+  const params = useParams();
+  const travelproductId = params?.travelproductId as string;
+
+  // GraphQL 뮤테이션
+  const [uploadFile] = useMutation(UPLOAD_FILE);
+  const [createTravelproduct] = useMutation(CREATE_TRAVELPRODUCT);
+  const [updateTravelproduct] = useMutation(UPDATE_TRAVELPRODUCT);
+
+  // 수정 모드일 때 기존 데이터 로드
+  const { data } = useQuery(FETCH_TRAVELPRODUCT_FOR_EDIT, {
+    variables: { travelproductId },
+    skip: !isEdit || !travelproductId,
+  });
 
   // 폼 상태
   const [productName, setProductName] = useState("");
@@ -21,8 +36,32 @@ export const usePurchaseSell = () => {
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
 
+  // 수정 모드: 기존 이미지 URL 저장
+  const [existingImageUrls, setExistingImageUrls] = useState<string[]>([]);
+
   // 폼 유효성
   const [isFormValid, setIsFormValid] = useState(false);
+
+  // 수정 모드일 때 초기값 설정
+  useEffect(() => {
+    if (isEdit && data?.fetchTravelproduct) {
+      const product = data.fetchTravelproduct;
+      setProductName(product.name || "");
+      setSummary(product.remarks || "");
+      setDescription(product.contents || "");
+      setPrice(product.price?.toString() || "");
+      setZipcode(product.travelproductAddress?.zipcode || "");
+      setAddress(product.travelproductAddress?.address || "");
+      setAddressDetail(product.travelproductAddress?.addressDetail || "");
+      setLatitude(product.travelproductAddress?.lat?.toString() || "");
+      setLongitude(product.travelproductAddress?.lng?.toString() || "");
+
+      // 기존 이미지 URL 설정
+      if (product.images && product.images.length > 0) {
+        setExistingImageUrls(product.images);
+      }
+    }
+  }, [isEdit, data]);
 
   // 폼 입력 핸들러
   const onChangeProductName = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -78,12 +117,20 @@ export const usePurchaseSell = () => {
       return;
     }
 
-    // File 객체 배열에 추가
-    setImageFiles((prev) => [...prev, file]);
-
-    // 미리보기 URL 생성 및 추가
-    const previewUrl = URL.createObjectURL(file);
-    setPreviewUrls((prev) => [...prev, previewUrl]);
+    try {
+      // 파일 검증 통과 후 미리보기 URL 생성
+      const previewUrl = URL.createObjectURL(file);
+      
+      // File 객체 배열에 추가
+      setImageFiles((prev) => [...prev, file]);
+      
+      // 미리보기 URL 배열에 추가
+      setPreviewUrls((prev) => [...prev, previewUrl]);
+    } catch (error) {
+      console.error("미리보기 URL 생성 실패:", error);
+      alert("이미지 미리보기 생성에 실패했습니다. 다시 시도해주세요.");
+      return;
+    }
 
     // input 초기화 (같은 파일 재선택 가능하도록)
     e.target.value = "";
@@ -91,14 +138,32 @@ export const usePurchaseSell = () => {
 
   // 이미지 삭제 핸들러
   const onImageRemove = (index: number) => {
-    // 메모리 해제
-    URL.revokeObjectURL(previewUrls[index]);
+    // 유효한 인덱스 확인
+    if (index < 0 || index >= previewUrls.length) {
+      console.warn("유효하지 않은 이미지 인덱스:", index);
+      return;
+    }
+
+    // 메모리 해제 (삭제된 이미지의 URL 즉시 해제)
+    const urlToRevoke = previewUrls[index];
+    if (urlToRevoke) {
+      try {
+        URL.revokeObjectURL(urlToRevoke);
+      } catch (error) {
+        console.error("URL 해제 실패:", error);
+      }
+    }
 
     // File 배열에서 제거
     setImageFiles((prev) => prev.filter((_, i) => i !== index));
 
-    // URL 배열에서 제거
+    // URL 배열에서 제거 (상태 동기화 보장)
     setPreviewUrls((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  // 기존 이미지 삭제 핸들러 (수정 모드)
+  const onExistingImageRemove = (index: number) => {
+    setExistingImageUrls((prev) => prev.filter((_, i) => i !== index));
   };
 
   // 주소 검색 모달 상태
@@ -142,43 +207,169 @@ export const usePurchaseSell = () => {
   };
 
   // 등록 버튼 클릭 핸들러
-  const onSubmit = () => {
+  const onSubmit = async () => {
     if (!isFormValid) return;
 
-    // FormData 생성
-    const formData = new FormData();
+    try {
+      console.log("여행 상품 등록 시작...");
 
-    // 이미지 파일들 추가
-    imageFiles.forEach((file) => {
-      formData.append("images", file);
-    });
+      // 1. 이미지 업로드
+      let imageUrls: string[] = [];
+      if (imageFiles.length > 0) {
+        console.log(`${imageFiles.length}개의 이미지 업로드 중...`);
 
-    // 나머지 폼 데이터 추가
-    formData.append("productName", productName);
-    formData.append("summary", summary);
-    formData.append("description", description);
-    formData.append("price", price);
-    formData.append("zipcode", zipcode);
-    formData.append("address", address);
-    formData.append("addressDetail", addressDetail);
-    formData.append("latitude", latitude);
-    formData.append("longitude", longitude);
+        const uploadPromises = imageFiles.map(async (file) => {
+          try {
+            const result = await uploadFile({
+              variables: { file },
+            });
+            return result.data?.uploadFile?.url || "";
+          } catch (error) {
+            console.error("이미지 업로드 실패:", error);
+            throw new Error("이미지 업로드에 실패했습니다.");
+          }
+        });
 
-    // TODO: 실제 API 호출
-    console.log("등록 데이터:", {
-      productName,
-      summary,
-      description,
-      price,
-      zipcode,
-      address,
-      addressDetail,
-      latitude,
-      longitude,
-      imageCount: imageFiles.length,
-    });
+        imageUrls = await Promise.all(uploadPromises);
+        console.log("이미지 업로드 완료:", imageUrls);
+      }
 
-    alert("등록이 완료되었습니다! (실제 API는 추후 연동 예정)");
+      // 2. 여행 상품 등록
+      const createTravelproductInput: any = {
+        name: productName,
+        remarks: summary,
+        contents: description,
+        price: Number(price),
+      };
+
+      // 이미지 URL 추가
+      if (imageUrls.length > 0) {
+        createTravelproductInput.images = imageUrls;
+      }
+
+      // 주소 정보 추가
+      if (address) {
+        createTravelproductInput.travelproductAddress = {
+          zipcode: zipcode || "",
+          address: address || "",
+          addressDetail: addressDetail || "",
+          lat: latitude ? parseFloat(latitude) : undefined,
+          lng: longitude ? parseFloat(longitude) : undefined,
+        };
+      }
+
+      console.log("여행 상품 등록 요청:", createTravelproductInput);
+
+      const result = await createTravelproduct({
+        variables: { createTravelproductInput },
+      });
+
+      if (result.data?.createTravelproduct) {
+        console.log("여행 상품 등록 완료:", result.data.createTravelproduct);
+        alert("숙박권 판매 등록이 완료되었습니다!");
+        router.push("/purchase");
+      }
+    } catch (error: any) {
+      console.error("여행 상품 등록 에러:", error);
+
+      let errorMessage = "상품 등록에 실패했습니다.";
+
+      if (error.message) {
+        errorMessage = error.message;
+      } else if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+        errorMessage = error.graphQLErrors[0].message;
+      } else if (error.networkError) {
+        errorMessage = "네트워크 오류가 발생했습니다.";
+      }
+
+      alert(errorMessage);
+    }
+  };
+
+  // 수정 버튼 클릭 핸들러
+  const onClickUpdate = async () => {
+    if (!isFormValid) return;
+
+    try {
+      console.log("여행 상품 수정 시작...");
+
+      // 1. 새로운 이미지 업로드
+      let newImageUrls: string[] = [];
+      if (imageFiles.length > 0) {
+        console.log(`${imageFiles.length}개의 새 이미지 업로드 중...`);
+
+        const uploadPromises = imageFiles.map(async (file) => {
+          try {
+            const result = await uploadFile({
+              variables: { file },
+            });
+            return result.data?.uploadFile?.url || "";
+          } catch (error) {
+            console.error("이미지 업로드 실패:", error);
+            throw new Error("이미지 업로드에 실패했습니다.");
+          }
+        });
+
+        newImageUrls = await Promise.all(uploadPromises);
+        console.log("새 이미지 업로드 완료:", newImageUrls);
+      }
+
+      // 2. 전체 이미지 URL 배열 (기존 + 새로운)
+      const allImageUrls = [...existingImageUrls, ...newImageUrls];
+
+      // 3. 여행 상품 수정
+      const updateTravelproductInput: any = {
+        name: productName,
+        remarks: summary,
+        contents: description,
+        price: Number(price),
+      };
+
+      // 이미지 URL 추가
+      if (allImageUrls.length > 0) {
+        updateTravelproductInput.images = allImageUrls;
+      }
+
+      // 주소 정보 추가
+      if (address) {
+        updateTravelproductInput.travelproductAddress = {
+          zipcode: zipcode || "",
+          address: address || "",
+          addressDetail: addressDetail || "",
+          lat: latitude ? parseFloat(latitude) : undefined,
+          lng: longitude ? parseFloat(longitude) : undefined,
+        };
+      }
+
+      console.log("여행 상품 수정 요청:", updateTravelproductInput);
+
+      const result = await updateTravelproduct({
+        variables: {
+          travelproductId,
+          updateTravelproductInput,
+        },
+      });
+
+      if (result.data?.updateTravelproduct) {
+        console.log("여행 상품 수정 완료:", result.data.updateTravelproduct);
+        alert("숙박권 수정이 완료되었습니다!");
+        router.push(`/purchase/${travelproductId}`);
+      }
+    } catch (error: any) {
+      console.error("여행 상품 수정 에러:", error);
+
+      let errorMessage = "상품 수정에 실패했습니다.";
+
+      if (error.message) {
+        errorMessage = error.message;
+      } else if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+        errorMessage = error.graphQLErrors[0].message;
+      } else if (error.networkError) {
+        errorMessage = "네트워크 오류가 발생했습니다.";
+      }
+
+      alert(errorMessage);
+    }
   };
 
   // 폼 유효성 검증
@@ -193,11 +384,18 @@ export const usePurchaseSell = () => {
     setIsFormValid(isValid);
   }, [productName, summary, description, price, address]);
 
-  // 컴포넌트 언마운트 시 모든 미리보기 URL 해제
+  // 컴포넌트 언마운트 시 모든 미리보기 URL 해제 (메모리 누수 방지)
   useEffect(() => {
     return () => {
+      // cleanup 함수: 모든 생성된 임시 URL 해제
       previewUrls.forEach((url) => {
-        URL.revokeObjectURL(url);
+        if (url) {
+          try {
+            URL.revokeObjectURL(url);
+          } catch (error) {
+            console.error("URL 해제 실패:", error);
+          }
+        }
       });
     };
   }, [previewUrls]);
@@ -217,6 +415,7 @@ export const usePurchaseSell = () => {
     // 이미지 상태
     imageFiles,
     previewUrls,
+    existingImageUrls,
 
     // 폼 핸들러
     onChangeProductName,
@@ -226,10 +425,11 @@ export const usePurchaseSell = () => {
     onChangeAddressDetail,
     onChangeLatitude,
     onChangeLongitude,
-
+   
     // 이미지 핸들러
     onImageAdd,
     onImageRemove,
+    onExistingImageRemove,
 
     // 주소 검색
     isPostcodeModalOpen,
@@ -239,7 +439,12 @@ export const usePurchaseSell = () => {
 
     // 제출
     onSubmit,
+    onClickUpdate,
     isFormValid,
     handleCancel,
+
+    // 수정 모드
+    isEdit,
+    data,
   };
 };
