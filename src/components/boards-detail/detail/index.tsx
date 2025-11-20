@@ -5,9 +5,12 @@ import Image from "next/image";
 import styles from "./styles.module.css";
 import { useBoardDetail } from "./hook";
 import dynamic from 'next/dynamic';
-const ReactPlayer = dynamic(() => import('react-player'), { ssr: false }) as any;
+const ReactPlayer = dynamic(() => import('react-player').then(mod => mod.default), {
+  ssr: false,
+  loading: () => <div>영상 로딩 중...</div>
+});
 import { LikeOutlined, DislikeOutlined } from '@ant-design/icons';
-import { Tooltip } from 'antd'; 
+import { Tooltip, Modal, Input, Button } from 'antd'; 
 
 import locationImage from "@/assets/icons/location.png";
 import clipImage from "@/assets/icons/clip.png";
@@ -18,7 +21,16 @@ export default function BoardsDetail() {
   const params = useParams();
   const boardId = params.boardId as string;
 
-  const { board, loading } = useBoardDetail(boardId);
+  const { 
+    board, 
+    loading,
+    isDeleteModalOpen,
+    deletePassword,
+    setDeletePassword,
+    handleDeleteClick,
+    handleDeleteCancel,
+    handleDeleteConfirm,
+  } = useBoardDetail(boardId);
 
   if (loading) { return <div>게시글을 불러오는 중입니다...</div>; }
 
@@ -49,12 +61,12 @@ export default function BoardsDetail() {
 
           <div className={styles.detailContentContainer}>
             <div className={styles.detailContentText}>{board?.contents}</div>
-            {board?.youtubeUrl && (
+            {board?.youtubeUrl && board.youtubeUrl.trim() !== '' && (
               <div className={styles.detailYoutubeWrapper}>
                 <ReactPlayer
                   url={board.youtubeUrl}
-                  width="486px"
-                  height="240px"
+                  width="100%"
+                  height="400px"
                   controls
                   onError={(e: any) => console.error('유튜브 영상을 불러올 수 없습니다:', e)}
                 />
@@ -81,8 +93,36 @@ export default function BoardsDetail() {
           <button className={styles.detailButton} onClick={() => router.push(`/boards/${boardId}/edit`)}>
             수정하기
           </button>
+          <button 
+            className={styles.detailButton} 
+            onClick={handleDeleteClick}
+            style={{ backgroundColor: '#ff4d4f', color: 'white' }}
+          >
+            삭제하기
+          </button>
         </div>
       </div>
+
+      {/* 삭제 확인 모달 */}
+      <Modal
+        title="게시물 삭제"
+        open={isDeleteModalOpen}
+        onOk={handleDeleteConfirm}
+        onCancel={handleDeleteCancel}
+        footer={[
+          <Button key="cancel" onClick={handleDeleteCancel}>
+            취소
+          </Button>,
+          <Button key="delete" type="primary" danger onClick={handleDeleteConfirm}>
+            삭제
+          </Button>,
+        ]}
+      >
+        <p>정말로 이 게시물을 삭제하시겠습니까?</p>
+        <p style={{ color: '#ff4d4f', fontSize: '12px', marginTop: '8px' }}>
+          삭제된 게시물은 복구할 수 없습니다.
+        </p>
+      </Modal>
     </div>
   );
 }

@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { Input, DatePicker, Button } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
+import { Input, DatePicker, Button, Modal } from "antd";
+import { SearchOutlined, DeleteOutlined, HeartOutlined, HeartFilled } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
 import styles from "./styles.module.css";
 import { usePurchase } from "./hook";
@@ -21,8 +21,22 @@ export default function PurchaseList() {
     handleCategoryToggle,
     handleSearch,
     travelproducts,
+    allTravelproducts,
     loading,
     error,
+    isDeleteModalOpen,
+    handleDeleteClick,
+    handleDeleteCancel,
+    handleDeleteConfirm,
+    loggedInUserId,
+    bookmarkedIds,
+    handleToggleBookmark,
+    recentProducts,
+    handleCardClick,
+    currentPage,
+    totalPages,
+    handleNextPage,
+    handlePrevPage,
   } = usePurchase();
 
   const categories = [
@@ -168,66 +182,172 @@ export default function PurchaseList() {
           {!loading && !error && travelproducts.length === 0 && (
             <div className={styles.empty}>표시할 상품이 없습니다.</div>
           )}
-          {!loading && !error && travelproducts.map((item) => (
-            <div
-              key={item._id}
-              className={styles.card}
-              data-testid={`accommodation-card-${item._id}`}
-              onClick={() => router.push(`/purchase/${item._id}`)}
-              style={{ cursor: 'pointer' }}
-            >
-              <div className={styles.cardImageWrapper}>
-                <Image
-                  src={item.images?.[0] || "/assets/images/openthesea.png"}
-                  alt={item.name}
-                  fill
-                  style={{ objectFit: "cover" }}
-                />
-              </div>
-              <div className={styles.cardContent}>
-                <div className={styles.cardTitle}>{item.name}</div>
-                <div className={styles.cardDescription}>{item.remarks}</div>
-                <div className={styles.cardTags}>
-                  {item.tags?.map((tag, idx) => (
-                    <span key={idx}>{tag} </span>
-                  ))}
+          {!loading && !error && travelproducts.map((item) => {
+            // 이미지 URL 검증 및 fallback 처리
+            const getValidImageUrl = (imageUrl?: string | null): string => {
+              if (!imageUrl || imageUrl.trim() === '') {
+                return "/assets/images/openthesea.png";
+              }
+              
+              const trimmedUrl = imageUrl.trim();
+              
+              // 유효한 URL 형식인지 확인
+              try {
+                // 상대 경로인 경우 그대로 반환
+                if (trimmedUrl.startsWith('/')) {
+                  return trimmedUrl;
+                }
+                
+                // 절대 URL인 경우 URL 객체로 검증
+                new URL(trimmedUrl);
+                return trimmedUrl;
+              } catch (e) {
+                // 유효하지 않은 URL이면 fallback 이미지 사용
+                console.warn(`Invalid image URL: ${trimmedUrl}`);
+                return "/assets/images/openthesea.png";
+              }
+            };
+
+            const imageUrl = getValidImageUrl(item.images?.[0]);
+            
+            // 로그인한 사용자가 판매자인지 확인
+            const isOwner = loggedInUserId && item.seller?._id === loggedInUserId;
+
+            return (
+              <div
+                key={item._id}
+                className={styles.card}
+                data-testid={`accommodation-card-${item._id}`}
+                onClick={() => handleCardClick(item._id)}
+                style={{ cursor: 'pointer' }}
+              >
+                <div className={styles.cardImageWrapper}>
+                  <Image
+                    src={imageUrl}
+                    alt={item.name || "숙박 상품"}
+                    fill
+                    style={{ objectFit: "cover" }}
+                    onError={(e: any) => {
+                      // 이미지 로드 실패 시 fallback 이미지로 교체
+                      e.target.src = "/assets/images/openthesea.png";
+                    }}
+                  />
                 </div>
-                <div className={styles.cardFooter}>
-                  <div className={styles.cardProfile}>
-                    <Image
-                      src={item.seller?.picture || "/assets/icons/profile_image.png"}
-                      alt={item.seller?.name || "판매자"}
-                      width={24}
-                      height={24}
-                      style={{ borderRadius: '50%' }}
-                    />
-                    <span>{item.seller?.name || "판매자"}</span>
+                <div className={styles.cardContent}>
+                  <div className={styles.cardTitle}>{item.name}</div>
+                  <div className={styles.cardDescription}>{item.remarks}</div>
+                  <div className={styles.cardTags}>
+                    {item.tags?.map((tag, idx) => (
+                      <span key={idx}>{tag} </span>
+                    ))}
                   </div>
-                  <div className={styles.cardPrice}>
-                    {item.price?.toLocaleString() || 0}원
+                  <div className={styles.cardFooter}>
+                    <div className={styles.cardProfile}>
+                      <Image
+                        src={item.seller?.picture?.trim() ? item.seller.picture.trim() : "/assets/icons/profile_image.png"}
+                        alt={item.seller?.name || "판매자"}
+                        width={24}
+                        height={24}
+                        style={{ borderRadius: '50%' }}
+                      />
+                      <span>{item.seller?.name || "판매자"}</span>
+                    </div>
+                    <div className={styles.cardPrice}>
+                      {item.price?.toLocaleString() || 0}원
+                    </div>
                   </div>
                 </div>
+                {/* 북마크 버튼 */}
+                <button
+                  className={styles.bookmarkButton}
+                  onClick={(e) => handleToggleBookmark(e, item._id)}
+                  aria-label="북마크"
+                >
+                  {bookmarkedIds.includes(item._id) ? (
+                    <HeartFilled style={{ color: '#ff4d4f' }} />
+                  ) : (
+                    <HeartOutlined />
+                  )}
+                </button>
+                {/* 본인이 작성한 상품에만 삭제 버튼 표시 */}
+                {isOwner && (
+                  <button
+                    className={styles.deleteButton}
+                    onClick={(e) => handleDeleteClick(e, item._id)}
+                    aria-label="삭제"
+                    data-testid={`delete-button-${item._id}`}
+                  >
+                    <DeleteOutlined />
+                  </button>
+                )}
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
       {/* 7. 페이지네이션 영역 */}
       <div className={styles.pagination}>
-        <button className={styles.pageButton}>이전</button>
-        <button className={styles.pageButton}>다음</button>
+        <button 
+          className={styles.pageButton} 
+          onClick={handlePrevPage}
+          disabled={currentPage === 1}
+        >
+          이전
+        </button>
+        <span className={styles.pageInfo}>
+          {currentPage} / {totalPages || 1}
+        </span>
+        <button 
+          className={styles.pageButton} 
+          onClick={handleNextPage}
+          disabled={currentPage === totalPages || totalPages === 0}
+        >
+          다음
+        </button>
       </div>
 
       {/* 8. 최근 본 상품 영역 (285:32006) - 96x300px */}
       <div className={styles.recentArea}>
         <div className={styles.recentTitle}>최근 본 상품</div>
         <div className={styles.recentList}>
-          <div className={styles.recentItem}>최근 1</div>
-          <div className={styles.recentItem}>최근 2</div>
-          <div className={styles.recentItem}>최근 3</div>
+          {recentProducts.length === 0 && (
+            <div className={styles.recentEmpty}>최근 본 상품이 없습니다</div>
+          )}
+          {recentProducts.map((productId) => {
+            const product = allTravelproducts.find((p) => p._id === productId);
+            if (!product) return null;
+            
+            return (
+              <div
+                key={productId}
+                className={styles.recentItem}
+                onClick={() => handleCardClick(productId)}
+              >
+                <Image
+                  src={product.images?.[0] || "/assets/images/openthesea.png"}
+                  alt={product.name || "상품"}
+                  fill
+                  style={{ objectFit: "cover" }}
+                />
+              </div>
+            );
+          })}
         </div>
       </div>
+
+      {/* 삭제 확인 모달 */}
+      <Modal
+        title="상품 삭제"
+        open={isDeleteModalOpen}
+        onOk={handleDeleteConfirm}
+        onCancel={handleDeleteCancel}
+        okText="예"
+        cancelText="아니오"
+        centered
+      >
+        <p>정말 삭제하시겠습니까?</p>
+      </Modal>
     </div>
   );
 }

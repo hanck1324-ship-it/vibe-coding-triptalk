@@ -37,3 +37,8 @@ export const FETCH_TRAVELPRODUCTS = gql`
   }
 `;
 
+export const DELETE_TRAVELPRODUCT = gql`
+  mutation deleteTravelproduct($travelproductId: ID!) {
+    deleteTravelproduct(travelproductId: $travelproductId)
+  }
+`;

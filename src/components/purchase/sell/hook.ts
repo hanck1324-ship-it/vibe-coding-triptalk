@@ -1,13 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter, useParams } from "next/navigation";
+import { useRouter, useParams, useSearchParams } from "next/navigation";
 import { useMutation, useQuery } from "@apollo/client";
 import { CREATE_TRAVELPRODUCT, UPDATE_TRAVELPRODUCT, UPLOAD_FILE, FETCH_TRAVELPRODUCT_FOR_EDIT } from "./queries";
 
 export const usePurchaseSell = (isEdit: boolean = false) => {
   const router = useRouter();
   const params = useParams();
+  const searchParams = useSearchParams();
   const travelproductId = params?.travelproductId as string;
 
   // GraphQL 뮤테이션
@@ -32,6 +33,10 @@ export const usePurchaseSell = (isEdit: boolean = false) => {
   const [latitude, setLatitude] = useState("");
   const [longitude, setLongitude] = useState("");
 
+  // 태그 상태
+  const [tags, setTags] = useState<string[]>([]);
+  const [tagInput, setTagInput] = useState("");
+
   // 이미지 상태 (File 객체 배열 + 미리보기 URL 배열)
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
@@ -41,6 +46,41 @@ export const usePurchaseSell = (isEdit: boolean = false) => {
 
   // 폼 유효성
   const [isFormValid, setIsFormValid] = useState(false);
+
+  // 게시글에서 전달된 데이터로 폼 초기화 (쿼리 파라미터)
+  useEffect(() => {
+    if (!isEdit) {
+      const boardId = searchParams.get("boardId");
+      if (boardId) {
+        // 게시글 데이터를 쿼리 파라미터에서 읽어서 폼에 자동 입력
+        const title = searchParams.get("title");
+        const contents = searchParams.get("contents");
+        const zipcodeParam = searchParams.get("zipcode");
+        const addressParam = searchParams.get("address");
+        const addressDetailParam = searchParams.get("addressDetail");
+        const latitudeParam = searchParams.get("latitude");
+        const longitudeParam = searchParams.get("longitude");
+
+        if (title) setProductName(title);
+        if (contents) {
+          // contents를 summary와 description으로 분리
+          // 첫 줄을 summary로, 나머지를 description으로
+          const lines = contents.split("\n");
+          if (lines.length > 0) {
+            setSummary(lines[0].substring(0, 100)); // 첫 줄 최대 100자
+            setDescription(contents);
+          } else {
+            setDescription(contents);
+          }
+        }
+        if (zipcodeParam) setZipcode(zipcodeParam);
+        if (addressParam) setAddress(addressParam);
+        if (addressDetailParam) setAddressDetail(addressDetailParam);
+        if (latitudeParam) setLatitude(latitudeParam);
+        if (longitudeParam) setLongitude(longitudeParam);
+      }
+    }
+  }, [isEdit, searchParams]);
 
   // 수정 모드일 때 초기값 설정
   useEffect(() => {
@@ -59,6 +99,11 @@ export const usePurchaseSell = (isEdit: boolean = false) => {
       // 기존 이미지 URL 설정
       if (product.images && product.images.length > 0) {
         setExistingImageUrls(product.images);
+      }
+
+      // 기존 태그 설정
+      if (product.tags && product.tags.length > 0) {
+        setTags(product.tags);
       }
     }
   }, [isEdit, data]);
@@ -90,6 +135,45 @@ export const usePurchaseSell = (isEdit: boolean = false) => {
 
   const onChangeLongitude = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLongitude(e.target.value);
+  };
+
+  // 태그 입력 핸들러
+  const onChangeTagInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTagInput(e.target.value);
+  };
+
+  // 태그 추가 핸들러
+  const onAddTag = () => {
+    const trimmedTag = tagInput.trim();
+    if (!trimmedTag) return;
+
+    // 중복 체크
+    if (tags.includes(trimmedTag)) {
+      alert("이미 추가된 태그입니다.");
+      return;
+    }
+
+    // 최대 10개 제한
+    if (tags.length >= 10) {
+      alert("태그는 최대 10개까지 추가할 수 있습니다.");
+      return;
+    }
+
+    setTags((prev) => [...prev, trimmedTag]);
+    setTagInput("");
+  };
+
+  // 태그 삭제 핸들러
+  const onRemoveTag = (tagToRemove: string) => {
+    setTags((prev) => prev.filter((tag) => tag !== tagToRemove));
+  };
+
+  // 엔터키로 태그 추가
+  const onTagInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      onAddTag();
+    }
   };
 
   // 이미지 추가 핸들러
@@ -247,6 +331,11 @@ export const usePurchaseSell = (isEdit: boolean = false) => {
         createTravelproductInput.images = imageUrls;
       }
 
+      // 태그 추가
+      if (tags.length > 0) {
+        createTravelproductInput.tags = tags;
+      }
+
       // 주소 정보 추가
       if (address) {
         createTravelproductInput.travelproductAddress = {
@@ -328,6 +417,11 @@ export const usePurchaseSell = (isEdit: boolean = false) => {
       // 이미지 URL 추가
       if (allImageUrls.length > 0) {
         updateTravelproductInput.images = allImageUrls;
+      }
+
+      // 태그 추가
+      if (tags.length > 0) {
+        updateTravelproductInput.tags = tags;
       }
 
       // 주소 정보 추가
@@ -417,6 +511,10 @@ export const usePurchaseSell = (isEdit: boolean = false) => {
     previewUrls,
     existingImageUrls,
 
+    // 태그 상태
+    tags,
+    tagInput,
+
     // 폼 핸들러
     onChangeProductName,
     onChangeSummary,
@@ -430,6 +528,12 @@ export const usePurchaseSell = (isEdit: boolean = false) => {
     onImageAdd,
     onImageRemove,
     onExistingImageRemove,
+
+    // 태그 핸들러
+    onChangeTagInput,
+    onAddTag,
+    onRemoveTag,
+    onTagInputKeyDown,
 
     // 주소 검색
     isPostcodeModalOpen,

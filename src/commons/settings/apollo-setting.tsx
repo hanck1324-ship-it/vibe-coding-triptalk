@@ -100,22 +100,79 @@ export default function ApolloSetting(props: IApolloSetting) {
 
         if (graphQLErrors && graphQLErrors.length > 0) {
             graphQLErrors.forEach((error) => {
-                // 에러 객체의 속성을 안전하게 추출
-                const errorDetails: {
-                    message?: string;
-                    locations?: any;
-                    path?: any;
-                    extensions?: any;
-                } = {};
+                const errorMessage = error.message || "";
+                const operationName = operation?.operationName || "";
                 
-                if (error) {
-                    if (error.message) errorDetails.message = error.message;
-                    if (error.locations) errorDetails.locations = error.locations;
-                    if (error.path) errorDetails.path = error.path;
-                    if (error.extensions) errorDetails.extensions = error.extensions;
+                // 예상 가능한 에러(로그인/회원가입 실패)는 간단히 로깅
+                const isExpectedError = 
+                    errorMessage.includes("인증에 실패") ||
+                    errorMessage.includes("존재하지 않는") ||
+                    errorMessage.includes("이미 존재") ||
+                    (operationName === "loginUser" && errorMessage.includes("회원정보")) ||
+                    (operationName === "createUser" && errorMessage.includes("이메일"));
+                
+                if (isExpectedError) {
+                    // 예상 가능한 에러는 간단하게 로깅
+                    console.warn(`⚠️ ${operationName}: ${errorMessage}`);
+                } else {
+                    // 예상치 못한 에러는 상세하게 로깅
+                    const errorDetails: {
+                        message?: string;
+                        locations?: any;
+                        path?: any;
+                        extensions?: any;
+                        [key: string]: any;
+                    } = {};
+                    
+                    if (error) {
+                        // 기본 속성 추출
+                        if (error.message) errorDetails.message = error.message;
+                        if (error.locations) errorDetails.locations = error.locations;
+                        if (error.path) errorDetails.path = error.path;
+                        if (error.extensions) errorDetails.extensions = error.extensions;
+                        
+                        // 에러 객체의 모든 속성을 추출 (직접 접근이 안 되는 경우 대비)
+                        try {
+                            const errorString = JSON.stringify(error, null, 2);
+                            if (errorString && errorString !== "{}") {
+                                console.error("GraphQL 에러 (JSON):", errorString);
+                            }
+                        } catch (e) {
+                            // JSON 직렬화 실패 시 원본 에러 출력
+                            console.error("GraphQL 에러 (원본):", error);
+                        }
+                    }
+                    
+                    // 추출한 속성이 있으면 출력
+                    if (Object.keys(errorDetails).length > 0) {
+                        console.error("GraphQL 에러 상세:", errorDetails);
+                    } else {
+                        // 속성이 없으면 원본 에러 객체 출력
+                        console.error("GraphQL 에러 (원본 객체):", error);
+                    }
                 }
+
+                // 토큰 만료 에러 처리 (UNAUTHENTICATED)
+                const errorCode = error.extensions?.code;
                 
-                console.error("GraphQL 에러 상세:", errorDetails);
+                if (errorCode === "UNAUTHENTICATED" || errorMessage.includes("토큰 만료")) {
+                    console.warn("⚠️ 토큰이 만료되었습니다. 로그인 페이지로 이동합니다.");
+                    
+                    // 토큰 삭제
+                    if (typeof window !== "undefined") {
+                        localStorage.removeItem("accessToken");
+                    }
+                    
+                    // 로그인 페이지로 리다이렉트 (로그인/회원가입 요청은 제외)
+                    const operationName = operation?.operationName;
+                    const isAuthOperation = operationName === "loginUser" || operationName === "createUser";
+                    
+                    if (!isAuthOperation && typeof window !== "undefined") {
+                        // 현재 경로 저장 (로그인 후 돌아올 수 있도록)
+                        const currentPath = window.location.pathname;
+                        window.location.href = `/login?redirect=${encodeURIComponent(currentPath)}`;
+                    }
+                }
             });
         }
 

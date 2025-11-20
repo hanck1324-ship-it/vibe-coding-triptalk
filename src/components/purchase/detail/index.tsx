@@ -1,9 +1,11 @@
 "use client";
 
+import Image from "next/image";
 import styles from "./styles.module.css";
 import { usePurchaseDetail } from "./hook";
 import PurchaseModal from "../purchase-modal";
 import PointAlertModal from "../point-alert-modal";
+import DetailMap from "./map_view/DetailMap";
 
 export default function PurchaseDetail() {
   const {
@@ -36,23 +38,66 @@ export default function PurchaseDetail() {
     );
   }
 
+  // 이미지 URL 검증 및 fallback 처리
+  const getValidImageUrl = (imageUrl?: string | null): string => {
+    if (!imageUrl || imageUrl.trim() === '') {
+      return "/assets/images/openthesea.png";
+    }
+
+    const trimmedUrl = imageUrl.trim();
+
+    try {
+      // 상대 경로인 경우 그대로 반환
+      if (trimmedUrl.startsWith('/')) {
+        return trimmedUrl;
+      }
+
+      // 절대 URL인 경우 URL 객체로 검증
+      new URL(trimmedUrl);
+      return trimmedUrl;
+    } catch (e) {
+      // 유효하지 않은 URL이면 fallback 이미지 사용
+      console.warn(`Invalid image URL: ${trimmedUrl}`);
+      return "/assets/images/openthesea.png";
+    }
+  };
+
   return (
     <div className={styles.purchaseDetailContainer}>
       <div className={styles.container}>
         <h1>숙박권 상세</h1>
-        
+
         {/* 숙박권 정보 표시 영역 */}
         {accommodation && (
           <div className={styles.accommodationDetail}>
-            <img
-              src={accommodation.image}
-              alt={accommodation.title}
-              className={styles.accommodationImage}
-            />
+            <div className={styles.imageWrapper}>
+              <Image
+                src={getValidImageUrl(accommodation.image)}
+                alt={accommodation.title}
+                fill
+                style={{ objectFit: "cover" }}
+                className={styles.accommodationImage}
+                onError={(e: any) => {
+                  e.target.src = "/assets/images/openthesea.png";
+                }}
+              />
+            </div>
             <h2 className={styles.accommodationTitle}>{accommodation.title}</h2>
             <p className={styles.accommodationPrice}>
               {accommodation.price.toLocaleString()}원
             </p>
+
+            {/* 지도 표시 영역 */}
+            {accommodation.lat && accommodation.lng && (
+              <div className={styles.mapSection}>
+                <h3 className={styles.mapTitle}>위치</h3>
+                <DetailMap
+                  lat={accommodation.lat}
+                  lng={accommodation.lng}
+                  address={accommodation.address}
+                />
+              </div>
+            )}
           </div>
         )}
 

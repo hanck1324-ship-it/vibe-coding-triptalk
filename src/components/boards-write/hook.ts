@@ -3,7 +3,8 @@
 import { useState, useEffect, useCallback, ChangeEvent } from "react";
 import { useMutation, useQuery } from "@apollo/client";
 import { useRouter, useParams } from "next/navigation";
-import { CREATE_BOARD, UPDATE_BOARD, FETCH_BOARD } from "./queries";
+import { CREATE_BOARD, UPDATE_BOARD, FETCH_BOARD, UPLOAD_FILE } from "./queries";
+import { FetchBoardsDocument } from "@/commons/graphql/graphql";
 
 interface IAddress {
   address: string;
@@ -31,6 +32,8 @@ export const useBoardWrite = (isEdit: boolean = false) => {
   const [zipcode, setZipcode] = useState("");
   const [address, setAddress] = useState("");
   const [addressDetail, setAddressDetail] = useState("");
+  const [latitude, setLatitude] = useState("");
+  const [longitude, setLongitude] = useState("");
   const [youtubeUrl, setYoutubeUrl] = useState("");
   const [youtubeUrlError, setYoutubeUrlError] = useState("");
 
@@ -39,6 +42,11 @@ export const useBoardWrite = (isEdit: boolean = false) => {
   const [isPostcodeModalOpen, setIsPostcodeModalOpen] = useState(false);
   const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
   const [modalContents, setModalContents] = useState("");
+
+  // 이미지 상태
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+  const [existingImageUrls, setExistingImageUrls] = useState<string[]>([]);
 
   // 수정 모드일 때 기존 데이터 로드
   const { data } = useQuery(FETCH_BOARD, {
@@ -126,26 +134,67 @@ export const useBoardWrite = (isEdit: boolean = false) => {
     }
   }, []);
 
+  // 이미지 업로드 핸들러
+  const onChangeImages = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+
+    const fileArray = Array.from(files);
+    
+    // 최대 3개까지만
+    const newFiles = fileArray.slice(0, 3 - imageFiles.length);
+    
+    // 미리보기 URL 생성
+    const newPreviews = newFiles.map(file => URL.createObjectURL(file));
+    
+    setImageFiles(prev => [...prev, ...newFiles]);
+    setPreviewUrls(prev => [...prev, ...newPreviews]);
+  }, [imageFiles.length]);
+
+  // 이미지 삭제 핸들러
+  const onDeleteImage = useCallback((index: number) => {
+    // 미리보기 URL 해제
+    URL.revokeObjectURL(previewUrls[index]);
+    
+    setImageFiles(prev => prev.filter((_, i) => i !== index));
+    setPreviewUrls(prev => prev.filter((_, i) => i !== index));
+  }, [previewUrls]);
+
   // 우편번호 검색 모달
   const handleTogglePostcodeModal = useCallback(() => {
     setIsPostcodeModalOpen((prev) => !prev);
   }, []);
 
   const handleCompletePostcode = useCallback((data: IAddress) => {
+    console.log("주소 검색 완료:", data);
     setZipcode(data.zonecode);
     setAddress(data.address);
     setIsPostcodeModalOpen(false);
+    
+    // DaumMap 컴포넌트에서 자동으로 좌표를 설정해줌
+    // onCoordinatesChange 콜백을 통해 handleSetCoordinates가 호출됨
+  }, []);
+
+  // 위도/경도 설정 핸들러
+  const handleSetCoordinates = useCallback((lat: string, lng: string) => {
+    console.log("좌표 설정:", lat, lng);
+    setLatitude(lat);
+    setLongitude(lng);
   }, []);
 
   // 알림 모달
   const handleOk = () => {
     setIsAlertModalOpen(false);
     if (modalContents.includes("등록")) {
+      // 게시물 목록 페이지로 이동 (캐시가 이미 갱신됨)
       router.push("/boards");
+      // 페이지 새로고침으로 최신 데이터 확인
+      router.refresh();
     } else if (modalContents.includes("수정")) {
       router.push(`/boards/${boardId}`);
     }
   };
+
 
   // 유효성 검증
   const validateInputs = (): boolean => {
@@ -201,6 +250,13 @@ export const useBoardWrite = (isEdit: boolean = false) => {
 
       const result = await createBoard({
         variables: { createBoardInput },
+        // 게시물 목록 캐시 갱신
+        refetchQueries: [
+          {
+            query: FetchBoardsDocument,
+            variables: { page: 1 },
+          },
+        ],
       });
 
       if (result.data?.createBoard) {
@@ -284,6 +340,8 @@ export const useBoardWrite = (isEdit: boolean = false) => {
     zipcode,
     address,
     addressDetail,
+    latitude,
+    longitude,
     youtubeUrl,
     
     // 에러 메시지
@@ -301,10 +359,17 @@ export const useBoardWrite = (isEdit: boolean = false) => {
     onChangeAddressDetail,
     onChangeYoutubeUrl,
     
+    // 이미지
+    imageFiles,
+    previewUrls,
+    onChangeImages,
+    onDeleteImage,
+    
     // 주소 검색
     isPostcodeModalOpen,
     handleTogglePostcodeModal,
     handleCompletePostcode,
+    handleSetCoordinates,
     
     // 등록/수정
     onClickSubmit,

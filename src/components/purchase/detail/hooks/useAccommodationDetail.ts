@@ -11,7 +11,34 @@ interface IAccommodation {
   title: string;
   price: number;
   image: string;
+  lat?: number;
+  lng?: number;
+  address?: string;
 }
+
+// 이미지 URL 검증 및 fallback 처리
+const getValidImageUrl = (imageUrl?: string | null): string => {
+  if (!imageUrl || imageUrl.trim() === '') {
+    return "/assets/images/openthesea.png";
+  }
+
+  const trimmedUrl = imageUrl.trim();
+
+  try {
+    // 상대 경로인 경우 그대로 반환
+    if (trimmedUrl.startsWith('/')) {
+      return trimmedUrl;
+    }
+
+    // 절대 URL인 경우 URL 객체로 검증
+    new URL(trimmedUrl);
+    return trimmedUrl;
+  } catch (e) {
+    // 유효하지 않은 URL이면 fallback 이미지 사용
+    console.warn(`Invalid image URL: ${trimmedUrl}`);
+    return "/assets/images/openthesea.png";
+  }
+};
 
 // Travelproduct를 IAccommodation으로 변환하는 헬퍼 함수
 const transformTravelproduct = (product: Travelproduct | undefined): IAccommodation | null => {
@@ -21,13 +48,16 @@ const transformTravelproduct = (product: Travelproduct | undefined): IAccommodat
     id: product._id,
     title: product.name,
     price: product.price || 0,
-    image: product.images?.[0] || "/assets/images/openthesea.png",
+    image: getValidImageUrl(product.images?.[0]),
+    lat: product.travelproductAddress?.lat || undefined,
+    lng: product.travelproductAddress?.lng || undefined,
+    address: product.travelproductAddress?.address || undefined,
   };
 };
 
 export const useAccommodationDetail = (id: string) => {
   // 여행 상품 상세 조회
-  const { data: travelproductData, loading: travelproductLoading } = useQuery(FEsTCH_TRAVELPRODUCT, {
+  const { data: travelproductData, loading: travelproductLoading } = useQuery(FETCH_TRAVELPRODUCT, {
     variables: {
       travelproductId: id,
     },

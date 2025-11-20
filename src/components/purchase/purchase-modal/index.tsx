@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Modal } from "antd";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -133,11 +134,18 @@ export default function PurchaseModal(props: IPurchaseModalProps) {
         <div className={styles.modalContent}>
           {/* [B] 숙박권 요약 정보 */}
           <div className={styles.accommodationSummary}>
-            <img
-              src={accommodationData.image}
-              alt={accommodationData.title}
-              className={styles.accommodationImage}
-            />
+            <div className={styles.imageWrapper}>
+              <Image
+                src={accommodationData.image}
+                alt={accommodationData.title}
+                fill
+                style={{ objectFit: "cover" }}
+                className={styles.accommodationImage}
+                onError={(e: any) => {
+                  e.target.src = "/assets/images/openthesea.png";
+                }}
+              />
+            </div>
             <div className={styles.accommodationInfo}>
               <h3 className={styles.accommodationTitle}>
                 {accommodationData.title}
