@@ -1,8 +1,9 @@
 import { gql } from "@apollo/client";
 
-export const FETCH_TRAVELPRODUCT = gql`
-  query fetchTravelproduct($travelproductId: ID!) {
-    fetchTravelproduct(travelproductId: $travelproductId) {
+// 여행 상품 등록 mutation
+export const CREATE_TRAVELPRODUCT = gql`
+  mutation createTravelproduct($createTravelproductInput: CreateTravelproductInput!) {
+    createTravelproduct(createTravelproductInput: $createTravelproductInput) {
       _id
       name
       remarks
@@ -10,36 +11,36 @@ export const FETCH_TRAVELPRODUCT = gql`
       price
       images
       tags
-      pickedCount
-      createdAt
-      updatedAt
-      soldAt
       seller {
-        _id
-        name
-        email
-        picture
-      }
-      buyer {
         _id
         name
         email
       }
       travelproductAddress {
         _id
+        zipcode
         address
         addressDetail
-        zipcode
         lat
         lng
       }
+      createdAt
     }
   }
 `;
 
+// 이미지 업로드 mutation
+export const UPLOAD_FILE = gql`
+  mutation uploadFile($file: Upload!) {
+    uploadFile(file: $file) {
+      url
+    }
+  }
+`;
+
+// 여행 상품 삭제 mutation
 export const DELETE_TRAVELPRODUCT = gql`
   mutation deleteTravelproduct($travelproductId: ID!) {
     deleteTravelproduct(travelproductId: $travelproductId)
   }
 `;
-

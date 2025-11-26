@@ -12,7 +12,7 @@ export const usePurchaseDetail = () => {
   const id = params.id as string;
 
   // 분리된 hooks 사용
-  const { accommodation, currentPoint, requiredPoint, loading } =
+  const { accommodation, currentPoint, requiredPoint, loading, travelproduct, handleDelete, deleteLoading } =
     useAccommodationDetail(id);
 
   const {
@@ -24,7 +24,15 @@ export const usePurchaseDetail = () => {
     closePointAlertModal,
   } = useModal();
 
-  const { purchaseWithPoint, error, setError } = usePointPurchase();
+  const { purchaseWithPoint, error } = usePointPurchase();
+
+  // 삭제 핸들러 (삭제 후 목록으로 이동)
+  const handleDeleteProduct = async () => {
+    const success = await handleDelete();
+    if (success) {
+      router.push("/products/list");
+    }
+  };
 
   // 구매 확인 핸들러 (포인트 체크 + 결제 요청 + 라우팅)
   const handlePurchaseConfirm = async (buyerInfo: IBuyerInfo) => {
@@ -57,7 +65,7 @@ export const usePurchaseDetail = () => {
     closePurchaseModal();
 
     // 4단계: 판매 등록 화면으로 이동
-    router.push("/purchase/sell");
+    router.push("/products/sell");
   };
 
   return {
@@ -72,6 +80,9 @@ export const usePurchaseDetail = () => {
     currentPoint,
     requiredPoint,
     errorMessage: error,
+    handleDeleteProduct,
+    deleteLoading,
+    travelproduct,
   };
 };
 

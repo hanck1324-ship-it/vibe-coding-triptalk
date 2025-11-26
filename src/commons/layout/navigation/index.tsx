@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useNavigation } from "./hook";
 import logo from "@/assets/icons/logo.png";
 import profileImage from "@/assets/icons/profile_image.png";
+import downArrow from "@/assets/icons/down_arrow.png";
 
 export default function Navigation() {
   const {
@@ -32,8 +33,8 @@ export default function Navigation() {
         <span className={styles.menuItem} onClick={onClickMenu("/boards")}>
           트립토크
         </span>
-        <span className={styles.menuItem} onClick={onClickMenu("/purchase")}>
-          숙박권 구매
+        <span className={styles.menuItem} onClick={onClickMenu("/products")}>
+          숙박권
         </span>
         {isLoggedIn && (
           <span className={styles.menuItem} onClick={onClickMenu("/myPage")}>
@@ -44,7 +45,7 @@ export default function Navigation() {
       <div className={styles.wrapperRight}>
         {isLoggedIn && user ? (
           <div className={styles.profileSection} ref={dropdownRef}>
-            <div className={styles.profileInfo} onClick={toggleDropdown}>
+            <div className={styles.profileInfo}>
               <Image
                 src={user.picture || profileImage}
                 alt="프로필"
@@ -53,6 +54,23 @@ export default function Navigation() {
                 className={styles.profileImage}
               />
               <span className={styles.profileName}>{user.name}</span>
+              <button
+                type="button"
+                className={styles.dropdownToggle}
+                onClick={toggleDropdown}
+                aria-label="프로필 메뉴 열기"
+                aria-expanded={isDropdownOpen}
+              >
+                <Image
+                  src={downArrow}
+                  alt="드롭다운 아이콘"
+                  width={16}
+                  height={16}
+                  className={`${styles.dropdownIcon} ${
+                    isDropdownOpen ? styles.dropdownIconOpen : ""
+                  }`}
+                />
+              </button>
             </div>
 
             {/* 드롭다운 메뉴 */}

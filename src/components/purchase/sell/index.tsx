@@ -49,6 +49,7 @@ export default function PurchaseSell() {
     // 제출
     onSubmit,
     isFormValid,
+    isSubmitting,
     handleCancel,
   } = usePurchaseSell();
 
@@ -314,14 +315,14 @@ export default function PurchaseSell() {
           <button
             type="button"
             onClick={onSubmit}
-            disabled={!isFormValid}
+            disabled={!isFormValid || isSubmitting}
             className={
-              isFormValid
+              isFormValid && !isSubmitting
                 ? styles.submit_button_active
                 : styles.submit_button_disabled
             }
           >
-            등록하기
+            {isSubmitting ? "등록 중..." : "등록하기"}
           </button>
         </div>
       </div>

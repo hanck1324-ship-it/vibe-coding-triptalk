@@ -276,7 +276,7 @@ export const mockMainBanners: MainBanner[] = [
     subtitle: "제주 여행의 시작",
     description: "인기 숙소 모음",
     imagePath: "/assets/images/beach.png",
-    linkUrl: "/purchase/list?location=jeju",
+    linkUrl: "/products/list?location=jeju",
     backgroundColor: "#2974e5"
   },
   {

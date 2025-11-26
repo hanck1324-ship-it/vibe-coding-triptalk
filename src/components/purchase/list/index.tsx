@@ -6,7 +6,22 @@ import { SearchOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
 import styles from "./styles.module.css";
 import { usePurchase } from "./hook";
-import { mockRecommendBanners } from "./mockData";
+
+// 이미지 URL이 없거나 유효하지 않으면 기본 이미지 반환
+const getImageUrl = (url?: string | null): string => {
+  // null, undefined, 빈 문자열 체크
+  if (!url || typeof url !== 'string' || url.trim() === "") {
+    return "/assets/images/openthesea.png";
+  }
+
+  // 절대 경로인지 확인 (/, http://, https://)
+  if (url.startsWith('/') || url.startsWith('http://') || url.startsWith('https://')) {
+    return url;
+  }
+
+  // 그 외의 경우 기본 이미지
+  return "/assets/images/openthesea.png";
+};
 
 export default function PurchaseList() {
   const router = useRouter();
@@ -44,32 +59,36 @@ export default function PurchaseList() {
         <h1 className={styles.pageTitle}>숙박권 구매</h1>
       </div>
 
-      {/* 4. 상품 추천 영역 (285:31930) */}
-      <div className={styles.recommendArea}>
-        <h2 className={styles.sectionTitle}>2024 끝여름 낭만있게 마무리 하고 싶다면?</h2>
-        <div className={styles.recommendCards}>
-          {mockRecommendBanners.map((banner) => (
-            <div key={banner.id} className={styles.recommendCard}>
-              <Image
-                src={banner.imagePath}
-                alt={banner.title}
-                fill
-                style={{ objectFit: "cover" }}
-              />
-              <div className={styles.recommendCardContent}>
-                <h3>{banner.title}</h3>
-                <p>{banner.subtitle}</p>
-                <p className={styles.recommendPrice}>
-                  {banner.price.toLocaleString()}원
-                  {banner.discount && (
-                    <span className={styles.discount}> {banner.discount}% 할인</span>
-                  )}
-                </p>
+      {/* 4. 상품 추천 영역 */}
+      {travelproducts.length > 0 && (
+        <div className={styles.recommendArea}>
+          <h2 className={styles.sectionTitle}>추천 숙소</h2>
+          <div className={styles.recommendCards}>
+            {travelproducts.slice(0, 3).map((item) => (
+              <div
+                key={item._id}
+                className={styles.recommendCard}
+                onClick={() => router.push(`/products/${item._id}`)}
+                style={{ cursor: 'pointer' }}
+              >
+                <Image
+                  src={getImageUrl(item.images?.[0])}
+                  alt={item.name}
+                  fill
+                  style={{ objectFit: "cover" }}
+                />
+                <div className={styles.recommendCardContent}>
+                  <h3>{item.name}</h3>
+                  <p>{item.remarks}</p>
+                  <p className={styles.recommendPrice}>
+                    {item.price?.toLocaleString()}원
+                  </p>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* 5. 광고 배너 영역 (285:31999, 285:31937) */}
       <div className={styles.bannerArea}>
@@ -135,7 +154,7 @@ export default function PurchaseList() {
           <Button
             className={styles.sellButton}
             type="primary"
-            onClick={() => window.location.href = '/purchase/sell'}
+            onClick={() => window.location.href = '/products/sell'}
           >
             숙박권 판매하기
           </Button>
@@ -173,12 +192,12 @@ export default function PurchaseList() {
               key={item._id}
               className={styles.card}
               data-testid={`accommodation-card-${item._id}`}
-              onClick={() => router.push(`/purchase/${item._id}`)}
+              onClick={() => router.push(`/products/${item._id}`)}
               style={{ cursor: 'pointer' }}
             >
               <div className={styles.cardImageWrapper}>
                 <Image
-                  src={item.images?.[0] || "/assets/images/openthesea.png"}
+                  src={getImageUrl(item.images?.[0])}
                   alt={item.name}
                   fill
                   style={{ objectFit: "cover" }}
@@ -195,7 +214,7 @@ export default function PurchaseList() {
                 <div className={styles.cardFooter}>
                   <div className={styles.cardProfile}>
                     <Image
-                      src={item.seller?.picture || "/assets/icons/profile_image.png"}
+                      src={getImageUrl(item.seller?.picture)}
                       alt={item.seller?.name || "판매자"}
                       width={24}
                       height={24}
