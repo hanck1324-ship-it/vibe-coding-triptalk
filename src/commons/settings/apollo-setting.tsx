@@ -116,23 +116,75 @@ export default function ApolloSetting(props: IApolloSetting) {
         console.log("Variables:", JSON.stringify(operation?.variables, null, 2));
 
         if (graphQLErrors && graphQLErrors.length > 0) {
-            graphQLErrors.forEach((error) => {
-                // 에러 객체의 속성을 안전하게 추출
-                const errorDetails: {
-                    message?: string;
-                    locations?: any;
-                    path?: any;
-                    extensions?: any;
-                } = {};
+            graphQLErrors.forEach((error, index) => {
+                // 에러 정보를 단계별로 출력 (console.warn 사용하여 Next.js 에러로 인식되지 않도록)
+                console.groupCollapsed(`🔴 GraphQL 에러 [${index + 1}]`);
                 
+                // 1. 기본 메시지 출력
                 if (error) {
-                    if (error.message) errorDetails.message = error.message;
-                    if (error.locations) errorDetails.locations = error.locations;
-                    if (error.path) errorDetails.path = error.path;
-                    if (error.extensions) errorDetails.extensions = error.extensions;
+                    // message 속성 직접 확인
+                    const message = (error as any).message;
+                    if (message) {
+                        console.warn("메시지:", message);
+                    } else {
+                        // message가 없으면 에러 객체를 문자열로 변환 시도
+                        try {
+                            const errorString = String(error);
+                            if (errorString !== "[object Object]") {
+                                console.warn("에러:", errorString);
+                            } else {
+                                console.warn("메시지: (없음)");
+                            }
+                        } catch (e) {
+                            console.warn("메시지: (추출 실패)");
+                        }
+                    }
+                    
+                    // 2. locations 출력
+                    const locations = (error as any).locations;
+                    if (locations && Array.isArray(locations) && locations.length > 0) {
+                        console.log("위치:", locations);
+                    }
+                    
+                    // 3. path 출력
+                    const path = (error as any).path;
+                    if (path && Array.isArray(path) && path.length > 0) {
+                        console.log("경로:", path);
+                    }
+                    
+                    // 4. extensions 출력
+                    const extensions = (error as any).extensions;
+                    if (extensions && typeof extensions === 'object') {
+                        try {
+                            const extensionsStr = JSON.stringify(extensions, null, 2);
+                            console.log("확장 정보:", JSON.parse(extensionsStr));
+                            
+                            // extensions의 주요 속성들 개별 출력
+                            if (extensions.code) {
+                                console.log("에러 코드:", extensions.code);
+                            }
+                            if (extensions.exception) {
+                                console.log("예외 정보:", extensions.exception);
+                            }
+                        } catch (e) {
+                            console.warn("확장 정보: (직렬화 실패)");
+                        }
+                    }
+                    
+                    // 5. 에러 객체의 모든 속성 이름 출력 (디버깅용)
+                    try {
+                        const errorKeys = Object.keys(error);
+                        if (errorKeys.length > 0) {
+                            console.log("에러 객체 속성:", errorKeys);
+                        }
+                    } catch (e) {
+                        // 키 추출 실패 시 무시
+                    }
+                } else {
+                    console.warn("에러 객체가 null 또는 undefined입니다.");
                 }
                 
-                console.error("GraphQL 에러 상세:", errorDetails);
+                console.groupEnd();
             });
         }
 

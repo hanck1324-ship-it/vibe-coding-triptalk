@@ -1,0 +1,146 @@
+아래의 조건을 모두 적용하여, 아래의 요구사항을 모두 구현할 것.
+구현 결과를 체크리스트로 반환할 것.
+
+==============================================
+
+조건-커서룰) 아래의 커서룰을 적용하여 작업하고, 이 작업이 끝나면 해당 rules 적용 결과를 체크리스트로 반환할 것.
+            - @01-common.mdc
+            - @02-wireframe.mdc
+            - @03-ui.mdc
+
+==============================================
+
+조건-피그마) MCP 채널: 0k1vx5ls
+조건-피그마) 참고할 노드 ID (핵심 영역만):
+            - node-id=285-31035 (내 정보 Wrapper)
+            - node-id=285-31031 (마이페이지 부모 영역)
+조건-피그마) 피그마 디자인 URL: https://www.figma.com/design/y2EzmuRoCtYOPL8be5gorH/%EB%A9%94%EC%9D%B8%EC%BA%A0%ED%94%84--%EB%B3%B5%EC%82%AC-?node-id=285-31030
+
+==============================================
+
+조건-파일경로) 구현될 TSX 파일경로: src/components/mypage/navigation/index.tsx
+조건-파일경로) 구현될 CSS 파일경로: src/components/mypage/navigation/styles.module.css
+
+==============================================
+
+핵심요구사항) wireframe에서 정의한 구조를 유지하면서, 피그마 디자인에 맞춰 시각적 스타일만 추가하고, 적용 결과를 체크리스트로 반환할 것.
+
+핵심요구사항) 마이페이지 네비게이션 UI를 step-by-step 으로 구현하고, 적용 결과를 체크리스트로 반환할 것.
+
+        주의사항:
+            - asset 폴더에서 이미지, 아이콘을 최대한 활용할 것 
+            - 피그마 디자인에서 확인한 정확한 수치를 적용할 것
+            - 색상, 크기, 간격 등 모든 시각적 요소는 피그마 디자인 기준으로 작성
+            - wireframe 구조는 절대 변경하지 말 것 (flex 방향, 레이아웃 방식 유지)
+
+        1) 내 정보 영역 스타일링
+            - 내 정보 영역 (infoSection)
+                - 배경색: #ffffff
+                - 테두리: 1px solid #e8e8e8
+                - border-radius: 8px
+                - padding: 16px
+                - box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.05)
+                - width: 100%
+            
+        2) 프로필 섹션 스타일링
+            - 프로필 섹션 (profileSection)
+                - padding: 4px 8px
+                - gap: 8px
+                - border-radius: 8px
+                - transition: background-color 0.2s
+                - cursor: default
+            
+            - 프로필 섹션 hover 상태
+                - background-color: #f5f5f5
+            
+            - 프로필 이미지 (profileImage)
+                - width: 32px
+                - height: 32px
+                - border-radius: 50%
+                - border: 1px solid #e8e8e8
+                - object-fit: cover
+            
+            - 프로필 이름 (profileName)
+                - font-size: 14px
+                - font-weight: 500
+                - color: #262626
+        
+        3) 포인트 섹션 스타일링
+            - 포인트 섹션 (pointSection)
+                - padding: 16px
+                - gap: 8px
+            
+            - 포인트 아이콘 (pointIcon)
+                - width: 20px
+                - height: 20px
+            
+            - 포인트 라벨 (pointLabel)
+                - display: none (피그마 디자인에 라벨 없음, 값만 표시)
+            
+            - 포인트 값 (pointValue)
+                - font-family: 'Pretendard'
+                - font-size: 16px
+                - font-weight: 600
+                - color: #262626
+                - line-height: 24px
+        
+        4) 메뉴 섹션 스타일링
+            - 메뉴 섹션 (menuSection)
+                - display: flex (wireframe에서 정의됨, 변경 금지)
+                - flex-direction: column (wireframe에서 정의됨, 변경 금지)
+                - gap: 0
+            
+            - 메뉴 항목 (menuItem)
+                - width: 100%
+                - padding: 16px
+                - background-color: transparent
+                - border: none
+                - text-align: left
+                - font-family: 'Pretendard'
+                - font-size: 14px
+                - font-weight: 400
+                - color: #262626
+                - line-height: 20px
+                - cursor: pointer
+                - transition: background-color 0.2s ease
+                - border-radius: 0
+                - display: flex
+                - flex-direction: row
+                - align-items: center
+                - justify-content: space-between
+            
+            - 메뉴 항목 텍스트 영역
+                - flex: 1
+            
+            - 메뉴 항목 오른쪽 화살표 아이콘
+                - width: 16px
+                - height: 16px
+                - color: #8c8c8c
+            
+            - 메뉴 항목 hover 상태
+                - background-color: #f5f5f5
+            
+            - 메뉴 항목 active 상태
+                - font-weight: 600
+                - color: #262626
+                - background-color: #f5f5f5
+            
+            - 메뉴 항목 active 상태의 화살표 아이콘
+                - color: #262626
+        
+        5) 구분선 스타일링
+            - 구분선 (divider)
+                - width: 100%
+                - height: 1px
+                - background-color: #e8e8e8
+                - margin: 0
+        
+        6) 반응형 스타일링
+            - 모바일 (768px 이하)
+                - 내 정보 영역 width: 100%
+                - 내 정보 영역 padding: 12px
+                - 프로필 섹션 padding: 12px
+                - 포인트 섹션 padding: 12px
+                - 메뉴 항목 padding: 12px
+                - 프로필 이미지: 28px x 28px
+                - 폰트 크기 조정 (14px → 13px, 16px → 15px)

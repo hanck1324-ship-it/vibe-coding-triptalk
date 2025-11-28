@@ -2,10 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import Image from "next/image";
 import styles from "./styles.module.css";
 import { useMyPage } from "./hook";
-import profileImage from "@/assets/icons/profile_image.png";
 import MyPageNavigation, { MyPageTab } from "./navigation";
 import PointCharge from "./point-charge";
 
@@ -65,53 +63,35 @@ export default function MyPage() {
       <div className={styles.container}>
         <h1>마이 페이지</h1>
 
-        {/* 네비게이션 */}
-        <MyPageNavigation activeTab={activeTab} onTabChange={handleTabChange} />
+        <div className={styles.contentWrapper}>
+          {/* 네비게이션 (왼쪽) */}
+          <MyPageNavigation
+            activeTab={activeTab}
+            onTabChange={handleTabChange}
+            userName={user.name}
+            userPoint={userPoint}
+          />
 
-        {/* 탭 컨텐츠 */}
-        <div className={styles.tabContent}>
-          {activeTab === "profile" && (
-            <div className={styles.section}>
-              <div className={styles.profileCard}>
-                <div className={styles.profileImageWrapper}>
-                  <Image
-                    src={user.picture || profileImage}
-                    alt="프로필 이미지"
-                    width={120}
-                    height={120}
-                    className={styles.profileImage}
-                  />
-                </div>
-                <div className={styles.profileInfo}>
-                  <h2 className={styles.profileName}>{user.name}</h2>
-                  <p className={styles.profileEmail}>{user.email}</p>
-                  <div className={styles.profilePoint}>
-                    <span className={styles.pointLabel}>보유 포인트</span>
-                    <span className={styles.pointValue}>
-                      {userPoint.toLocaleString()} P
-                    </span>
-                  </div>
-                  <div className={styles.profileMeta}>
-                    <span>가입일: {new Date(user.createdAt).toLocaleDateString("ko-KR")}</span>
-                  </div>
-                </div>
+          {/* 탭 컨텐츠 (오른쪽) */}
+          <div className={styles.tabContent}>
+            {activeTab === "profile" && (
+              <div className={styles.section}>
+                {/* TODO: 피그마 디자인에 맞는 프로필 영역 구현 필요 */}
               </div>
-            </div>
-          )}
+            )}
 
-          {activeTab === "point" && (
-            <div className={styles.section}>
-              <PointCharge />
-            </div>
-          )}
+            {activeTab === "point" && (
+              <div className={styles.section}>
+                <PointCharge />
+              </div>
+            )}
 
-          {activeTab === "history" && (
-            <div className={styles.section}>
-              <h2>구매 내역</h2>
-              {/* TODO: 구매 내역 UI */}
-              <p>구매 내역을 표시합니다.</p>
-            </div>
-          )}
+            {activeTab === "history" && (
+              <div className={styles.section}>
+                {/* TODO: 구매 내역 UI */}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

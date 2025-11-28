@@ -12,6 +12,8 @@ export default function Navigation() {
     onClickMenu,
     isLoggedIn,
     user,
+    loading,
+    error,
     handleLogout,
     isDropdownOpen,
     toggleDropdown,
@@ -43,23 +45,26 @@ export default function Navigation() {
         )}
       </div>
       <div className={styles.wrapperRight}>
-        {isLoggedIn && user ? (
+        {isLoggedIn ? (
           <div className={styles.profileSection} ref={dropdownRef}>
             <div className={styles.profileInfo}>
               <Image
-                src={user.picture || profileImage}
+                src={user?.picture || profileImage}
                 alt="프로필"
                 width={32}
                 height={32}
                 className={styles.profileImage}
               />
-              <span className={styles.profileName}>{user.name}</span>
+              <span className={styles.profileName}>
+                {loading ? "로딩 중..." : user?.name || "사용자"}
+              </span>
               <button
                 type="button"
                 className={styles.dropdownToggle}
                 onClick={toggleDropdown}
                 aria-label="프로필 메뉴 열기"
                 aria-expanded={isDropdownOpen}
+                disabled={loading}
               >
                 <Image
                   src={downArrow}
@@ -74,7 +79,7 @@ export default function Navigation() {
             </div>
 
             {/* 드롭다운 메뉴 */}
-            {isDropdownOpen && (
+            {isDropdownOpen && user && (
               <div className={styles.dropdown}>
                 {/* 항목 1: 프로필 이름 */}
                 <div className={styles.dropdownItemInfo}>
@@ -111,9 +116,11 @@ export default function Navigation() {
             )}
           </div>
         ) : (
-          <button className={styles.loginButton} onClick={onClickMenu("/login")}>
-            로그인
-          </button>
+          <>
+            <button className={styles.loginButton} onClick={onClickMenu("/login")}>
+              로그인
+            </button>
+          </>
         )}
       </div>
     </nav>

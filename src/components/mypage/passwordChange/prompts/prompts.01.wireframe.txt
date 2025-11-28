@@ -1,0 +1,102 @@
+아래의 조건을 모두 적용하여, 아래의 요구사항을 모두 구현할 것.
+구현 결과를 체크리스트로 반환할 것.
+
+==============================================
+
+조건-커서룰) 아래의 커서룰을 적용하여 작업하고, 이 작업이 끝나면 해당 rules 적용 결과를 체크리스트로 반환할 것.
+            - @01-common.mdc
+            - @02-wireframe.mdc
+
+==============================================
+
+조건-파일경로) 구현될 TSX 파일경로: src/components/mypage/passwordChange/index.tsx
+조건-파일경로) 구현될 CSS 파일경로: src/components/mypage/passwordChange/styles.module.css
+
+==============================================
+
+조건-피그마) MCP 채널: 0k1vx5ls
+조건-피그마) 참고할 노드 ID (핵심 영역만)
+
+            - 비밀번호 변경 폼 전체 영역 :
+            - 제목 영역 : 
+            - 새 비밀번호 :
+            - 폼 입력 영역 :
+            - 새 비밀번호 확인 :
+            - 폼 입력 영역 : 
+            - 버튼 영역 :
+
+            
+
+==============================================
+
+핵심요구사항) HTML과 flexbox를 활용한 와이어프레임 구조만 만들어낼 것.
+
+핵심요구사항) 비밀번호 변경 폼의 기본 레이아웃 구조를 step-by-step 으로 구현하고, 적용 결과를 체크리스트로 반환할 것.
+
+        1) HTML 구조
+            - 1. 비밀번호 변경 컨테이너 (passwordChangeContainer)
+                - 전체 비밀번호 변경 폼을 감싸는 최상위 컨테이너
+                - display: flex
+                - flex-direction: column
+                - gap 적용
+            
+            - 2. 제목 영역 (titleSection)
+                - "비밀번호 변경" 제목 표시
+                - display: flex
+                - flex-direction: row
+                - align-items: center
+            
+            - 3. 폼 영역 (formSection)
+                - display: flex
+                - flex-direction: column
+                - gap 적용
+                - 다음의 하위 섹션들을 포함:
+                    a. 현재 비밀번호 입력 필드 (currentPasswordField)
+                        - display: flex
+                        - flex-direction: column
+                        - label 요소
+                        - input 요소 (type="password")
+                    
+                    b. 새 비밀번호 입력 필드 (newPasswordField)
+                        - display: flex
+                        - flex-direction: column
+                        - label 요소
+                        - input 요소 (type="password")
+                    
+                    c. 새 비밀번호 확인 입력 필드 (confirmPasswordField)
+                        - display: flex
+                        - flex-direction: column
+                        - label 요소
+                        - input 요소 (type="password")
+            
+            - 4. 버튼 영역 (buttonSection)
+                - display: flex
+                - flex-direction: row
+                - justify-content: flex-end
+                - 변경하기 버튼 (button 요소)
+
+        2) 레이아웃 방식
+            - 모든 영역은 flexbox 레이아웃 사용
+            - position: absolute 금지
+            - 컨테이너는 세로 방향으로 배치 (flex-direction: column)
+            - 폼 입력 필드들은 세로 방향으로 배치 (flex-direction: column)
+            - 버튼 영역은 가로 방향으로 배치 (flex-direction: row)
+            - gap을 사용하여 요소 간 간격 설정
+
+        3) 반응형 구조 변경
+            - 데스크톱: 폼 영역 최대 너비 제한 (선택사항)
+            - 모바일 (768px 이하): 폼 영역 전체 너비로 변경
+
+        4) 컴포넌트 타입 결정
+            - 제목: h2 또는 h3 요소
+            - 입력 필드 label: label 요소
+            - 입력 필드: input 요소 (type="password")
+            - 변경하기 버튼: button 요소
+            - 폼: form 요소 (선택사항, 기능 구현 시 사용)
+
+        5) 스타일링 요구사항 (최소한만)
+            - CSS Modules 사용 (styles.module.css)
+            - flexbox 레이아웃만 사용 (position: absolute 금지)
+            - 최소한의 스타일만 적용 (구조 위주)
+            - 색상, 크기, 간격 등 구체적 수치는 포함하지 말 것
+            - gap은 개념만 명시 (구체적 수치 제외)

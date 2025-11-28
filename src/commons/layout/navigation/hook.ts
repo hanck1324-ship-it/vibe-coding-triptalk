@@ -47,10 +47,13 @@ export const useNavigation = () => {
   }, []);
 
   // 토큰이 있을 때만 사용자 정보 조회
-  const { data, refetch } = useQuery(FETCH_USER_LOGGED_IN, {
+  const { data, refetch, loading, error } = useQuery(FETCH_USER_LOGGED_IN, {
     skip: !isLoggedIn,
     fetchPolicy: "cache-and-network", // 로그인 후 네트워크에서 가져오기
     notifyOnNetworkStatusChange: true,
+    onError: (error) => {
+      console.warn("사용자 정보 조회 실패:", error);
+    },
   });
 
   const user = data?.fetchUserLoggedIn;
@@ -116,6 +119,8 @@ export const useNavigation = () => {
     onClickMenu,
     isLoggedIn,
     user,
+    loading,
+    error,
     handleLogout,
     isDropdownOpen,
     toggleDropdown,
