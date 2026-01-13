@@ -1,5 +1,6 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
+import Script from "next/script";
 import ApolloSetting from "@/commons/settings/apollo-setting";
 import Navigation from "@/commons/layout/navigation";
 
@@ -17,6 +18,18 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko">
+      <head>
+        {/* 아임포트 SDK */}
+        <Script
+          src="https://cdn.iamport.kr/v1/iamport.js"
+          strategy="beforeInteractive"
+        />
+        {/* 카카오 지도 SDK */}
+        <Script
+          src={`//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_MAP_KEY}&libraries=services&autoload=false`}
+          strategy="beforeInteractive"
+        />
+      </head>
       <body className={inter.className}>
         {/* 전역 Apollo Provider */}
         <ApolloSetting>

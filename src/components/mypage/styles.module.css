@@ -1,3 +1,4 @@
+/* 메인 레이아웃 구조 */
 .mypageContainer {
   display: flex;
   flex-direction: column;
@@ -13,208 +14,61 @@
   gap: 24px;
 }
 
-.container h1 {
-  font-size: 28px;
-  font-weight: 700;
-  color: #262626;
-  margin-bottom: 16px;
-}
-
-/* 탭 메뉴 */
-.tabs {
-  display: flex;
-  gap: 8px;
-  border-bottom: 2px solid #e8e8e8;
-}
-
-.tab {
-  padding: 12px 24px;
-  border: none;
-  background: none;
-  font-size: 16px;
-  font-weight: 500;
-  color: #8c8c8c;
-  cursor: pointer;
-  position: relative;
-  transition: all 0.3s;
-}
-
-.tab:hover {
-  color: #1890ff;
-}
-
-.tab.active {
-  color: #1890ff;
-  font-weight: 600;
-}
-
-.tab.active::after {
-  content: "";
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background-color: #1890ff;
-}
-
-/* 탭 컨텐츠 */
-.tabContent {
-  padding: 24px 0;
-}
-
-.section {
+/* 상단 영역: 내 정보 영역 */
+.topSection {
   display: flex;
   flex-direction: column;
   gap: 24px;
-}
-
-.section h2 {
-  font-size: 22px;
-  font-weight: 600;
-  color: #262626;
-  margin-bottom: 8px;
-}
-
-/* 포인트 충전 섹션 */
-.pointSection {
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-  max-width: 600px;
-}
-
-.currentPoint {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 24px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 12px;
-  color: white;
-}
-
-.currentPoint .label {
-  font-size: 16px;
-  font-weight: 500;
-}
-
-.currentPoint .value {
-  font-size: 32px;
-  font-weight: 700;
-}
-
-.chargeOptions {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.chargeOptions h3 {
-  font-size: 18px;
-  font-weight: 600;
-  color: #262626;
-}
-
-.chargeButtons {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-}
-
-.chargeButton {
-  padding: 16px;
-  border: 2px solid #d9d9d9;
-  border-radius: 8px;
-  background-color: #fff;
-  font-size: 16px;
-  font-weight: 600;
-  color: #262626;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.chargeButton:hover {
-  border-color: #1890ff;
-  color: #1890ff;
-  background-color: #f0f8ff;
-}
-
-.chargeButton.selected {
-  border-color: #1890ff;
-  background-color: #e6f7ff;
-  color: #1890ff;
-}
-
-.confirmButton {
-  padding: 16px;
-  border: none;
-  border-radius: 8px;
-  background-color: #1890ff;
-  font-size: 18px;
-  font-weight: 600;
-  color: #fff;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.confirmButton:hover {
-  background-color: #40a9ff;
-  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3);
-}
-
-.confirmButton:active {
-  background-color: #096dd9;
-}
-
-/* 프로필 카드 */
-.profileCard {
-  display: flex;
-  gap: 32px;
   padding: 32px;
-  background-color: #fff;
+  background-color: #ffffff;
   border: 1px solid #e8e8e8;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
+/* 프로필 헤더: 프로필 이미지 + 이름 */
+.profileHeader {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
 .profileImageWrapper {
   flex-shrink: 0;
+  width: 120px;
+  height: 120px;
 }
 
 .profileImage {
-  width: 120px;
-  height: 120px;
+  width: 100%;
+  height: 100%;
   border-radius: 50%;
-  object-fit: cover;
   border: 3px solid #e8e8e8;
-}
-
-.profileInfo {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  flex: 1;
+  object-fit: cover;
 }
 
 .profileName {
   font-size: 28px;
   font-weight: 700;
   color: #262626;
+  line-height: 1.4;
+}
+
+/* 구분선 */
+.divider {
+  width: 100%;
+  height: 1px;
+  background-color: #e4e4e4;
   margin: 0;
 }
 
-.profileEmail {
-  font-size: 16px;
-  color: #8c8c8c;
-  margin: 0;
-}
-
-.profilePoint {
+/* 포인트 영역 */
+.pointArea {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 16px;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 24px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border-radius: 8px;
   color: white;
@@ -230,10 +84,57 @@
   font-weight: 700;
 }
 
-.profileMeta {
-  font-size: 14px;
+/* 메뉴 리스트 영역 */
+.menuList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.menuItem {
+  width: 100%;
+  padding: 16px 20px;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  background-color: #ffffff;
+  font-size: 16px;
+  font-weight: 500;
+  color: #262626;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.menuItem:hover {
+  background-color: #f5f9ff;
+  border-color: #2974e5;
+  color: #2974e5;
+}
+
+.menuItem.active {
+  background-color: #e8f2ff;
+  border-color: #2974e5;
+  color: #2974e5;
+  font-weight: 600;
+}
+
+/* 하단 영역: 가변 컨텐츠 */
+.bottomSection {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.emptyState {
+  padding: 48px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 400;
   color: #8c8c8c;
 }
+
+/* 기존 스타일 유지 (UI 단계에서 사용) */
 
 .loading,
 .error {
@@ -247,34 +148,45 @@
   color: #ff4d4f;
 }
 
-/* 반응형 */
+/* 반응형 디자인 */
 @media (max-width: 768px) {
   .mypageContainer {
     padding: 16px;
   }
 
-  .tabs {
-    overflow-x: auto;
-  }
-
-  .tab {
-    white-space: nowrap;
-    padding: 12px 16px;
-  }
-
-  .chargeButtons {
-    grid-template-columns: 1fr;
-  }
-
-  .profileCard {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
+  .topSection {
     padding: 24px;
   }
 
-  .profileInfo {
+  .profileHeader {
+    flex-direction: column;
     align-items: center;
+    text-align: center;
+    gap: 16px;
+  }
+
+  .profileImageWrapper {
+    width: 100px;
+    height: 100px;
+  }
+
+  .profileName {
+    font-size: 24px;
+  }
+
+  .pointArea {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .menuList {
+    gap: 8px;
+  }
+
+  .menuItem {
+    padding: 12px 16px;
+    font-size: 14px;
   }
 }
 

@@ -87,9 +87,12 @@ export const useNavigation = () => {
     };
   }, [isDropdownOpen]);
 
-  const onClickMenu = (path: string) => () => {
-    router.push(path);
-  };
+  const onClickMenu = useCallback(
+    (path: string) => () => {
+      router.push(path);
+    },
+    [router]
+  );
 
   const toggleDropdown = useCallback(() => {
     setIsDropdownOpen((prev) => !prev);

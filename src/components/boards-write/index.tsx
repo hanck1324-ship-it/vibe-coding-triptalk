@@ -5,12 +5,11 @@ import styles from "./styles.module.css";
 import Image from "next/image";
 import { useBoardWrite } from "./hook";
 import { IBoardWriteProps } from "./types";
-// import addImage from "@/assets/add_image.png"; // 삭제된 파일
-import { Modal } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import addImage from "@/assets/add_image.png";
+import { Modal, Button } from "antd";
 import DaumPostcodeEmbed from "react-daum-postcode";
 
-// const IMAGE_SRC = { addImage: { src: addImage, alt: "사진추가이미지" } };
+const IMAGE_SRC = { addImage: { src: addImage, alt: "사진추가이미지" } };
 
 export default function BoardWritePage(props: IBoardWriteProps) {
   const { isEdit } = props;
@@ -23,8 +22,13 @@ export default function BoardWritePage(props: IBoardWriteProps) {
     contents, contentsError, onChangeContents,
     onClickSubmit, onClickUpdate,
     isActive, data,
-    zipcode, address, addressDetail, youtubeUrl, youtubeUrlError,
+    zipcode, address, addressDetail, youtubeUrl,
     onChangeAddressDetail, onChangeYoutubeUrl,
+
+    imageFiles,
+    previewUrls,
+    onChangeImages,
+    onDeleteImage,
 
     isPostcodeModalOpen,      
     handleTogglePostcodeModal,  
@@ -32,13 +36,19 @@ export default function BoardWritePage(props: IBoardWriteProps) {
 
     isAlertModalOpen,         
     modalContents,            
-    handleOk,                 
+    handleOk,
   } = useBoardWrite(isEdit);
 
   return (
     <>
       {isAlertModalOpen && (
-        <Modal title="알림" open={true} onOk={handleOk} onCancel={handleOk}>
+        <Modal 
+          title="알림" 
+          open={true} 
+          onOk={handleOk} 
+          onCancel={handleOk}
+          footer={<Button onClick={handleOk}>확인</Button>}
+        >
           <p>{modalContents}</p>
         </Modal>
       )}
@@ -154,41 +164,52 @@ export default function BoardWritePage(props: IBoardWriteProps) {
               <div>유튜브 링크</div>
             </div>
             <input
-              type="text"
               className={styles.enroll_input}
-              placeholder="https://www.youtube.com/watch?v=xxxxx 형식으로 입력해 주세요."
+              placeholder="링크를 입력해 주세요."
               value={youtubeUrl}
               onChange={onChangeYoutubeUrl}
             />
-            {youtubeUrlError && (
-              <div className={styles.error_msg}>{youtubeUrlError}</div>
-            )}
-            {youtubeUrl && !youtubeUrlError && (
-              <div style={{ marginTop: '8px', fontSize: '12px', color: '#4CAF50' }}>
-                ✓ 유튜브 URL이 입력되었습니다.
-              </div>
-            )}
           </div>
 
           <div className={styles.enroll_border}></div>
 
           <div className={styles.enroll_row_section}>
-            <div className={styles.enroll_form_title}>
-              <div>사진 첨부</div>
-            </div>
+            <div>사진 첨부</div>
             <div className={styles.picture_enroll_row}>
-              <div className={styles.image_upload_box}>
-                <PlusOutlined style={{ fontSize: '40px', color: '#999' }} />
-                <div className={styles.image_upload_text}>클릭해서 사진 업로드</div>
-              </div>
-              <div className={styles.image_upload_box}>
-                <PlusOutlined style={{ fontSize: '40px', color: '#999' }} />
-                <div className={styles.image_upload_text}>클릭해서 사진 업로드</div>
-              </div>
-              <div className={styles.image_upload_box}>
-                <PlusOutlined style={{ fontSize: '40px', color: '#999' }} />
-                <div className={styles.image_upload_text}>클릭해서 사진 업로드</div>
-              </div>
+              {/* 이미지 미리보기 */}
+              {previewUrls.map((url, index) => (
+                <div key={index} className={styles.image_preview_wrapper}>
+                  <Image 
+                    src={url} 
+                    alt={`업로드 이미지 ${index + 1}`} 
+                    width={160} 
+                    height={160}
+                    style={{ objectFit: 'cover', borderRadius: '8px' }}
+                  />
+                  <button
+                    type="button"
+                    className={styles.image_delete_button}
+                    onClick={() => onDeleteImage(index)}
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))}
+              
+              {/* 이미지 추가 버튼 (최대 3개) */}
+              {previewUrls.length < 3 && (
+                <label className={styles.image_upload_box}>
+                  <Image src={IMAGE_SRC.addImage.src} alt="이미지추가" width={50} height={50} />
+                  <span className={styles.image_upload_text}>이미지 추가</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={onChangeImages}
+                    style={{ display: 'none' }}
+                  />
+                </label>
+              )}
             </div>
           </div>
         </div>

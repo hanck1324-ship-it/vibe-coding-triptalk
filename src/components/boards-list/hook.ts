@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { useQuery } from "@apollo/client";
+import { useState, useCallback } from "react";
+import { useQuery, useMutation } from "@apollo/client";
 import { useRouter } from "next/navigation";
 import { FetchBoardsDocument } from "@/commons/graphql/graphql";
+import { DELETE_BOARD } from "./quires";
 
 export const useBoardsList = () => {
   const router = useRouter();
@@ -13,23 +14,41 @@ export const useBoardsList = () => {
     variables: { page },
   });
 
-  const onClickBoard = (boardId: string) => {
-    router.push(`/boards/${boardId}`);
-  };
+  const [deleteBoard] = useMutation(DELETE_BOARD);
 
-  const onClickPrevPage = () => {
+  const onClickBoard = useCallback(
+    (boardId: string) => {
+      router.push(`/boards/${boardId}`);
+    },
+    [router]
+  );
+
+  const onClickPrevPage = useCallback(() => {
     if (page > 1) {
       const newPage = page - 1;
       setPage(newPage);
       refetch({ page: newPage });
     }
-  };
+  }, [page, refetch]);
 
-  const onClickNextPage = () => {
+  const onClickNextPage = useCallback(() => {
     const newPage = page + 1;
     setPage(newPage);
     refetch({ page: newPage });
-  };
+  }, [page, refetch]);
+
+  const onDeleteBoard = useCallback(async (boardId: string) => {
+    try {
+      await deleteBoard({
+        variables: { boardId },
+      });
+      refetch({ page });
+      return true;
+    } catch (error) {
+      console.error("게시글 삭제 에러:", error);
+      return false;
+    }
+  }, [deleteBoard, refetch, page]);
 
   return {
     boards: data?.fetchBoards || [],
@@ -38,6 +57,7 @@ export const useBoardsList = () => {
     onClickBoard,
     onClickPrevPage,
     onClickNextPage,
+    onDeleteBoard,
   };
 };
 

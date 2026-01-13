@@ -15,159 +15,41 @@
 
 핵심요구사항) 숙박권 상세 페이지 기능을 step-by-step 으로 구현하고, 적용 결과를 체크리스트로 반환할 것.
 
-        1) 라이브러리 조건
-            - "use client" 지시어 추가 (파일 최상단)
-            - import { useState } from "react"
-            - import { useParams, useRouter } from "next/navigation"
+        1) GraphQL 쿼리 구현
+            - fetchTravelproduct 쿼리를 사용하여 서버에서 여행 상품 상세 데이터 조회
+            - 상품 ID(travelproductId)를 쿼리 변수로 전달하여 해당 상품의 상세 정보 조회
+            - fetchUserLoggedIn 쿼리를 사용하여 현재 로그인한 사용자의 포인트 정보 조회
+            - mock 데이터 대신 실제 데이터베이스의 최신 정보 사용
+            - 로딩 상태와 에러 상태 관리하여 사용자에게 적절한 피드백 제공
 
-        2) 커스텀 훅 정의 (export const usePurchaseDetail)
+        2) 상태 관리 구현
+            - URL 파라미터에서 숙박권 ID 추출
+            - 구매 모달 열림/닫힘 상태 관리
+            - 포인트 부족 모달 열림/닫힘 상태 관리
+            - 사용자 보유 포인트 정보 관리
+            - 에러 메시지 상태 관리
+            - 필요 포인트 계산 (상품 가격 기반)
 
-            A) useParams로 숙박권 ID 추출
-               const params = useParams();
-               const router = useRouter();
-               const id = params.id as string;
+        3) 이벤트 핸들러 구현
+            - 구매 모달 열기 핸들러
+            - 구매 모달 닫기 핸들러
+            - 포인트 부족 모달 닫기 핸들러
+            - 구매 확인 핸들러 (핵심 로직)
+                - 포인트 체크: 사용자 보유 포인트와 필요 포인트 비교
+                - 포인트 부족 시: 포인트 부족 모달 표시, 구매 프로세스 중단
+                - 포인트 충분 시: 구매 API 호출
+                - 구매 성공 시: 구매 모달 닫기, 판매 등록 화면으로 이동
+                - 구매 실패 시: 에러 메시지 표시, 구매 모달 닫기
 
-            B) 상태 관리 (useState)
+        4) 구매 확인 로직 흐름
+            - 구매 확인 버튼 클릭 시 포인트 체크
+            - 포인트 부족 시: 포인트 부족 모달 표시, 구매 프로세스 중단
+            - 포인트 충분 시: 구매 API 호출
+            - 구매 성공 시: 구매 모달 닫기, 판매 등록 화면으로 이동
+            - 구매 실패 시: 에러 메시지 표시, 구매 모달 닫기
 
-               1) 구매 모달 상태
-                  const [isPurchaseModalOpen, setIsPurchaseModalOpen] = useState(false);
-
-               2) 포인트 부족 모달 상태
-                  const [isPointAlertOpen, setIsPointAlertOpen] = useState(false);
-
-               3) 사용자 보유 포인트 (테스트용 하드코딩)
-                  const [currentPoint] = useState(50000);
-                  // TODO: API에서 가져오기
-
-               4) 에러 메시지 상태
-                  const [errorMessage, setErrorMessage] = useState("");
-
-            C) 숙박권 상세 정보 (테스트용 임시 데이터)
-
-               const accommodation = {
-                 id: id || "1",
-                 title: "제주 오션뷰 펜션",
-                 price: 120000,
-                 image: "https://via.placeholder.com/400x300",
-               };
-
-               // TODO: 실제로는 useQuery나 useSuspenseQuery로 API에서 데이터 가져오기
-
-            D) 필요 포인트 계산
-               const requiredPoint = accommodation?.price || 0;
-
-        3) 이벤트 핸들러 함수 구현
-
-            A) 구매 모달 열기
-               const handleOpenPurchaseModal = () => {
-                 setIsPurchaseModalOpen(true);
-               };
-
-            B) 구매 모달 닫기
-               const handleClosePurchaseModal = () => {
-                 setIsPurchaseModalOpen(false);
-               };
-
-            C) 포인트 부족 모달 닫기
-               const handleClosePointAlert = () => {
-                 setIsPointAlertOpen(false);
-               };
-
-            D) 구매 확인 핸들러 (핵심 로직)
-
-               const handlePurchaseConfirm = async () => {
-                 // 1단계: 포인트 체크
-                 if (currentPoint < requiredPoint) {
-                   // 포인트 부족
-                   setIsPointAlertOpen(true);
-                   setIsPurchaseModalOpen(false); // 구매 모달 닫기
-                   return; // 프로세스 중단
-                 }
-
-                 // 2단계: 포인트 충분 - API 호출
-                 try {
-                   // TODO: 실제 구매 API 호출
-                   // const response = await purchaseAccommodation({
-                   //   accommodationId: accommodation.id,
-                   //   price: accommodation.price,
-                   // });
-
-                   // 임시: API 성공 시뮬레이션
-                   console.log("구매 API 호출 예정:", {
-                     accommodationId: accommodation?.id,
-                     price: accommodation?.price,
-                     userId: "user-id", // TODO: 실제 사용자 ID
-                   });
-
-                   // 모달 닫기
-                   setIsPurchaseModalOpen(false);
-
-                   // 3단계: 판매 등록 화면으로 이동
-                   router.push("/purchase/sell");
-                 } catch (error) {
-                   // 4단계: 에러 처리
-                   console.error("구매 실패:", error);
-                   setErrorMessage("구매 중 오류가 발생했습니다. 다시 시도해주세요.");
-                   setIsPurchaseModalOpen(false);
-                 }
-               };
-
-        4) return 값 (반환할 데이터 및 함수)
-
-            return {
-              // 숙박권 데이터
-              accommodation,
-              loading: false,  // TODO: API 연동 시 실제 로딩 상태 반환
-
-              // 구매 모달 관련
-              isPurchaseModalOpen,
-              handleOpenPurchaseModal,
-              handleClosePurchaseModal,
-              handlePurchaseConfirm,
-
-              // 포인트 부족 모달 관련
-              isPointAlertOpen,
-              handleClosePointAlert,
-
-              // 포인트 정보
-              currentPoint,
-              requiredPoint,
-
-              // 에러 메시지
-              errorMessage,
-            };
-
-        5) 구매 확인 로직 흐름도
-
-            handlePurchaseConfirm 호출
-                ↓
-            [1단계] 포인트 체크
-                ↓
-            포인트 부족? ─── Yes ──→ 포인트 부족 모달 열기 → return
-                ↓ No
-            [2단계] API 호출 (try-catch)
-                ↓
-            성공? ─── No ──→ 에러 메시지 설정 → 모달 닫기
-                ↓ Yes
-            [3단계] 구매 모달 닫기
-                ↓
-            [4단계] /purchase/sell 페이지로 이동
-
-        6) 주의사항
-
-            ⚠️ 포인트 부족 시:
-               - isPointAlertOpen을 true로 설정
-               - isPurchaseModalOpen을 false로 설정
-               - 더 이상 진행하지 않고 return
-
-            ⚠️ 포인트 충분 시:
-               - API 호출 시뮬레이션 (console.log)
-               - 성공 시 /purchase/sell로 라우팅
-               - 실패 시 errorMessage 설정
-
-            ⚠️ TODO 항목:
-               - API에서 사용자 포인트 가져오기
-               - API에서 숙박권 상세 정보 가져오기
-               - 실제 구매 API 호출 구현
-               - 실제 사용자 ID 가져오기
+        5) 주의사항
+            - 포인트 부족 시 구매 프로세스를 즉시 중단해야 함
+            - 구매 API 호출은 비동기로 처리하고 에러 처리가 필요함
+            - GraphQL 쿼리로 조회한 데이터는 로딩 상태를 고려하여 사용해야 함
 

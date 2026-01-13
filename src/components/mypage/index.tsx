@@ -1,42 +1,19 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useState } from "react";
 import Image from "next/image";
 import styles from "./styles.module.css";
 import { useMyPage } from "./hook";
 import profileImage from "@/assets/icons/profile_image.png";
-import MyPageNavigation, { MyPageTab } from "./navigation";
-import PointCharge from "./point-charge";
+import PointHistory from "./point-history";
+import PasswordChange from "./password-Change";
+import TransactionHistoryBookmarks from "./transaction-history & bookmarks";
 
 export default function MyPage() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const initialTab = (searchParams.get("tab") as MyPageTab) || "profile";
-  const [activeTab, setActiveTab] = useState<MyPageTab>(initialTab);
   const { user, userPoint, loading, error } = useMyPage();
-
-  const handleTabChange = (tab: MyPageTab) => {
-    setActiveTab(tab);
-    router.push(`/myPage?tab=${tab}`);
-  };
-
-  useEffect(() => {
-    const tab = searchParams.get("tab") as MyPageTab;
-    if (tab) {
-      setActiveTab(tab);
-    }
-  }, [searchParams]);
-
-  // 로그인하지 않은 경우 로그인 페이지로 리다이렉트
-  useEffect(() => {
-    if (!loading && error) {
-      const accessToken = localStorage.getItem("accessToken");
-      if (!accessToken) {
-        router.push("/login");
-      }
-    }
-  }, [loading, error, router]);
+  const [activeMenu, setActiveMenu] = useState<
+    "transaction" | "point-history" | "password-change" | null
+  >(null);
 
   if (loading) {
     return (
@@ -63,53 +40,71 @@ export default function MyPage() {
   return (
     <div className={styles.mypageContainer}>
       <div className={styles.container}>
-        <h1>마이 페이지</h1>
-
-        {/* 네비게이션 */}
-        <MyPageNavigation activeTab={activeTab} onTabChange={handleTabChange} />
-
-        {/* 탭 컨텐츠 */}
-        <div className={styles.tabContent}>
-          {activeTab === "profile" && (
-            <div className={styles.section}>
-              <div className={styles.profileCard}>
-                <div className={styles.profileImageWrapper}>
-                  <Image
-                    src={user.picture || profileImage}
-                    alt="프로필 이미지"
-                    width={120}
-                    height={120}
-                    className={styles.profileImage}
-                  />
-                </div>
-                <div className={styles.profileInfo}>
-                  <h2 className={styles.profileName}>{user.name}</h2>
-                  <p className={styles.profileEmail}>{user.email}</p>
-                  <div className={styles.profilePoint}>
-                    <span className={styles.pointLabel}>보유 포인트</span>
-                    <span className={styles.pointValue}>
-                      {userPoint.toLocaleString()} P
-                    </span>
-                  </div>
-                  <div className={styles.profileMeta}>
-                    <span>가입일: {new Date(user.createdAt).toLocaleDateString("ko-KR")}</span>
-                  </div>
-                </div>
-              </div>
+        {/* 상단 영역: 내 정보 영역 */}
+        <div className={styles.topSection}>
+          {/* 1. 내 정보 헤더: 프로필 이미지 + 이름 */}
+          <div className={styles.profileHeader}>
+            <div className={styles.profileImageWrapper}>
+              <Image
+                src={user.picture || profileImage}
+                alt="프로필 이미지"
+                width={120}
+                height={120}
+                className={styles.profileImage}
+              />
             </div>
-          )}
+            <div className={styles.profileName}>{user.name}</div>
+          </div>
 
-          {activeTab === "point" && (
-            <div className={styles.section}>
-              <PointCharge />
+          {/* 2. 포인트 영역: 보유 포인트 표시 (구분선으로 분리) */}
+          <div className={styles.divider}></div>
+          <div className={styles.pointArea}>
+            <div className={styles.pointLabel}>보유 포인트</div>
+            <div className={styles.pointValue}>
+              {userPoint.toLocaleString()} P
             </div>
-          )}
+          </div>
 
-          {activeTab === "history" && (
-            <div className={styles.section}>
-              <h2>구매 내역</h2>
-              {/* TODO: 구매 내역 UI */}
-              <p>구매 내역을 표시합니다.</p>
+          {/* 3. 메뉴 리스트 영역 (3개 메뉴) */}
+          <div className={styles.divider}></div>
+          <div className={styles.menuList}>
+            <button
+              className={`${styles.menuItem} ${
+                activeMenu === "transaction" ? styles.active : ""
+              }`}
+              onClick={() => setActiveMenu("transaction")}
+            >
+              거래내역&북마크
+            </button>
+            <button
+              className={`${styles.menuItem} ${
+                activeMenu === "point-history" ? styles.active : ""
+              }`}
+              onClick={() => setActiveMenu("point-history")}
+            >
+              포인트 사용 내역
+            </button>
+            <button
+              className={`${styles.menuItem} ${
+                activeMenu === "password-change" ? styles.active : ""
+              }`}
+              onClick={() => setActiveMenu("password-change")}
+            >
+              비밀번호 변경
+            </button>
+          </div>
+        </div>
+
+        {/* 하단 영역: 가변 컨텐츠 (Dynamic Content) */}
+        <div className={styles.bottomSection}>
+          {activeMenu === "transaction" && (
+            <TransactionHistoryBookmarks />
+          )}
+          {activeMenu === "point-history" && <PointHistory />}
+          {activeMenu === "password-change" && <PasswordChange />}
+          {!activeMenu && (
+            <div className={styles.emptyState}>
+              메뉴를 선택하면 내용이 표시됩니다.
             </div>
           )}
         </div>

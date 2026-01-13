@@ -8,7 +8,7 @@ import closeBtnIcon from "@/assets/icons/close btn.png";
 import { Modal } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import DaumPostcodeEmbed from "react-daum-postcode";
-import DaumMap from "./DaumMap";
+import DaumMap from "./map_search/DaumMap";
 
 export default function PurchaseSell() {
   const {
@@ -27,6 +27,10 @@ export default function PurchaseSell() {
     imageFiles,
     previewUrls,
 
+    // 태그 상태
+    tags,
+    tagInput,
+
     // 폼 핸들러
     onChangeProductName,
     onChangeSummary,
@@ -39,6 +43,12 @@ export default function PurchaseSell() {
     // 이미지 핸들러
     onImageAdd,
     onImageRemove,
+
+    // 태그 핸들러
+    onChangeTagInput,
+    onAddTag,
+    onRemoveTag,
+    onTagInputKeyDown,
 
     // 주소 검색
     isPostcodeModalOpen,
@@ -148,6 +158,48 @@ export default function PurchaseSell() {
                 </span>
               )}
             </div>
+          </div>
+
+          <div className={styles.divider}></div>
+
+          {/* 태그 */}
+          <div className={styles.form_section}>
+            <div className={styles.form_label}>
+              <span>태그</span>
+            </div>
+            <div className={styles.tag_input_container}>
+              <input
+                type="text"
+                value={tagInput}
+                onChange={onChangeTagInput}
+                onKeyDown={onTagInputKeyDown}
+                placeholder="태그를 입력하고 Enter를 누르세요"
+                className={styles.input}
+              />
+              <button
+                type="button"
+                onClick={onAddTag}
+                className={styles.tag_add_btn}
+              >
+                추가
+              </button>
+            </div>
+            {tags.length > 0 && (
+              <div className={styles.tags_container}>
+                {tags.map((tag, index) => (
+                  <span key={index} className={styles.tag_item}>
+                    {tag}
+                    <button
+                      type="button"
+                      onClick={() => onRemoveTag(tag)}
+                      className={styles.tag_remove_btn}
+                    >
+                      ×
+                    </button>
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className={styles.divider}></div>
